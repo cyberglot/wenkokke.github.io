@@ -22,10 +22,19 @@ deploy:
 	make build
 	git fetch --all
 	git checkout -b main
-	cp -a _site/. .
+	rsync -a --filter='P _site/'      \
+		       --filter='P _cache/'     \
+			     --filter='P .git/'       \
+				   --filter='P .gitignore'  \
+					 --filter='P .stack-work' \
+	         --delete-excluded        \
+		       _site/ .
 	git add -A
 	git commit -m "Publish."
 	git push origin master:master
 	git checkout dev
-	git branch -D master
+	git branch -D main
 	git stash pop
+
+
+

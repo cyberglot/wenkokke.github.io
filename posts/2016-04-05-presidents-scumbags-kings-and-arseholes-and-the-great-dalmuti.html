@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+    <link href="http://gmpg.org/xfn/11" rel="profile">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <title>Presidents, Scumbags, Kings and Arseholes, and The Great Dalmuti</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:wght@400;700|Raleway:ital,wght@0,400;0,700;1,400" rel="stylesheet"> 
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../public/images/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="../public/images/favicon.ico">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="../atom.xml">
+
+    
+
+    
+</head>
+
+
+
+    <body>
+        <div class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="sidebar-about">
+            <img class="sidebar-about-photo" src="../public/images/me.png" alt="It's me!" />
+            <h1><a href="https://wenkokke.github.io">All The Language</a></h1>
+            <p class="lead">
+                Hiya!
+                I'm <span class="tooltip" title="/wɛn/">Wen</span>.
+                I study natural language, programming languages and logical languages.
+                Basically, all the language&hellip;
+            </p>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="sidebar-nav-item" href="../">
+                Blog
+            </a>
+            <a class="sidebar-nav-item" href="../pages/pubs.html">
+                Pubs
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="mailto:wen.kokke@ed.ac.uk">
+                <i class="far fa-envelope"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://github.com/wenkokke">
+                <i class="fab fa-github"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://twitter.com/wenkokke">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://www.paypal.me/wenkokke">
+                <i class="fab fa-paypal"></i>
+            </a>
+        </nav>
+        <div class="sidebar-about">
+            &copy; 2020. All rights reserved.
+        </div>
+    </div>
+</div>
+
+        <div class="content container">
+            <article class="post">
+    <header>
+        <h1 class="post-title">Presidents, Scumbags, Kings and Arseholes, and The Great Dalmuti</h1>
+        <span class="post-date">April  5, 2016</span>
+    </header>
+    <section class="post">
+        <p>One of my favourite card games is <a href="https://boardgamegeek.com/boardgame/929/great-dalmuti">The Great Dalmuti</a>. It’s a variant of a widely-played card game with many, many names: President, Scumbag, Kings and Arseholes. Each of these may have <em>slightly</em> different rules, and <em>slightly</em> different decks, but they are all more or less the same game.</p>
+<p>I’ve had a bunch of discussions about this game over the years, most of which were about the possible strategies. Personally, I don’t believe that this game is all that hard to play well—and consequently, that it isn’t all that hard to write an AI for it. Pehaps even a very simple, rule-based AI can play passably. However, friends of mine think that it is a much harder problem, and that much more advanced techniques will be needed. Therefore, I thought I’d write a little playground for AIs to play in.</p>
+<!--more-->
+<p>I’ll get back to that later in this post, though if you’re familiar with the game, you may as well <a href="#an-ai-playground">skip the next section</a>.</p>
+<h2 id="the-rules">The Rules</h2>
+<p>Before I get to showcasing my playground, it’s probably prudent to at least briefly talk about the game. The rules of the game are fairly simple, so I’ll summarise them here:</p>
+<ul>
+<li><strong>Rank</strong>: Each player has a rank, with the top ranks usually called something like “president” and “vice president”, and the lower ranks called something like “scumbag” and, well, “vice scumbag”;</li>
+<li><strong>Setup</strong>: To start the game, <em>all the cards</em> in the deck are distributed evenly amongst the players; the highest ranking player then starts the first round;</li>
+<li><strong>Rounds</strong>: Starting with the player who starts that round (obviously) each player either plays some cards or passes, and the turn passing to the next in rank (after the lowest rank, the turn passes to the highest in rank);</li>
+<li><strong>Legal Plays</strong>: A play is legal if:
+<ul>
+<li>it is the first play, and the cards are all identical in number; or</li>
+<li>there are previous plays, the new play has the same number of cards as the previous plays, and all of the cards in the play are the identical in number and strictly “better” than those of the previous play.</li>
+</ul></li>
+<li><strong>Winning the Round</strong>: Once there is an entire round of passes, the player who was the last to play cards wins the round, and starts the next one;</li>
+<li><strong>Winning the Game</strong>: The goal is for players to get rid of all of their cards as fast as possible. The order in which they do so, determines their ranks in the next game, with the first player to finish becoming the highest in rank, the second the second highest, and so on.</li>
+</ul>
+<p>Each variant of the game adds their own rules to this, but this much is shared by more or less all of them. Note that I haven’t said anything about what cards there are in the deck—this is because every variant is played with a different deck, and with different rules as to which card is “better” than which other. I’ve played many variants of this game, but there’s just something pleasing about the deck The Great Dalmuti uses—one one, two twos, three threes, up to twelve twelves—plus, I own a copy of it, so why not use it as an example? Anyway, The Great Dalmuti adds the following rules:</p>
+<ul>
+<li><strong>Deck</strong>: It uses the deck outlined above (with one one, two twos, three threes, up to twelve twelves). Confusingly, the lower cards are “better”, so a <code>1</code> is better than a <code>5</code>, which in turn is better than a <code>12</code>;</li>
+<li><strong>Jokers</strong>: There are two jokers, which are counted as a <code>13</code> when played by themselves. However, they can be used to complete any set. For instance, <code>[3,13,13]</code> is a legal set of three threes;</li>
+<li><strong>Taxation</strong>: Before the game starts, there is a “taxation”. During taxation, The lowest ranking player gives their two <em>best</em> cards to the highest ranking player, and gets any two cards in return. The second lowest and second highest player exchange a <em>single card</em> in a similar manner;</li>
+<li><strong>Revolution</strong>: Before the taxation, there is a check. If any player has <em>both</em> jokers in their hand, they may cry “Revolution!” If this happens, the taxation phase is skipped; if the lowest ranking player cries “Revolution!”, instead of skipping the taxation, there is an actual revolution—the lowest ranking player changes places with the highest ranking player, and the second lowest ranking player changes places with the second highest ranking player.</li>
+</ul>
+<h2 id="an-ai-playground">An AI Playground</h2>
+<p>As I mentioned above, I feel that a very simple, rule-based AI could already competently play The Great Dalmuti. As a first step in demonstrating this, I’ve written a small playground where AIs can compete with one another. Below, you should see a number of tabs, the first of which is labelled ‘Console’. In it, there should be a button that looks like this: <span class="runmain">▶</span>. If you click it, the AIs in the other tabs will be pitted against one another in a game of The Great Dalmuti. Try it!</p>
+<p><img src="../public/images/dalmuti-example.png" title="Screenshot of UI of embedded The Great Dalmuti after an example run." /></p>
+<p>In implementing the game, I’ve made one small concession—while it isn’t <em>technically</em> forbidden by the original rules, most players would probably say that a pass isn’t a legal opening move. Why would you? However, in order to keep faulty AIs from breaking up the flow of the game, I’ve implemented it such that <em>it is</em>. This means that, in the game above, if your AI attempts an illegal move, or throws an error, it is taken as a pass instead. Furthermore, if your AI attempts to abuse the taxation system by giving away too many or too few cards, it is instead penalised by giving <em>the best cards.</em></p>
+<p>The default AIs—for now—are a little disappointing. There are some functions built into my implementation. Most interestingy, <code>playWorstCards</code> and <code>giveWorstCards</code> both pick whatever your worst possible cards are, and dump them. They’re not incredibly intelligent in doing so, but they’re the best thing that comes with the playground. These functions form Abby and Ezra’s AIs, so amongst the default implementations, they’re the only ones who really have a shot.</p>
+<p>Much worse are <code>playBestCards</code> and <code>giveBestCards</code>, which make up Neil’s AI, eager as he is to show how great his cards are, even if it means giving them to other players. And then finally, there’s Ruth. She’s just very nice, and wants to give other players a chance, so she’s been written to pass every turn, even if she’s starting a round. And when it comes to giving away cards, she just gives away the cards that she would be happiest receiving. So, you know, obviously there’s some room for improvement in the department. At least, if competitive play is your goal.</p>
+<h2 id="write-your-own-ai">Write your own AI</h2>
+<p>I’d love to make it easy for you, and tell you that you can write your AI in <em>any</em> language you want, but the matter of the fact is that you’re reading this on what is basically a huge JavaScript interpreter. So AIs are written in JavaScript.</p>
+<p>If you have a look at the code of, for instance, Ezra, you will see that what you need to define is an object with two functions: <code>play</code> and <code>give</code>. The play function is given your player name (just for your convenience) and an object representing the current game state. A <code>game</code> object usually looks something like this:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>game <span class="op">=</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>    { <span class="dt">active</span>   <span class="op">:</span> [<span class="st">'Abby'</span><span class="op">,</span><span class="st">'Ezra'</span><span class="op">,</span><span class="st">'Neil'</span><span class="op">,</span><span class="st">'Ruth'</span>]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>    <span class="op">,</span> <span class="dt">finished</span> <span class="op">:</span> []</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>    <span class="op">,</span> <span class="dt">ranks</span>    <span class="op">:</span> [<span class="st">'Neil'</span><span class="op">,</span><span class="st">'Ruth'</span><span class="op">,</span><span class="st">'Abby'</span><span class="op">,</span><span class="st">'Ezra'</span>]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>    <span class="op">,</span> <span class="dt">plays</span>    <span class="op">:</span> [ [<span class="st">'Ruth'</span><span class="op">,</span>[]]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>                 <span class="op">,</span> [<span class="st">'Neil'</span><span class="op">,</span>[<span class="dv">5</span><span class="op">,</span><span class="dv">5</span>]]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>                 <span class="op">,</span> [<span class="st">'Ezra'</span><span class="op">,</span>[<span class="dv">11</span><span class="op">,</span><span class="dv">11</span>]]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>                 <span class="op">,</span> [<span class="st">'Abby'</span><span class="op">,</span>[<span class="dv">12</span><span class="op">,</span><span class="dv">12</span>]]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>                 ]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>    <span class="op">,</span> <span class="dt">hands</span>    <span class="op">:</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>        { <span class="dt">Ezra</span> <span class="op">:</span> [<span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span>]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>        <span class="op">,</span> <span class="dt">Neil</span> <span class="op">:</span> [<span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span>]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>        <span class="op">,</span> <span class="dt">Abby</span> <span class="op">:</span> [<span class="dv">1</span><span class="op">,</span><span class="dv">3</span><span class="op">,</span><span class="dv">4</span><span class="op">,</span><span class="dv">4</span><span class="op">,</span><span class="dv">5</span><span class="op">,</span><span class="dv">6</span><span class="op">,</span><span class="dv">6</span><span class="op">,</span><span class="dv">7</span><span class="op">,</span><span class="dv">8</span><span class="op">,</span><span class="dv">8</span><span class="op">,</span><span class="dv">9</span><span class="op">,</span><span class="dv">9</span><span class="op">,</span><span class="dv">9</span><span class="op">,</span><span class="dv">10</span><span class="op">,</span><span class="dv">10</span><span class="op">,</span><span class="dv">11</span><span class="op">,</span><span class="dv">11</span>]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>        <span class="op">,</span> <span class="dt">Ruth</span> <span class="op">:</span> [<span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span><span class="op">,</span><span class="dv">0</span>]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>        }</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>    }</span></code></pre></div>
+<p>As you can see, <code>game</code> tells you which players are still in the game, and in which order they’re up (spoiler: you’re first) and who have already finished. Furthermore, it tells you the players’ original ranks (in this case, Neil is top chicken).</p>
+<p>Using <code>game.plays</code>, you can find out what the players who have gone before you have played. As you can see, before you came Ruth, who passed—no surprises there—and before that, Neil played two fives. Before that came Ezra, and before that Abby, who started the round by playing two twelves.</p>
+<p>Last, there’s a field called “hands”. Obviously, some meddling has gone on here, since no, the other players aren’t holding hands full of zeros. However, isn’t this a quaint way of showing how many cards they are holding? And in addition, your get to see your own hand! Just call <code>game.hands[player]</code>!</p>
+<p>The second function, <code>give</code> is much simpler. You’re given your hand of cards, and some number n, and you have to choose n cards to give away. The usual implementation is <code>giveWorstCards</code>, which simply opts to give away your worst cards, potentially breaking up a set. Obviously, this is not quite optimal—it may, e.g. break up a set of three to leave you with <em>one</em> twelve, or it may give away two perfectly good twelves while you have a single eleven and ten.</p>
+<p>As a final tip for this section: there’s a function built into my implementation of The Great Dalmuti, <code>allPlays(allowSplit,game)</code>, which returns all legal moves. The second argument, <code>game</code>, is simply the game state that you’ve been passed. The first argument, <code>allowSplit</code>, is a boolean flag. If <code>allowSplit</code> is set to true, then the returned moves will include moves which break up sets. Otherwise, well, it won’t.</p>
+<h2 id="join-in-on-the-fun">Join in on the fun!</h2>
+<p>Let me leave you with a small snippet of JavaScript. The below code, if copied into one of the AI slots above—I recommend Ruth—will allow you to join in on the fun! It will prompt you, ever time it’s your move, with a request as to which move you’d like to make:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>({</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>    <span class="dt">play</span> <span class="op">:</span> <span class="kw">function</span>(player<span class="op">,</span>game) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>        <span class="kw">var</span> hand <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(game<span class="op">.</span><span class="at">hands</span>[player])<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>        <span class="kw">var</span> play <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(<span class="fu">playWorstCards</span>(game))<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>        <span class="kw">var</span> resp <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>            <span class="fu">prompt</span>( <span class="st">&quot;Your hand is &quot;</span><span class="op">+</span>hand<span class="op">+</span><span class="st">&quot;.</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>                  <span class="op">+</span> <span class="st">&quot;What would you like to play?&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>                  <span class="op">,</span> play))<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>        <span class="cf">return</span> (<span class="bu">Array</span><span class="op">.</span><span class="fu">isArray</span>(resp)) <span class="op">?</span> resp <span class="op">:</span> []<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>    }<span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>    <span class="dt">give</span> <span class="op">:</span> <span class="kw">function</span> (player<span class="op">,</span>n<span class="op">,</span>hand) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>        <span class="kw">var</span> give <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(<span class="fu">giveWorstCards</span>(n<span class="op">,</span>hand))<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a>        <span class="kw">var</span> resp <span class="op">=</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>            <span class="fu">prompt</span>( <span class="st">&quot;Your hand is &quot;</span><span class="op">+</span>hand<span class="op">+</span><span class="st">&quot;.</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a>                  <span class="op">+</span> <span class="st">&quot;What would you like to give?&quot;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a>                  <span class="op">,</span> give))<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a>        <span class="cf">return</span> (<span class="bu">Array</span><span class="op">.</span><span class="fu">isArray</span>(resp)) <span class="op">?</span> resp <span class="op">:</span> []<span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a>    }</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a>})<span class="op">;</span></span></code></pre></div>
+<p>That’s it for now. I’ll be back later with a <em>proper</em> AI for The Great Dalmuti—though, I probably won’t be implementing it in JavaScript. If you’ve had a look under the hood, you may have noticed a bunch of completely garbled JavaScript files. This is because I’ve actually implemented the game in Haskell, and compiled it to JavaScript using <a href="https://github.com/ghcjs/ghcjs">GHCJS</a>—which is awesome! Thanks a whole bunch to the GHCJS project, helping Haskell get into the browser!</p>
+    </section>
+</article>
+
+
+
+        </div>
+    </body>
+</html>
