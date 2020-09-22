@@ -21,7 +21,7 @@ deploy:
 	make clean
 	make build
 	git fetch --all
-	git checkout -b main --track origin/main
+	git checkout -b main
 	cp -a _site/. .
 	git add -A
 	git commit -m "Publish."

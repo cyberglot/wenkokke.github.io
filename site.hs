@@ -30,8 +30,6 @@ siteCtx = constField "version" "1.0.0"
 --------------------------------------------------------------------------------
 config :: Configuration
 config = defaultConfiguration
-  { destinationDirectory = "docs"
-  }
 
 --------------------------------------------------------------------------------
 pubSections :: [([RefType], Text)]
