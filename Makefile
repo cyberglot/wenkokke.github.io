@@ -21,7 +21,7 @@ deploy:
 	make clean
 	make build
 	git fetch --all
-	git checkout -b main
+	git checkout -b main --track origin/main
 	rsync -a \
 		--filter='P _site/'      \
 		--filter='P _cache/'     \
