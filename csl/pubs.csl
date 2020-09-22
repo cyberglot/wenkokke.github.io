@@ -74,14 +74,42 @@
     <text variable="publisher-place"/>
   </macro>
   <macro name="event">
-    <group delimiter=", ">
-      <group delimiter=" ">
-        <text term="presented at"/>
-        <text variable="event" font-style="italic"/>
-      </group>
-      <text variable="event-place"/>
-      <text variable="issued"/>
-    </group>
+    <choose>
+      <if type="paper-conference" match="any">
+        <choose>
+          <!-- Published Conference Paper -->
+          <if variable="container-title">
+            <group delimiter=", ">
+              <group delimiter=" ">
+                <text term="in"/>
+                <text variable="container-title" font-style="italic"/>
+              </group>
+              <text variable="event-place"/>
+            </group>
+          </if>
+          <!-- Unpublished Conference Paper -->
+          <else>
+            <group delimiter=", ">
+              <group delimiter=" ">
+                <text term="presented at"/>
+                <text variable="event"/>
+              </group>
+              <text variable="event-place"/>
+            </group>
+          </else>
+        </choose>
+      </if>
+      <else-if type="speech" match="any">
+        <group delimiter=", ">
+          <group delimiter=" ">
+            <text term="presented at"/>
+            <text variable="event" font-style="italic"/>
+          </group>
+          <text variable="event-place"/>
+          <text macro="issued"/>
+        </group>
+      </else-if>
+    </choose>
   </macro>
   <!-- Bibliography -->
   <bibliography entry-spacing="0" second-field-align="flush">
@@ -107,7 +135,6 @@
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
             <text macro="event"/>
-            <text macro="issued"/>
           </group>
         </else-if>
         <!-- Theses -->
@@ -128,14 +155,14 @@
         <!-- Public Houses -->
         <else>
           <group delimiter=", " suffix=". ">
-            <text variable="publisher"/>
+            <text macro="title"/>
             <text variable="publisher-place"/>
           </group>
         </else>
       </choose>
       <choose>
         <if type="article-journal book chapter paper-conference thesis speech" match="any">
-          <text prefix="(" suffix=")" font-style="italic" variable="note"/>
+          <text prefix="(" suffix=".)" font-style="italic" variable="note"/>
         </if>
       </choose>
     </layout>
