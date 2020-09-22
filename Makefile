@@ -16,7 +16,7 @@ clean:
 
 .PHONY: deploy
 deploy:
-	git stash
+	git stash -q
 	git checkout dev
 	make clean
 	make build
@@ -35,4 +35,4 @@ deploy:
 	git push origin main:main
 	git checkout dev
 	git branch -D main
-	git stash pop
+	git stash pop -q
