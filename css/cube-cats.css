@@ -1,22 +1,18 @@
-img[src*="cube-"][src*=".png"] {
-    display:inline-block;
-    height:7.5rem;
-    margin-left:1.25rem;
-    margin-right:1.25rem;
-    margin-bottom:1rem;
+.cube-pets > p {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
 }
-img[src*="cube-"][src$="#flip"] {
+.cube-pets > p > img {
+    width: 30%;
+}
+.cube-pets > p > img.smol {
+    width: 20%;
+}
+.cube-pets > p > img.huge {
+    width: 40%;
+}
+.cube-pets > p > img.flip {
     transform:scaleX(-1);
-}
-img[src*="cube-"][src$="#smol"] {
-    height:5rem;
-    margin-bottom:2rem;
-}
-img[src*="cube-"][src$="#huge"] {
-    height:10rem;
-    margin-bottom:0rem;
-}
-img[src*="blob-of-catdog.png"] {
-    width:15rem;
-    margin-left:1.25rem;
 }

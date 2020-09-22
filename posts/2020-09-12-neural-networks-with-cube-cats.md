@@ -14,18 +14,34 @@ So uh, it’s kinda important that we talk about *discrete* versus *continuous*
 
 *Discrete* things are neatly separated. You’ve got your cat cube over here, and your dog cube over there, and the two can meet, that’s fine, they’re friends after all, but they’re separate things.
 
-![](/public/images/cube-cat.png "An adorable little cube cat.")
-![](/public/images/cube-dog.png "A brave little cube dog.")
+<div class="cube-pets">
+<img src="/public/images/cube-cat.png" 
+     alt="An adorable little cube cat."/>
+<img src="/public/images/cube-dog.png" 
+     alt="A brave little cube dog."/>
+</div>
 
 Programmers are really good at telling computers how to solve problems that deal with discrete things. “Got three cat cubes, and you wanna have them in a line from big to small? Sure! Computer, just swap the bigger ones to one side ’til it looks right.”
 
-![](/public/images/cube-cat.png#smol "It's our old friend, adorable little cube cat!")
-![](/public/images/cube-cat.png "Oh no, it's a really big cube cat!")
-![](/public/images/cube-cat.png#huge "The teensy-weensiest cube kitty!")
+<div class="cube-pets">
+<img class="smol" 
+     src="/public/images/cube-cat.png"
+     alt="It's our old friend, adorable little cube cat!"/>
+<img class="flip"
+     src="/public/images/cube-cat.png" 
+     alt="Oh no, it's a really big cube cat!"/>
+<img class="flip huge" 
+     src="/public/images/cube-cat.png" 
+     alt="The teensy-weensiest cube kitty!"/>
+</div>
 
 *Continuous* things are all blobby… Imagine your cat cube and your dog cube melting together in an adorable blob of hug. It’s hard to tell where the cat part of the blob ends and the dog part of the blob starts. It’s just *one massive blob of catdog*.
 
-![](/public/images/blob-of-catdog.png "Oh no, our friends melted! It's one big blog of catdog!")
+<div class="cube-pets">
+<img class="huge" 
+     src="/public/images/blob-of-catdog.png" 
+     alt="Oh no, our friends melted! It's one big blog of catdog!"/>
+</div>
 
 When our cube pets melted, we lost something. We lost the *distinction*, the fact that cat cube and dog cube were two separate things, and we knew what was part of cube cat and what was part of cube dog. There’s bits of it where you’re like “Well, surely *this* bit is dog!”, but do you know *exactly* where to draw the line? That’s a very different kind of problem from what we had before!
 
@@ -47,9 +63,12 @@ First, what does a neural network even “see” when we show it a picture? Neur
 
 Let’s go with that first one, with the features, not ’cuz it’s the best, but ’cuz it is the easiest to understand. For instance, we *know* that all cube cats are purple, and all cube dogs are pink…
 
-
-![](/public/images/cube-cat.png "It's cube cat again, but now we realise she's purple.")
-![](/public/images/cube-dog.png "Oh damn, cube dog is pink!")
+<div class="cube-pets">
+<img src="/public/images/cube-cat.png" 
+     alt="It's cube cat again, but now we realise she's purple."/>
+<img src="/public/images/cube-dog.png" 
+     alt="Oh damn, cube dog is pink!"/>
+</div>
 
 So, uh, if something is a picture of a cube cat, it’s probably gonna be mostly purple, right? And if something’s a picture of a cube dog, it’s probably gonna be mostly pink. We know how to do that! You just take the *average* redness, greenness, and blueness of all pixels in the picture! That’s just *three numbers!*
 
@@ -65,7 +84,10 @@ Reality is a mess! In theory, we can just let the neural network settle on a nic
 
 We can’t just reduce our inputs down to *three* numbers without losing a lot of information. Actually, purple and pink have pretty similar greenness and blueness, so really, we’ve reduced our inputs down to just *one* relevant value… the amount of red! That means that our network thinks anything with low redness is a cube cat, and anything with high redness is a cube dog! What’s that? This picture of a cube bear’s cube cub? It’s a cat!
 
-![](/public/images/cube-cub.png "It's a teal cube cub, but like, the shade of teal was picked specifically to have the same redness as cube cat's shade of purple.")
+<div class="cube-pets">
+<img src="/public/images/cube-cub.png" 
+     alt="It's a teal cube cub, but like, the shade of teal was picked specifically to have the same redness as cube cat's shade of purple."/>
+</div>
 
 So, uh, clearly our neural network didn’t learn the *essence of a what it means to be a cat*. It just learned some simple way of telling cube cats and cube dogs apart, that happened to work for both cube pets we showed it. If we want it to learn something more general, we’re gonna have to use some way of turning pictures into lists of numbers which doesn’t lose as much of the information… which probably means we’re gonna need much more than just three numbers. That’s fine, though, that just means we’re drawing shapes in higher-dimensional spaces, with more than three dimensions, but the math for shapes and spaces still works… Let’s pretend we’re still talking about three dimensional space, though, ’cuz it’s so much easier to imagine.
 
@@ -84,9 +106,15 @@ The question “Is this a cat?” is inherently kinda vague. It’s impossible t
 
 Anyway, we’ve gone a long time without a picture of a cube pet, so to see you off, all our little cubey friends! Join us next time, when we talk about Hans, the cleverest little cube horse!
 
-![](/public/images/cube-cat.png "Bye, cube cat!")
-![](/public/images/cube-dog.png#flip "Bye, cube dog!")
-![](/public/images/cube-cub.png "Bye, cube cub!")
+<div class="cube-pets">
+<img src="/public/images/cube-cat.png" 
+     alt="Bye, cube cat!"/>
+<img class="flip"
+     src="/public/images/cube-dog.png" 
+     alt="Bye, cube dog!"/>
+<img src="/public/images/cube-cub.png" 
+     alt="Bye, cube cub!"/>
+</div>
 
 [^cnn]: That’s called a *convolutional neural network*, and it’s used a lot in computer vision.
 [^blender]: I really cannot draw well enough for this… if someone wants to do this is Blender, please…

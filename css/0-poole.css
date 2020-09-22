@@ -337,7 +337,12 @@ tbody tr:nth-child(odd) th {
 
 .page,
 .post {
-  margin-bottom: 4em;
+    margin-bottom: 4em;
+    width: 100%;
+}
+.page p,
+.post p {
+    width: 100%;
 }
 
 /* Blog post or page title */
