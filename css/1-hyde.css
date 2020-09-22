@@ -87,14 +87,17 @@ html {
 
 /* Sidebar nav */
 .sidebar-nav {
-    margin-bottom: 1rem;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-between;
 }
 .sidebar-nav-item {
-    display: block;
+    width: 100%;
     text-align: center;
 	  color: #fefefe;
     width: 14rem;
-    margin: 0.25rem auto;
+    margin-bottom: 1rem;
 	  padding: 0;
 	  border: 1px solid #fefefe;
 	  border-radius: 1rem;
@@ -113,9 +116,8 @@ a.sidebar-nav-item:focus {
     font-weight: bold;
 }
 .sidebar-nav-icon {
-    display: inline-block;
-    width: 3.25rem;
-    margin: 0.25rem auto;
+    width: 22.5%;
+    margin-bottom: 0.5rem;
 }
 .sidebar-about-photo {
     display: none;
