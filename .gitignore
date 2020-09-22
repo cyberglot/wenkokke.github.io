@@ -1,0 +1,8 @@
+# Stack
+.stack-work/
+dist-newstyle/
+stack.yaml.lock
+
+# Hakyll
+_cache/
+_site/
