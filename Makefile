@@ -13,3 +13,19 @@ watch:
 .PHONY: clean
 clean:
 	stack build && stack run clean
+
+.PHONY: deploy
+deploy:
+	git stash
+	git checkout dev
+	make clean
+	make build
+	git fetch --all
+	git checkout -b main --track origin/main
+	cp -a _site/. .
+	git add -A
+	git commit -m "Publish."
+	git push origin master:master
+	git checkout dev
+	git branch -D master
+	git stash pop
