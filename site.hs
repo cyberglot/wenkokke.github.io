@@ -15,7 +15,7 @@ import           System.FilePath ((</>), (<.>), dropExtension, replaceExtensions
 import           System.Process (system)
 
 --------------------------------------------------------------------------------
--- Site configuration
+-- Configuration
 --------------------------------------------------------------------------------
 siteCtx :: Context String
 siteCtx = constField "version" "1.0.0"
@@ -28,14 +28,11 @@ siteCtx = constField "version" "1.0.0"
        <> defaultContext
 
 --------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx = dateField "date" "%B %e, %Y"
-       <> teaserField "teaser" "content"
-       <> siteCtx
+config :: Configuration
+config = defaultConfiguration
+  { destinationDirectory = "docs"
+  }
 
-
---------------------------------------------------------------------------------
--- Pubs configuration
 --------------------------------------------------------------------------------
 pubSections :: [([RefType], Text)]
 pubSections =
@@ -48,8 +45,34 @@ pubSections =
   ]
 
 --------------------------------------------------------------------------------
+postCtx :: Context String
+postCtx = dateField "date" "%B %e, %Y"
+       <> teaserField "teaser" "content"
+       <> siteCtx
+
+--------------------------------------------------------------------------------
+feedCtx :: Context String
+feedCtx = mconcat
+    [ bodyField "description"
+    , Context $ \key -> case key of
+        "title" -> unContext (mapContext escapeHtml defaultContext) key
+        _       -> unContext mempty key
+    , defaultContext
+    ]
+
+--------------------------------------------------------------------------------
+feedConfiguration :: FeedConfiguration
+feedConfiguration = FeedConfiguration
+    { feedTitle       = "All The Language"
+    , feedDescription = "Personal website of Wen Kokke"
+    , feedAuthorName  = "Wen Kokke"
+    , feedAuthorEmail = "wen.kokke@gmail.com"
+    , feedRoot        = "http://wenkokke.github.io"
+    }
+
+--------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith config $ do
 
   -- Copy resources
   match "public/**" $ do
@@ -111,6 +134,13 @@ main = hakyll $ do
     route idRoute
     compile $ pandocCompiler
       >>= loadAndApplyTemplate "templates/default.html" siteCtx
+
+  -- Render RSS feed
+  create ["rss.xml"] $ do
+    route idRoute
+    compile $ loadAllSnapshots "posts/*" "content"
+        >>= fmap (take 10) . recentFirst
+        >>= renderRss feedConfiguration feedCtx
 
   match "templates/*" $ compile templateBodyCompiler
 
