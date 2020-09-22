@@ -14,28 +14,11 @@
   <locale xml:lang="en">
     <terms>
       <term name="chapter" form="short">ch.</term>
-      <term name="presented at">presented at the</term>
+      <term name="presented at">presented at</term>
       <term name="available at">available</term>
     </terms>
   </locale>
   <!-- Macros -->
-  <macro name="edition">
-    <choose>
-      <if type="bill book chapter graphic legal_case legislation motion_picture paper-conference report song" match="any">
-        <choose>
-          <if is-numeric="edition">
-            <group delimiter=" ">
-              <number variable="edition" form="ordinal"/>
-              <text term="edition" form="short"/>
-            </group>
-          </if>
-          <else>
-            <text variable="edition" text-case="capitalize-first" suffix="."/>
-          </else>
-        </choose>
-      </if>
-    </choose>
-  </macro>
   <macro name="issued">
     <date variable="issued">
       <date-part name="month" form="long" suffix=" "/>
@@ -61,7 +44,6 @@
   </macro>
   <macro name="locators">
     <group delimiter=", ">
-      <text macro="edition"/>
       <group delimiter=" ">
         <text term="volume" form="short"/>
         <number variable="volume" form="numeric"/>
@@ -77,94 +59,30 @@
     </group>
   </macro>
   <macro name="title">
-    <text variable="title" font-style="italic" quotes="true"/>
+    <choose>
+      <if variable="URL">
+        <text prefix="{{html}}&lt;a href=&quot;{{/html}}" suffix="{{html}}&quot;&gt;{{/html}}" variable="URL"/>
+        <text variable="title" font-style="italic" suffix="{{html}}&lt;/a&gt;{{/html}}"/>
+      </if>
+      <else>
+        <text variable="title" font-style="italic" />
+      </else>
+    </choose>
   </macro>
   <macro name="publisher">
     <text variable="publisher"/>
     <text variable="publisher-place"/>
   </macro>
   <macro name="event">
-    <choose>
-      <if type="paper-conference speech" match="any">
-        <choose>
-          <!-- Published Conference Paper -->
-          <if variable="container-title">
-            <group delimiter=", ">
-              <group delimiter=" ">
-                <text term="in"/>
-                <text variable="container-title" font-style="italic"/>
-              </group>
-              <text variable="event-place"/>
-            </group>
-          </if>
-          <!-- Unpublished Conference Paper -->
-          <else>
-            <group delimiter=", ">
-              <group delimiter=" ">
-                <text term="presented at"/>
-                <text variable="event"/>
-              </group>
-              <text variable="event-place"/>
-            </group>
-          </else>
-        </choose>
-      </if>
-    </choose>
-  </macro>
-  <macro name="access">
-    <choose>
-      <if variable="URL">
-        <group delimiter=". ">
-          <group delimiter=": ">
-            <text term="available at" text-case="capitalize-first"/>
-            <text variable="URL"/>
-          </group>
-          <group prefix="[" suffix="]" delimiter=": ">
-            <text term="accessed" text-case="capitalize-first"/>
-            <date variable="accessed">
-              <date-part name="day" form="numeric-leading-zeros" suffix="-"/>
-              <date-part name="month" form="short" suffix="-" strip-periods="true"/>
-              <date-part name="year" form="long"/>
-            </date>
-          </group>
-        </group>
-      </if>
-    </choose>
-  </macro>
-  <macro name="page">
-    <group>
-      <label variable="page" form="short" suffix=" "/>
-      <text variable="page"/>
-    </group>
-  </macro>
-  <macro name="citation-locator">
-    <group delimiter=" ">
-      <choose>
-        <if locator="page">
-          <label variable="locator" form="short"/>
-        </if>
-        <else>
-          <label variable="locator" form="short" text-case="capitalize-first"/>
-        </else>
-      </choose>
-      <text variable="locator"/>
-    </group>
-  </macro>
-  <macro name="doi">
-    <text variable="DOI" prefix="doi: "/>
-  </macro>
-  <!-- Citation -->
-  <citation collapse="citation-number">
-    <sort>
-      <key variable="citation-number"/>
-    </sort>
-    <layout delimiter=", ">
-      <group prefix="[" suffix="]" delimiter=", ">
-        <text variable="citation-number"/>
-        <text macro="citation-locator"/>
+    <group delimiter=", ">
+      <group delimiter=" ">
+        <text term="presented at"/>
+        <text variable="event" font-style="italic"/>
       </group>
-    </layout>
-  </citation>
+      <text variable="event-place"/>
+      <text variable="issued"/>
+    </group>
+  </macro>
   <!-- Bibliography -->
   <bibliography entry-spacing="0" second-field-align="flush">
     <layout>
@@ -175,18 +93,14 @@
             <text macro="title"/>
             <text variable="container-title" font-style="italic" form="short"/>
             <text macro="issued"/>
-            <text prefix="(" suffix=")" font-style="italic" variable="note"/>
           </group>
-          <text macro="access" />
         </if>
         <!-- Books -->
         <else-if type="book">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
             <text macro="locators"/>
-            <text prefix="(" suffix=")" font-style="italic" variable="note"/>
           </group>
-          <text macro="access" />
         </else-if>
         <!-- Conference and Workshop Papers -->
         <else-if type="chapter paper-conference" match="any">
@@ -194,10 +108,7 @@
             <text macro="title"/>
             <text macro="event"/>
             <text macro="issued"/>
-            <text macro="page"/>
-            <text prefix="(" suffix=")" font-style="italic" variable="note"/>
           </group>
-          <text macro="access" />
         </else-if>
         <!-- Theses -->
         <else-if type="thesis">
@@ -205,27 +116,27 @@
             <text macro="title"/>
             <text variable="genre"/>
             <text macro="issued"/>
-            <text prefix="(" suffix=")" font-style="italic" variable="note"/>
           </group>
-          <text macro="access" />
         </else-if>
         <!-- Talks -->
         <else-if type="speech">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
             <text macro="event"/>
-            <text macro="issued"/>
-            <text prefix="(" suffix=")" font-style="italic" variable="note"/>
           </group>
-          <text macro="access" />
         </else-if>
         <!-- Public Houses -->
         <else>
           <group delimiter=", " suffix=". ">
-            <text variable="title"/>
-            <text variable="note"/>
+            <text variable="publisher"/>
+            <text variable="publisher-place"/>
           </group>
         </else>
+      </choose>
+      <choose>
+        <if type="article-journal book chapter paper-conference thesis speech" match="any">
+          <text prefix="(" suffix=")" font-style="italic" variable="note"/>
+        </if>
       </choose>
     </layout>
   </bibliography>

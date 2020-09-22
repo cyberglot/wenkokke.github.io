@@ -6,7 +6,7 @@ tags       : [linguistics, formal language theory]
 
 Constraint grammar---it is a natural language processing formalism with great two distinctions: it routinely scores amongst the highest in tasks such as part-of-speech tagging and word-sense disambiguation, with F-scores at around 99%; and it has made some of the most dubious choices in programming language syntax in history. Though its specification has changed tremendously since CG1, it is nontheless a grammar formalism which sees a lot of usage. One natural question to ask of any grammar formalism is "how expressive is it?"
 
-Over the weekend, [inariksit](https://github.com/inariksit) visited me, and we decided to find out.
+Over the weekend, [inariksit](https://github.com/inariksit) visited me, and we decided to find out!
 
 <!--more-->
 

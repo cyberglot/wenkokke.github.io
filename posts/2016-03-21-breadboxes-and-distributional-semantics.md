@@ -4,22 +4,21 @@ date         : 2016-03-21 12:00:00
 tags         : [games, linguistics, python]
 ---
 
-Quite a while ago, [UnicornPower][UnicornPower] introduced me to a game called *Breadbox*. It's an experimental cousin of *20 Questions*, also known as *Plenty Questions*, which is played by two players---or more, really---who we'll name Allie and Blake:
+Quite a while ago, [UnicornPower](https://github.com/UnicornPower) introduced me to a game called *Breadbox*. It's an experimental cousin of *20 Questions*, also known as *Plenty Questions*, which is played by two players---or more, really---who we'll name Allie and Blake:
 
- 1. Allie thinks of something.
- 2. As their first question, Blake asks *"Is it a breadbox?"*
- 3. Allie---who, seeing the mandatory first question, obviously
-    wouldn't choose a breadbox---answers *"No, it's not!"*
+  - Allie thinks of something.
+  - As their first question, Blake asks *“Is it a breadbox?”*
+  - Allie---who, seeing the mandatory first question, obviously wouldn't choose a breadbox---answers *“No, it's not!”*
 
 From there on out, all Blake's questions have to be of the form…
 
-> Is it more like a *breadbox*, or more like…?
+  - *“Is it more like a breadbox, or more like…?”*
 
-…where *breadbox* is replaced by whatever the current guess is, and the dots are filled in with whatever Blake wants. 
+…where *breadbox* is replaced by whatever the current guess is, and the dots are filled in with whatever Blake wants. Let’s see if we can write an AI for playing this game!
 
 <!--more-->
 
-For instance, a quick game might look like this:
+Okay, before we get started, let’s look at an example of a quick game:
 
 Allie
 : I'm thinking of something…
@@ -173,7 +172,6 @@ If you wish to read more about distributional semantics, there's a pretty good o
 
 [^source]: You can still try to run it [from source][breadbox], but be warned… I did not future-proof it.
 [DontCountPredict]: http://clic.cimec.unitn.it/marco/publications/acl2014/baroni-etal-countpredict-acl2014.pdf
-[UnicornPower]: https://github.com/UnicornPower
 [word2vec]: http://deeplearning4j.org/word2vec
 [slides]: https://www.cs.utexas.edu/~mooney/cs388/slides/dist-sem-intro-NLP-class-UT.pdf
 [semantic-vectors]: http://clic.cimec.unitn.it/composes/semantic-vectors.html

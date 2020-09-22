@@ -1,9 +1,12 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+
 import           Data.List (isPrefixOf)
 import           Data.Text (Text)
 import qualified Data.Text as Text
 import           Hakyll
 import           Text.Pandoc.Definition
+import           Text.Pandoc.Walk
 import           Text.Regex.TDFA ((=~))
 import           Text.CSL.Reference (Reference, RefType(..))
 import qualified Text.CSL as CSL
@@ -23,6 +26,13 @@ siteCtx = constField "version" "1.0.0"
        <> constField "twitter_user" "wenkokke"
        <> constField "paypal_user" "wenkokke"
        <> defaultContext
+
+--------------------------------------------------------------------------------
+postCtx :: Context String
+postCtx = dateField "date" "%B %e, %Y"
+       <> teaserField "teaser" "content"
+       <> siteCtx
+
 
 --------------------------------------------------------------------------------
 -- Pubs configuration
@@ -46,17 +56,6 @@ main = hakyll $ do
     route idRoute
     compile copyFileCompiler
 
-  -- Compile bibliography
-  match "bib/*.bib" $ compile biblioCompiler
-  match "csl/*.csl" $ compile cslCompiler
-
-  match "pages/pubs.md" $ do
-    route $ setExtension "html"
-    compile $ pubsCompiler pubSections
-        >>= loadAndApplyTemplate "templates/page.html"    siteCtx
-        >>= loadAndApplyTemplate "templates/default.html" siteCtx
-        >>= relativizeUrls
-
   -- Compile CSS files
   match "css/*" $ compile compressCssCompiler
   create ["public/css/style.css"] $ do
@@ -64,29 +63,6 @@ main = hakyll $ do
     compile $ do
       csses <- loadAll "css/*.css"
       makeItem $ unlines $ map itemBody csses
-
-  -- Compile posts
-  match ("posts/*.md" .&&. complement "posts/*.lagda.md") $ do
-    route $ setExtension "html"
-    compile $ pandocCompiler
-      >>= loadAndApplyTemplate "templates/post.html"    postCtx
-      >>= loadAndApplyTemplate "templates/default.html" siteCtx
-      >>= relativizeUrls
-
-  -- Compile Literate Agda posts
-  match "posts/*.lagda.md" $ do
-    route $ gsubRoute "\\.lagda\\.md" (const ".html")
-    compile $ agdaCompiler
-      >>= renderPandoc
-      >>= loadAndApplyTemplate "templates/post.html"    postCtx
-      >>= loadAndApplyTemplate "templates/default.html" siteCtx
-      >>= relativizeUrls
-
-  -- Compile 404 page
-  match "404.html" $ do
-    route idRoute
-    compile $ pandocCompiler
-      >>= loadAndApplyTemplate "templates/default.html" siteCtx
 
   -- Compile index page
   match "index.html" $ do
@@ -101,13 +77,42 @@ main = hakyll $ do
         >>= loadAndApplyTemplate "templates/default.html" indexCtx
         >>= relativizeUrls
 
+  -- Compile posts
+  match ("posts/*.md" .&&. complement "posts/*.lagda.md") $ do
+    route $ setExtension "html"
+    compile $ pandocCompiler
+      >>= saveSnapshot "content"
+      >>= loadAndApplyTemplate "templates/post.html"    postCtx
+      >>= loadAndApplyTemplate "templates/default.html" siteCtx
+      >>= relativizeUrls
+
+  -- Compile Literate Agda posts
+  match "posts/*.lagda.md" $ do
+    route $ gsubRoute "\\.lagda\\.md" (const ".html")
+    compile $ agdaCompiler
+      >>= renderPandoc
+      >>= saveSnapshot "content"
+      >>= loadAndApplyTemplate "templates/post.html"    postCtx
+      >>= loadAndApplyTemplate "templates/default.html" siteCtx
+      >>= relativizeUrls
+
+  -- Compile publications
+  match "bib/*.bib" $ compile biblioCompiler
+  match "csl/*.csl" $ compile cslCompiler
+  match "pages/pubs.md" $ do
+    route $ setExtension "html"
+    compile $ pubsCompiler pubSections
+        >>= loadAndApplyTemplate "templates/page.html"    siteCtx
+        >>= loadAndApplyTemplate "templates/default.html" siteCtx
+        >>= relativizeUrls
+
+  -- Compile 404 page
+  match "404.html" $ do
+    route idRoute
+    compile $ pandocCompiler
+      >>= loadAndApplyTemplate "templates/default.html" siteCtx
+
   match "templates/*" $ compile templateBodyCompiler
-
-
---------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx = dateField "date" "%B %e, %Y"
-       <> siteCtx
 
 
 --------------------------------------------------------------------------------
@@ -174,10 +179,14 @@ pubsCompiler sections = do
   let filterRefs :: [RefType] -> [Reference] -> [Reference]
       filterRefs refTypes = filter ((`elem` refTypes) . CSL.refType)
 
+  -- NOTE: pandoc-citeproc renders URL as a link
+  let stripLinks :: [Inline] -> [Inline]
+      stripLinks = walk $ \case { (Link _ [i] _) -> i ; i -> i }
+
   let renderSection :: [RefType] -> Text -> [Block]
       renderSection refType sectionTitle =
         [ Header 2 (Text.pack (show refType), [], []) [Str sectionTitle]
-        , BulletList [ [Para (CSL.renderPandoc csl formattedRef)]
+        , BulletList [ [Para (stripLinks $ CSL.renderPandoc csl formattedRef)]
                      | let sectionRefs = filterRefs refType refs
                      , let formattedRefs = CSL.processBibliography CSL.procOpts csl sectionRefs
                      , formattedRef <- formattedRefs
@@ -191,3 +200,5 @@ pubsCompiler sections = do
   let Pandoc meta bs = itemBody docItem
   bibItem <- makeItem $ Pandoc meta (bs ++ bibSections)
   return $ writePandoc bibItem
+
+
