@@ -1,0 +1,15 @@
+.mathpar > p {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+.mathpar > p > br {
+    display: none;
+}
+.katex-display {
+    text-align: left !important;
+}
+.katex-display > .katex {
+    text-align: left !important;
+}

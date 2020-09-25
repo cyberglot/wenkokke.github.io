@@ -9,9 +9,11 @@ title: All The Language
             <h1 class="post-title"><a href="$url$">$title$</a></h1>
             <span class="post-date">$date$</span>
         </header>
+        $if(teaser)$
         <section>
             $teaser$
         </section>
+        $endif$
     </article>
     $endfor$
 </div>
