@@ -33,18 +33,19 @@ $(SITE_DIR): site.hs index.html bib csl css drafts pages posts public templates
 ########################################
 
 .PHONY: test
-test: build
-	cd _site && htmlproofer \
-		--check-html \
-		--report-invalid-tags \
-		--report-missing-names \
-		--report-script-embeds \
-		--report-missing-doctype \
-		--report-eof-tags \
-		--report-mismatched-tags \
-		--check-img-http \
-		--check-opengraph \
-		.
+test: $(SITE_DIR)
+	cd $(SITE_DIR) \
+		&& htmlproofer \
+			--check-html \
+			--report-invalid-tags \
+			--report-missing-names \
+			--report-script-embeds \
+			--report-missing-doctype \
+			--report-eof-tags \
+			--report-mismatched-tags \
+			--check-img-http \
+			--check-opengraph \
+			.
 
 
 ########################################
