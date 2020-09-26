@@ -107,7 +107,9 @@ clean:
 
 .PHONY: deploy
 deploy:
+	@echo "Cleaning up..."
 	MODE=production make clean
+	@echo "Building production site..."
 	MODE=production make build
 	@echo "Creating main branch..."
 	git fetch --all
