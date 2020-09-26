@@ -133,7 +133,7 @@ main = do
     match "index.html" $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
+        posts <- recentFirst =<< loadAll (postsPattern draftMode)
         let indexCtx = listField "posts" postCtx (return posts)
                     <> siteCtx
 
@@ -180,7 +180,7 @@ main = do
     -- Render RSS feed
     create ["rss.xml"] $ do
       route idRoute
-      compile $ loadAllSnapshots "posts/*" "content"
+      compile $ loadAllSnapshots (postsPattern draftMode) "content"
           >>= fmap (take 10) . recentFirst
           >>= renderRss feedConfiguration feedCtx
 
