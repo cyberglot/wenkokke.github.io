@@ -55,7 +55,17 @@ build:
 
 .PHONY: test
 test: build
-	cd _site && htmlproofer .
+	cd _site && htmlproofer \
+		--check-html \
+		--report-invalid-tags \
+		--report-missing-names \
+		--report-script-embeds \
+		--report-missing-doctype \
+		--report-eof-tags \
+		--report-mismatched-tags \
+		--check-img-http \
+		--check-opengraph \
+		.
 
 ########################################
 # Start server
