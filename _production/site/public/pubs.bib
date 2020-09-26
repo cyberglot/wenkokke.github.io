@@ -1,0 +1,701 @@
+@article{kokke2020oopsla,
+  abstract  = {We describe a design for generics in Go inspired by previous work
+                  on Featherweight Java by Igarashi, Pierce, and Wadler. Whereas
+                  subtyping in Java is nominal, in Go it is structural, and
+                  whereas generics in Java are defined via erasure, in Go we use
+                  monomorphisation. Although monomorphisation is widely used, we
+                  are one of the first to formalise it. Our design also supports
+                  a solution to The Expression Problem.}, 
+  title     = {Featherweight Go},
+  author    = {Robert Griesemer and Raymond Hu and Wen Kokke and Julien Lange and Ian Lance Taylor and Bernardo Toninho and Philip Wadler and Nobuko Yoshida},
+  journal   = {Proceedings of the {ACM} on Programming Languages},
+  volume    = {6},
+  publisher = {Association for Computing Machinery ({ACM})},
+  number    = {{OOPSLA}},
+  year      = {2020},
+  note      = {Forthcoming}
+}
+@article{kokke2019ice,
+  abstract  = {Rusty Variation (RV) is a library for session-typed communication
+                  in Rust which offers strong compile-time correctness
+                  guarantees. Programs written using RV are guaranteed to
+                  respect a specified protocol, and are guaranteed to be free
+                  from deadlocks and races.},
+  title     = {Rusty Variation: Deadlock-free Sessions with Failure in Rust},
+  author    = {Wen Kokke},
+  journal   = {Electronic Proceedings in Theoretical Computer Science},
+  volume    = {304},
+  issn      = {2075-2180},
+  doi       = {10.4204/eptcs.304.4},
+  publisher = {Open Publishing Association},
+  year      = {2019},
+  month     = sep,
+  pages     = {48–60},
+  url       = {https://wenkokke.github.io/pubs/eptcs2019b.pdf},
+  note      = {Renamed to Sesh},
+}
+@article{kokke2020scp,
+  doi       = {10.1016/j.scico.2020.102440},
+  url       = {https://doi.org/10.1016/j.scico.2020.102440},
+  year      = {2020},
+  month     = aug,
+  publisher = {Elsevier {BV}},
+  volume    = {194},
+  pages     = {102440},
+  author    = {Wen Kokke and Jeremy G. Siek and Philip Wadler},
+  title     = {Programming language foundations in Agda},
+  journal   = {Science of Computer Programming},
+  abstract  = {One of the leading textbooks for formal methods is Software
+                  Foundations (SF), written by Benjamin Pierce in collaboration
+                  with others, and based on Coq. After five years using SF in
+                  the classroom, we came to the conclusion that Coq is not the
+                  best vehicle for this purpose, as too much of the course needs
+                  to focus on learning tactics for proof derivation, to the cost
+                  of learning programming language theory. Accordingly, we have
+                  written a new textbook, Programming Language Foundations in
+                  Agda (PLFA). PLFA covers much of the same ground as SF,
+                  although it is not a slavish imitation. What did we learn from
+                  writing PLFA? First, that it is possible. One might expect
+                  that without proof tactics that the proofs become too long,
+                  but in fact proofs in PLFA are about the same length as those
+                  in SF. Proofs in Coq require an interactive environment to be
+                  understood, while proofs in Agda can be read on the page.
+                  Second, that constructive proofs of preservation and progress
+                  give immediate rise to a prototype evaluator. This fact is
+                  obvious in retrospect but it is not exploited in SF (which
+                  instead provides a separate normalise tactic) nor can we find
+                  it in the literature. Third, that using extrinsically-typed
+                  terms is far less perspicuous than using intrinsically-typed
+                  terms. SF uses the former presentation, while PLFA presents
+                  both; the former uses about 1.6 as many lines of Agda code as
+                  the latter, roughly the golden ratio. The textbook is written
+                  as a literate Agda script, and can be found here:
+                  http://plfa.inf.ed.ac.uk.} 
+}
+@article{kokke2019pacmpl,
+  abstract  = {We present Hypersequent Classical Processes (HCP), a revised
+                  interpretation of the "Proofs as Processes" correspondence
+                  between linear logic and the π-calculus initially proposed by
+                  Abramsky [1994], and later developed by Bellin and Scott
+                  [1994], Caires and Pfenning [2010], and Wadler [2014], among
+                  others. HCP mends the discrepancies between linear logic and
+                  the syntax and observable semantics of parallel composition in
+                  the π-calculus, by conservatively extending linear logic to
+                  hyperenvironments (collections of environments, inspired by
+                  the hypersequents by Avron [1991]). Separation of environments
+                  in hyperenvironments is internalised by ⊗ and corresponds to
+                  parallel process behaviour. Thanks to this property, for the
+                  first time we are able to extract a labelled transition system
+                  (lts) semantics from proof rewritings. Leveraging the
+                  information on parallelism at the level of types, we obtain a
+                  logical reconstruction of the delayed actions that Merro and
+                  Sangiorgi [2004] formulated to model non-blocking I/O in the
+                  π-calculus. We define a denotational semantics for processes
+                  based on Brzozowski derivatives, and uncover that
+                  non-interference in HCP corresponds to Fubini’s theorem of
+                  double antiderivation. Having an lts allows us to validate HCP
+                  using the standard toolbox of behavioural theory. We
+                  instantiate bisimilarity and barbed congruence for HCP, and
+                  obtain a full abstraction result: bisimilarity, denotational
+                  equivalence, and barbed congruence coincide.},
+  author    = {Wen Kokke and Fabrizio Montesi and Marco Peressotti},
+  title     = {Better Late Than Never: A fully-abstract semantics for Classical Processes},
+  journal   = {{Proceedings of the {ACM} on Programming Languages}},
+  volume    = {3},
+  number    = {{POPL}},
+  year      = {2019},
+  month     = jan,
+  url       = {https://wenkokke.github.io/pubs/popl2019.pdf},
+}
+@article{toledo2014lilt,
+  abstract  = {We introduce a new formal semantic model for
+                  annotating textual entailments that describes
+                  restrictive, intersective, and appositive
+                  modification. The model contains a formally defined
+                  interpreted lexicon, which specifies the inventory
+                  of symbols and the supported semantic operators, and
+                  an informally defined annotation scheme that
+                  instructs annotators in which way to bind words and
+                  constructions from a given pair of premise and
+                  hypothesis to the interpreted lexicon. We explore
+                  the applicability of the proposed model to the
+                  Recognizing Textual Entailment (RTE) 1–4 corpora and
+                  describe a first-stage annotation scheme on which we
+                  based the manual annotation work. The constructions
+                  we annotated were found to occur in 80.65\% of the
+                  entailments in RTE 1–4 and were annotated with
+                  cross-annotator agreement of 68\% on average. The
+                  annotated parts of the RTE corpora are publicly
+                  available for further research. },
+  author    = {Assaf Toledo and Stavroula Alexandropoupou and Sophie Chesney and
+                  Sophia Katrenko and Heidi Klockmann and Wen Kokke and Benno
+                  Kruit and Yoad Winter},
+  title     = {Towards a Semantic Model for Textual Entailment},
+  booktitle = {Perspectives on Semantic Representations for Textual Inference},
+  volume    = {9},
+  year      = {2014},
+  journal   = {Linguistic Issues in Language Technology},
+  pages     = {117--150},
+  issn      = {1945-3604},
+  url       = {http://csli-lilt.stanford.edu/ojs/index.php/LiLT/issue/view/1},
+}
+@book{kokke2018plfa,
+  author    = {Philip Wadler and Wen Kokke},
+  title     = {Programming Language Foundations in Agda},
+  year      = {2018},
+  month     = oct,
+  url       = {https://plfa.github.io/},
+}
+@inproceedings{kokke2020aplas,
+  abstract  = {We present StarChild and Lazuli, two libraries which leverage
+                  refinement types to verify neural networks, implemented in F*
+                  and Liquid Haskell. Refinement types are types augmented, or
+                  refined, with assertions about values of that type, e.g.,
+                  ``integers greater than five'', which are checked by an SMT
+                  solver. Crucially, these assertions are written in the
+                  language itself. A user of our library can refine the type of
+                  neural networks, e.g., ``neural networks which are robust
+                  against adversarial attacks'', and expect F* to handle the
+                  verification of this claim for any specific network, without
+                  having to change the representation of the network, or even
+                  having to learn about SMT solvers.
+                  Our initial experiments indicate that our approach could greatly reduce the
+                  burden of verifying neural networks. Unfortunately, they also
+                  show that SMT solvers do not scale to the sizes required for
+                  neural network verification.}, 
+  author    = {Wen Kokke and Ekaterina Komendantskaya and Daniel Kienitz and David Aspinall and Robert Atkey},
+  title     = {Neural Networks, Secure by Construction: An Exploration of Refinement Types},
+  year      = {2020},
+  month     = nov,
+  editor    = {Bruno C. d. S. Oliveira},
+  booktitle = {Proceedings 18th Asian Symposium on Programming Languages and Systems, APLAS 2020},
+  location  = {Fukuoka, Japan},
+  url       = {https://wenkokke.github.io/pubs/aplas2020.pdf}
+}
+@inproceedings{kokke2020live,
+  abstract  = {We introduce StarChild and Lazuli, two proof-of-concept libraries
+                  which leverage the type system and theorem proving
+                  capabilities of F* and Liquid Haskell, respectively, to verify
+                  properties of pre-trained neural networks. We largely focus on
+                  StarChild, as the F* syntax is slightly more concise, but
+                  Lazuli implements the same functionality. Currently, both
+                  libraries are capable of verifying small models. Performance
+                  issues arise for larger models. Optimising the libraries is
+                  future work.
+                  We make two novel contributions. We demonstrate that (1) it is
+                  possible to leverage a sufficiently advanced type system to
+                  model properties of neural networks such as robustness as
+                  types, and check them without any proof burden; and in service
+                  of that, we demonstrate that (2) it is possible to
+                  approximately translate neural network models to SMT logic.},
+  author    = {Wen Kokke and Ekaterina Komendantskaya and Daniel Kienitz and David Aspinall},
+  title     = {Robustness as a Refinement Type: Verifying Neural Networks in Liquid Haskell and F*},
+  year      = {2020},
+  month     = apr,
+  editor    = {Joost-Pieter Katoen and Jan Kretinsky},
+  booktitle = {{4th Workshop on Learning in Verification}},
+  location  = {Dublin, Ireland},
+  url       = {https://wenkokke.github.io/pubs/live2020.pdf}
+}
+@inproceedings{kokke2019tlla,
+  abstract  = {Process calculi based on logic, such as πDILL and CP, provide a
+                  foundation for deadlock-free concurrent programming. However,
+                  in previous work, there is a mismatch between the rules for
+                  constructing proofs and the term constructors of the
+                  π-calculus: the fundamental operator for parallel composition
+                  does not correspond to any rule of linear logic. Kokke et al.
+                  (2019) introduced Hypersequent Classical Processes (HCP),
+                  which addresses this mismatch using hypersequents (collections
+                  of sequents) to register parallelism in the typing judgements.
+                  However, the step from CP to HCP is a big one. As of yet, HCP
+                  does not have reduction semantics, and the addition of delayed
+                  actions means that CP processes interpreted as HCP processes
+                  do not behave as they would in CP. We introduce HCP-, a
+                  variant of HCP with reduction semantics and without delayed
+                  actions. We prove progress, preservation, and termination, and
+                  show that HCP- supports the same communication protocols as
+                  CP.},
+  author    = {Wen Kokke and Fabrizio Montesi and Marco Peressotti},
+  title     = {Taking Linear Logic Apart},
+  year      = {2019},
+  month     = apr,
+  editor    = {Ehrhard, Thomas and Fern\'andez, Maribel and Paiva, Valeria de and Tortora de Falco, Lorenzo },
+  booktitle = {{Proceedings Joint International Workshop on}
+                  Linearity \& Trends in Linear Logic and Applications,
+                  {Oxford, UK, 7-8 July 2018}},
+  series    = {Electronic Proceedings in Theoretical Computer Science},
+  volume    = {292},
+  publisher = {Open Publishing Association},
+  pages     = {90-103},
+  doi       = {10.4204/EPTCS.292.5},
+  url       = {https://wenkokke.github.io/pubs/eptcs2019a.pdf},
+  note      = {The EPTCS version has errors, which are fixed here},
+}
+@inproceedings{kokke2019coordination,
+  abstract  = {Process calculi based in logic, such as πDILL and CP, provide a
+                  foundation for deadlock-free concurrent programming, but
+                  exclude non-determinism and races. HCP is a reformulation of
+                  CP which addresses a fundamental shortcoming: the fundamental
+                  operator for parallel composition from the π-calculus does not
+                  correspond to any rule of linear logic, and therefore not to
+                  any term construct in CP. We introduce HCPND, which extends
+                  HCP with a novel account of non-determinism. Our approach
+                  draws on bounded linear logic to provide a strongly-typed
+                  account of standard process calculus expressions of
+                  non-determinism. We show that our extension is expressive
+                  enough to capture many uses of non-determinism in untyped
+                  calculi, such as non-deterministic choice, while preserving
+                  HCP's meta-theoretic properties, including deadlock freedom.},
+  author    = {Wen Kokke and J. Garrett Morris and Philip Wadler},
+  title     = {Towards Races in Linear Logic},
+  year      = {2019},
+  month     = jun,
+  url       = {https://wenkokke.github.io/pubs/coordination2019.pdf},
+  booktitle = {International Conference on Coordination Models and Languages},
+  location  = {Lyngby, Denmark},
+  note      = {The COORDINATION version has errors, which are fixed here},
+}
+@inproceedings{kokke2017cg,
+  author    = {Wen Kokke and Inari Listenmaa},
+  title     = {Exploring the Expressivity of Constraint Grammar},
+  year      = {2017},
+  month     = may,
+  url       = {https://wenkokke.github.io/pubs/nodalida2017.pdf},
+  booktitle = {Workshop on Constraint Grammar at NoDaLiDa'17},
+  location  = {Gothenburg, Sweden},
+}
+@inproceedings{kokke2016lacl,
+  year      = {2016},
+  month     = dec,
+  publisher = {Springer},
+  pages     = {134--148},
+  author    = {Wen Kokke},
+  title     = {Strong and Weak Quantifiers in Focused {NLCL}},
+  booktitle = {Logical Aspects of Computational Linguistics},
+  location  = {Nancy, France},
+  doi       = {10.1007/978-3-662-53826-5_9},
+  url       = {https://wenkokke.github.io/pubs/lacl2016.pdf},
+}
+@inproceedings{kokke2015tytles,
+  abstract  = {In recent years, the interest in using proof
+                  assistants to formalise and reason about mathematics
+                  and programming languages has grown. Type-logical
+                  grammars, being closely related to type theories and
+                  systems used in functional programming, are a
+                  perfect candidate to next apply this curiosity
+                  to. The advantages of using proof assistants is that
+                  they allow one to write formally verified proofs
+                  about one’s type-logical systems, and that any
+                  theory, once implemented, can immediately be
+                  computed with. The downside is that in many cases
+                  the formal proofs are written as an afterthought,
+                  are incomplete, or use obtuse syntax. This makes it
+                  that the verified proofs are often much more
+                  difficult to read than the pen-and-paper proofs, and
+                  almost never directly published. In this paper, we
+                  will try to remedy that by example. Concretely, we
+                  use Agda to model the Lambek-Grishin calculus, a
+                  grammar logic with a rich vocabulary of typeforming
+                  operations. We then present a verified procedure for
+                  cut elimination in this system. Then we briefly
+                  outline a continuation-passing style translation
+                  from proofs in the Lambek-Grishin calculus to
+                  programs in Agda. And finally, we will put our
+                  system to use in the analysis of a simple example
+                  sentence.},
+  title     = {Formalising Type-Logical Grammar in Agda},
+  author    = {Wen Kokke},
+  year      = {2015},
+  month     = aug,
+  location  = {Barcelona, Spain},
+  booktitle = {Workshop on Type Theory and Lexical Semantics at ESSLLI'15},
+  url       = {https://arxiv.org/abs/1709.00728},
+}
+@inproceedings{kokke2015mpc,
+  abstract  = {As proofs in type theory become increasingly
+                  complex, there is a growing need to provide better
+                  proof automation. This paper shows how to implement
+                  a Prolog-style resolution procedure in the
+                  dependently typed programming language
+                  Agda. Connecting this resolution procedure to Agda’s
+                  reflection mechanism provides a first-class proof
+                  search tactic for first-order Agda terms. As a
+                  result, writing proof automation tactics need not be
+                  different from writing any other program. },
+  year      = {2015},
+  month     = jun,
+  isbn      = {978-3-319-19796-8},
+  booktitle = {Mathematics of Program Construction},
+  volume    = {9129},
+  series    = {Lecture Notes in Computer Science},
+  editor    = {Hinze, Ralf and Voigtländer, Janis},
+  doi       = {10.1007/978-3-319-19797-5_14},
+  title     = {Auto in Agda: Programming Proof Search Using Reflection},
+  url       = {https://wenkokke.github.io/pubs/mpc2015.pdf},
+  publisher = {Springer},
+  author    = {Wen Kokke and Wouter Swierstra},
+  pages     = {276-301},
+}
+@inproceedings{toledo2013iwcs,
+  abstract  = {We introduce a new formal semantic model for
+                  annotating textual entailments, that describes
+                  restrictive, intersective and appositive
+                  modification. The model contains a formally defined
+                  interpreted lexicon, which specifies the inventory
+                  of symbols and the supported semantic operators, and
+                  an informally defined annotation scheme that
+                  instructs annotators in which way to bind words and
+                  constructions from a given pair of premise and
+                  hypothesis to the interpreted lexicon. We explore
+                  the applicability of the proposed model to the
+                  Recognizing Textual Entailment (RTE) 1-4 corpora and
+                  describe a first-stage annotation scheme based on
+                  which manual annotation work was carried out. The
+                  constructions we annotated were found to occur in
+                  80.65\% of the entailments in RTE 1-4 and were
+                  annotated with cross-annotator agreement of 68\% on
+                  average. The annotated RTE corpora are publicly
+                  available for the research community. },
+  author    = {Assaf Toledo and Stavroula Alexandropoulou and Sophia Katrenko
+                  and Heidi Klockmann and Wen Kokke and Yoad Winter},
+  title     = {Semantic Annotation of Textual Entailment},
+  booktitle = {International Conference on Computational Semantics},
+  month     = mar,
+  year      = {2013},
+  location  = {Potsdam, Germany},
+  publisher = {Association for Computational Linguistics},
+  pages     = {240--251},
+  url       = {http://www.aclweb.org/anthology/W13-0121},
+}
+@inproceedings{toledo2014wisa,
+  abstract  = {We introduce a new platform for annotating
+                  inferential phenomena in entailment data, buttressed
+                  by a formal semantic model and a proof-system that
+                  provide immediate verification of the coherency and
+                  completeness of the marked annotations. By
+                  integrating a web-based user interface, a formal
+                  lexicon, a lambda-calculus engine and an
+                  off-the-shelf theorem prover, the platform allows
+                  human annotators to mark linguistic phenomena in
+                  entailment data (pairs made up of a premise and a
+                  hypothesis) and to receive immediate feedback
+                  whether their annotations are substantiated: for
+                  positive entailment pairs, the system searches for a
+                  formal logical proof that the hypothesis follows
+                  from the premise; for negative pairs, the system
+                  verifies that a counter-model can be
+                  constructed. This novel approach facilitates the
+                  creation of textual entailment corpora with
+                  annotations that are sufficiently coherent and
+                  complete for recognizing the entailment relation or
+                  lack thereof. A corpus of several hundred annotated
+                  entailments is currently being compiled based on the
+                  platform and will be available for the research
+                  community in the foreseeable future. },
+  author    = {Assaf Toledo and Stavroula Alexandropoulou and Sophie Chesney and
+                  Robert Grimm and Wen Kokke and Benno Kruit and Kyriaki
+                  Neophytou and Antony Nguyen and Yoad Winter}, 
+  title     = {A Proof-Based Annotation Platform of Textual Entailment},
+  booktitle = {Workshop on Interoperable Semantic Annotation},
+  month     = may,
+  year      = {2014},
+  location  = {Reykjavik, Iceland},
+  publisher = {Association for Computational Linguistics},
+  pages     = {21--24},
+  url       = {http://dspace.library.uu.nl/handle/1874/306425},
+}
+@mastersthesis{kokke2017msc,
+  abstract  = {Process calculi based in logic, such as {\textpi DILL} and CP,
+                  provide a foundation for deadlock-free concurrent programming,
+                  but at the cost of excluding non-determinism and races. We
+                  introduce $CD_{NP}$, which extends CP with a novel account of
+                  non-determinism. Our approach draws on bounded linear logic to
+                  provide a strongly-typed account of standard process calculus
+                  expressions of non-determinism. We show that our extension is
+                  expressive enough to capture many uses of non-determinism in
+                  untyped calculi, such as non-deterministic choice, while
+                  preserving CP's meta-theoretic properties, including deadlock
+                  freedom.},
+  author    = {Wen Kokke},
+  title     = {Races in Classical Linear Logic},
+  school    = {University of Edinburgh},
+  year      = {2017},
+  month     = aug,
+  type      = {Master's thesis},
+  url       = {https://wenkokke.github.io/pubs/msc2017.pdf},
+}
+@mastersthesis{kokke2016msc,
+  abstract  = {In this thesis, I will discuss the grammar logic {NLQ}, an
+                  extension of the non-associative Lambek calculus based on
+                  Barker and Shan’s (2014) NLCL. For this logic, derivability is
+                  decidable. In addition, it is free of spurious ambiguity, can
+                  analyse scope islands, distinguish between strong and weak
+                  quantifiers, and more.},
+  author    = {Wen Kokke},
+  title     = {{NLQ}: a modular type-logical grammar for quantifier movement, scope islands, and more},
+  school    = {Utrecht University},
+  year      = {2015},
+  month     = dec,
+  type      = {Master's thesis},
+  url       = {https://wenkokke.github.io/pubs/msc2016.pdf},
+}
+@talk{kokke2020spls,
+  title     = {Robustness as a Refinement Type},
+  location  = {Edinburgh, UK},
+  month     = jul,
+  year      = {2020},
+  note      = {SPLS},
+  url       = {https://wenkokke.github.io/talks/2020-07-22-robustness-as-a-refinement-type.pdf},
+}
+@talk{kokke2019cdtpizzatalkb,
+  title     = {This talk won't help you steal},
+  location  = {Edinburgh, UK},
+  month     = nov,
+  year      = {2019},
+  note      = {CDT Pizza},
+  url       = {https://wenkokke.github.io/talks/2019-10-15-this-talk-wont-help-you-steal.pdf},
+}
+@talk{kokke2019aimxxx,
+  title     = {Programming Programming Language Foundations in Agda in Agda},
+  location  = {Munich, Germany},
+  month     = sep,
+  year      = {2019},
+  note      = {AIM XXX},
+  url       = {https://wenkokke.github.io/talks/2019-09-17-programming-programming-language-foundations-in-agda-in-agda.pdf},
+}
+@talk{kokke2019icetalk,
+  title     = {Rusty Variation: Deadlock-free sessions with failure in Rust},
+  location  = {Lyngby, Denmark},
+  month     = jun,
+  year      = {2019},
+  note      = {ICE, as part of DisCoTec},
+  url       = {https://wenkokke.github.io/talks/2019-06-20-rusty-variation-or,-deadlock-free-sessions-with-failure-in-rust.pdf},
+}
+@talk{kokke2019coordinationtalk,
+  title     = {Session Types and Cake},
+  location  = {Lyngby, Denmark},
+  month     = jun,
+  year      = {2019},
+  note      = {COORDINATION, as part of DisCoTec},
+  url       = {https://wenkokke.github.io/talks/2019-06-18-session-types-and-cake.pdf},
+}
+@talk{kokke2019shamelessplugtalk,
+  title     = {Programming Programming Language Foundations in Agda in Agda},
+  location  = {Glasgow, UK},
+  month     = may,
+  year      = {2019},
+  note      = {Invited talk, Shameless PLUG},
+  url       = {https://wenkokke.github.io/talks/2019-05-28-programming-programming-language-foundations-in-agda-in-agda.pdf},
+}
+@talk{kokke2019cdtpizzatalka,
+  title     = {A Tale of Three Constructed Languages},
+  location  = {Edinburgh, UK},
+  month     = may,
+  year      = {2019},
+  note      = {CDT Pizza},
+  url       = {https://wenkokke.github.io/talks/2019-05-17-a-tale-of-three-constructed-languages.pdf},
+}
+@talk{kokke2019behapitalkapr,
+  title     = {Formalising session-typed languages without worries},
+  location  = {Prague, Czech Republic},
+  month     = apr,
+  year      = {2019},
+  note      = {Invited talk, Workshop on Behavioural APIs, as part of ETAPS},
+  url       = {https://wenkokke.github.io/talks/2019-04-06-formalising-session-typed-languages-without-worries.pdf},
+}
+@talk{kokke2019dikutalkmar,
+  title     = {Rusty Variation: Deadlock-free sessions with failure in Rust},
+  location  = {Copenhagen, Denmark},
+  month     = mar,
+  year      = {2019},
+  note      = {Invited talk, Københavns Universitet},
+  url       = {https://wenkokke.github.io/talks/2019-03-22-rusty-variation-or,-deadlock-free-sessions-with-failure-in-rust.pdf},
+}
+@talk{kokke2018abcdtalkdec,
+  title     = {Rusty Variation: Deadlock-free sessions with failure in Rust},
+  location  = {London, UK},
+  month     = dec,
+  year      = {2018},
+  note      = {ABCD meeting},
+  url       = {https://wenkokke.github.io/talks/2018-12-17-rusty-variation-or,-deadlock-free-sessions-with-failure-in-rust.pdf},
+}
+@talk{kokke2018ppartalk,
+  title     = {Where the linear lambdas go},
+  location  = {Edinburgh, UK},
+  month     = nov,
+  year      = {2018},
+  note      = {PPar Lunch},
+  url       = {https://wenkokke.github.io/talks/2018-11-28-where-the-linear-lambdas-go.pdf},
+}
+@talk{kokke2018tspltalk,
+  title     = {Quantitative: Resources and Types},
+  location  = {Edinburgh, UK},
+  month     = nov,
+  year      = {2018},
+  note      = {Lecture as part of TSPL},
+  url       = {http://plfa.github.io/Quantitative/},
+}
+@talk{kokke2018cdtpizzatalk,
+  title     = {This talk won't help you steal},
+  location  = {Edinburgh, UK},
+  month     = nov,
+  year      = {2018},
+  note      = {CDT Pizza},
+  url       = {https://wenkokke.github.io/talks/2018-10-19-this-talk-wont-help-you-steal.pdf},
+}
+@talk{kokke2018splstalk,
+  title     = {Where the linear lambdas go},
+  location  = {Glasgow, UK},
+  month     = oct,
+  year      = {2018},
+  note      = {SPLS},
+  url       = {https://wenkokke.github.io/talks/2018-11-28-where-the-linear-lambdas-go.pdf},
+}
+@talk{kokke2018kutalk,
+  title     = {Where the linear lambdas go},
+  location  = {Lawrence, Kansas},
+  month     = oct,
+  year      = {2018},
+  note      = {Invited talk, The University of Kansas},
+  url       = {https://wenkokke.github.io/talks/2018-11-28-where-the-linear-lambdas-go.pdf},
+}
+@talk{kokke2018tllatalk,
+  title     = {Taking linear logic apart},
+  location  = {Oxford, UK},
+  month     = jul,
+  year      = {2018},
+  note      = {Linearity and TLLA as part of FLoC},
+  url       = {https://wenkokke.github.io/talks/2018-07-07-taking-linear-logic-apart.pptx},
+}
+@talk{kokke2017abcdtalkdec,
+  title     = {Taking apart classical processes},
+  location  = {Edinburgh, UK},
+  month     = dec,
+  year      = {2017},
+  note      = {ABCD meeting},
+  url       = {https://wenkokke.github.io/talks/2017-12-18-talking-apart-classical-processes.pdf},
+}
+@talk{kokke2017tspltalk2,
+  title     = {Programming in Agda, part II},
+  location  = {Edinburgh, UK},
+  month     = nov,
+  year      = {2017},
+  note      = {Lecture as part of TSPL},
+  url       = {https://gist.github.com/wenkokke/fdcd56e73a2ba12088b4876a7bd90c7d#file-lecture2-agda},
+}
+@talk{kokke2017tspltalk1,
+  title     = {Programming in Agda, part I},
+  location  = {Edinburgh, UK},
+  month     = nov,
+  year      = {2017},
+  note      = {Lecture as part of TSPL},
+  url       = {https://gist.github.com/wenkokke/fdcd56e73a2ba12088b4876a7bd90c7d#file-lecture1-agda},
+}
+@talk{kokke2017icfpsrc,
+  title     = {Session types and cake},
+  location  = {Oxford, UK},
+  month     = sep,
+  year      = {2017},
+  note      = {ICFP SRC Finalist Presentation},
+  url       = {https://wenkokke.github.io/talks/2017-09-06-session-types-and-cake.pdf},
+}
+@talk{kokke2017splstalk,
+  title     = {Give or take: non-determinism, linear logic, and session types},
+  location  = {St. Andrews},
+  month     = mar,
+  year      = {2017},
+  note      = {SPLS},
+  url       = {https://wenkokke.github.io/talks/2017-03-22-give-or-take-non-determinism-linear-logic-and-session-types.pdf},
+}
+@talk{kokke2017abcdtalkmar,
+  title     = {Global non-determinism with termination},
+  location  = {Edinburgh, UK},
+  month     = mar,
+  year      = {2017},
+  note      = {ABCD meeting},
+  url       = {https://wenkokke.github.io/talks/2017-03-15-global-non-determinism-with-termination.pdf},
+}
+@talk{kokke2016lacltalk,
+  title     = {A bunch of things to do with NLλ},
+  location  = {Nancy, France},
+  month     = dec,
+  year      = {2016},
+  note      = {LACL},
+  url       = {https://wenkokke.github.io/talks/2016-12-07-a-bunch-of-things-to-do-with-nl%F0%9D%9C%86.pdf},
+}
+@talk{kokke2016tspltalk,
+  title     = {Linear logic and the lambda calculus},
+  location  = {Edinburgh, UK},
+  month     = nov,
+  year      = {2016},
+  note      = {Lecture as part of TSPL},
+}
+@talk{kokke2015ccstalk2,
+  title     = {Type Theory and NLP},
+  location  = {Utrecht, The Netherlands},
+  month     = dec,
+  year      = {2015},
+  note      = {Colloquium CoSc},
+  url       = {https://wenkokke.github.io/talks/2015-12-07-type-theory-and-nlp.pdf},
+}
+@talk{kokke2015tytlestalk,
+  title     = {Type-logical grammars in Agda},
+  location  = {Barcelona, Spain},
+  month     = aug,
+  year      = {2015},
+  note      = {TyTLeS as part of ESSLLI},
+  url       = {https://wenkokke.github.io/talks/2015-08-06-type-logical-grammar-in-agda.pdf},
+}
+@talk{kokke2015ccstalk1,
+  title     = {Auto in Agda},
+  location  = {Utrecht, The Netherlands},
+  month     = jun,
+  year      = {2015},
+  note      = {Colloquium CoSc},
+  url       = {https://wenkokke.github.io/talks/2015-06-12-auto-in-agda.pdf},
+}
+@pub{chezphilippe,
+  title     = {Chez Philippe},
+  location  = {Kyōto, Japan},
+  url       = {https://www.facebook.com/chezphilippefsn/},
+}
+@pub{muraya,
+  title     = {村屋},
+  location  = {Kyōto, Japan},
+  url       = {https://kishikorofreee.com/entry/2016/02/07/201832?fbclid=IwAR0S5MQXYzvSm9U-m8gBNumZMpFgqET7Jxyx0-a-R4fG1NvxJjsdyWqvE6U},
+}
+@pub{kafebelgie,
+  title     = {Kafé België},
+  location  = {Utrecht, The Netherlands},
+  url       = {http://www.kafebelgie.nl/},
+}
+@pub{acu,
+  title     = {ACU},
+  location  = {Utrecht, The Netherlands},
+  url       = {https://acu.nl/},
+}
+@pub{deonderbroek,
+  title     = {De Onderbroek},
+  location  = {Nijmegen, The Netherlands},
+  url       = {http://grotebroek.nl/groepen/de-onderbroek/},
+}
+@pub{debijstand,
+  title     = {De Bijstand},
+  location  = {Nijmegen, The Netherlands},
+  url       = {http://www.debijstand.nl/},
+}
+@pub{dagdabar,
+  title     = {Dagda Bar},
+  location  = {Edinburgh, UK},
+  url       = {https://www.facebook.com/thedagdabar/},
+}
+@pub{thebansheelabyrinth,
+  title     = {The Banshee Labyrinth},
+  location  = {Edinburgh, UK},
+  url       = {https://www.thebansheelabyrinth.com/},
+}
+@pub{theauldhoose,
+  title     = {The Auld Hoose},
+  location  = {Edinburgh, UK},
+  url       = {http://theauldhoose.co.uk/},
+}
