@@ -4,5 +4,5 @@ dist-newstyle/
 stack.yaml.lock
 
 # Hakyll
-_cache/
-_site/
+_draft/
+_production/

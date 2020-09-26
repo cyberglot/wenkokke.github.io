@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-import           Data.List (isPrefixOf)
+import           Data.List (isPrefixOf, delete)
 import           Data.Text (Text)
 import qualified Data.Text as Text
 import           Hakyll
@@ -11,6 +11,7 @@ import           Text.Regex.TDFA ((=~))
 import           Text.CSL.Reference (Reference, RefType(..))
 import qualified Text.CSL as CSL
 import           System.Directory (createDirectoryIfMissing)
+import           System.Environment (getArgs, withArgs)
 import           System.FilePath ((</>), (<.>), dropExtension, replaceExtensions)
 import           System.Process (system)
 
@@ -28,8 +29,47 @@ siteCtx = constField "version" "1.0.0"
        <> defaultContext
 
 --------------------------------------------------------------------------------
-config :: Configuration
-config = defaultConfiguration
+productionConfig :: Configuration
+productionConfig = defaultConfiguration
+  { destinationDirectory = "_production/site"
+  , storeDirectory       = "_production/cache"
+  , tmpDirectory         = "_production/cache/tmp"
+  }
+
+draftConfig :: Configuration
+draftConfig = productionConfig
+  { destinationDirectory = "_draft/site"
+  , storeDirectory       = "_draft/cache"
+  , tmpDirectory         = "_draft/cache/tmp"
+  }
+
+config :: Bool -> Configuration
+config draftMode
+  | draftMode = draftConfig
+  | otherwise = productionConfig
+
+--------------------------------------------------------------------------------
+productionPostsWithAgdaPattern :: Pattern
+productionPostsWithAgdaPattern = "posts/*.lagda.md"
+
+productionPostsPattern :: Pattern
+productionPostsPattern = "posts/*.md" .&&. complement productionPostsWithAgdaPattern
+
+draftPostsWithAgdaPattern :: Pattern
+draftPostsWithAgdaPattern = "drafts/*.lagda.md"
+
+draftPostsPattern :: Pattern
+draftPostsPattern = "drafts/*.md" .&&. complement draftPostsWithAgdaPattern
+
+postsPattern :: Bool -> Pattern
+postsPattern draftMode
+  | draftMode = draftPostsPattern .||. productionPostsPattern
+  | otherwise = productionPostsPattern
+
+postsWithAgdaPattern :: Bool -> Pattern
+postsWithAgdaPattern draftMode
+  | draftMode = draftPostsWithAgdaPattern .||. productionPostsWithAgdaPattern
+  | otherwise = productionPostsWithAgdaPattern
 
 --------------------------------------------------------------------------------
 pubSections :: [([RefType], Text)]
@@ -70,77 +110,81 @@ feedConfiguration = FeedConfiguration
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyllWith config $ do
+main = do
+  args <- getArgs
+  let draftMode = "--drafts" `elem` args
+      hakyllArgs = delete "--drafts" args
+  withArgs hakyllArgs . hakyllWith (config draftMode) $ do
 
-  -- Copy resources
-  match "public/**" $ do
-    route idRoute
-    compile copyFileCompiler
+    -- Copy resources
+    match "public/**" $ do
+      route idRoute
+      compile copyFileCompiler
 
-  -- Compile CSS files
-  match "css/*" $ compile compressCssCompiler
-  create ["public/css/style.css"] $ do
-    route idRoute
-    compile $ do
-      csses <- loadAll "css/*.css"
-      makeItem $ unlines $ map itemBody csses
+    -- Compile CSS files
+    match "css/*" $ compile compressCssCompiler
+    create ["public/css/style.css"] $ do
+      route idRoute
+      compile $ do
+        csses <- loadAll "css/*.css"
+        makeItem $ unlines $ map itemBody csses
 
-  -- Compile index page
-  match "index.html" $ do
-    route idRoute
-    compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
-      let indexCtx = listField "posts" postCtx (return posts)
-                  <> siteCtx
+    -- Compile index page
+    match "index.html" $ do
+      route idRoute
+      compile $ do
+        posts <- recentFirst =<< loadAll "posts/*"
+        let indexCtx = listField "posts" postCtx (return posts)
+                    <> siteCtx
 
-      getResourceBody
-        >>= applyAsTemplate indexCtx
-        >>= loadAndApplyTemplate "templates/default.html" indexCtx
-        >>= relativizeUrls
+        getResourceBody
+          >>= applyAsTemplate indexCtx
+          >>= loadAndApplyTemplate "templates/default.html" indexCtx
+          >>= relativizeUrls
 
-  -- Compile posts
-  match ("posts/*.md" .&&. complement "posts/*.lagda.md") $ do
-    route $ setExtension "html"
-    compile $ pandocCompiler
-      >>= saveSnapshot "content"
-      >>= loadAndApplyTemplate "templates/post.html"    postCtx
-      >>= loadAndApplyTemplate "templates/default.html" siteCtx
-      >>= relativizeUrls
-
-  -- Compile Literate Agda posts
-  match "posts/*.lagda.md" $ do
-    route $ gsubRoute "\\.lagda\\.md" (const ".html")
-    compile $ agdaCompiler
-      >>= renderPandoc
-      >>= saveSnapshot "content"
-      >>= loadAndApplyTemplate "templates/post.html"    postCtx
-      >>= loadAndApplyTemplate "templates/default.html" siteCtx
-      >>= relativizeUrls
-
-  -- Compile publications
-  match "bib/*.bib" $ compile biblioCompiler
-  match "csl/*.csl" $ compile cslCompiler
-  match "pages/pubs.md" $ do
-    route $ setExtension "html"
-    compile $ pubsCompiler pubSections
-        >>= loadAndApplyTemplate "templates/page.html"    siteCtx
+    -- Compile posts
+    match (postsPattern draftMode) $ do
+      route $ setExtension "html"
+      compile $ pandocCompiler
+        >>= saveSnapshot "content"
+        >>= loadAndApplyTemplate "templates/post.html"    postCtx
         >>= loadAndApplyTemplate "templates/default.html" siteCtx
         >>= relativizeUrls
 
-  -- Compile 404 page
-  match "404.html" $ do
-    route idRoute
-    compile $ pandocCompiler
-      >>= loadAndApplyTemplate "templates/default.html" siteCtx
+    -- Compile Literate Agda posts
+    match (postsWithAgdaPattern draftMode) $ do
+      route $ gsubRoute "\\.lagda\\.md" (const ".html")
+      compile $ agdaCompiler
+        >>= renderPandoc
+        >>= saveSnapshot "content"
+        >>= loadAndApplyTemplate "templates/post.html"    postCtx
+        >>= loadAndApplyTemplate "templates/default.html" siteCtx
+        >>= relativizeUrls
 
-  -- Render RSS feed
-  create ["rss.xml"] $ do
-    route idRoute
-    compile $ loadAllSnapshots "posts/*" "content"
-        >>= fmap (take 10) . recentFirst
-        >>= renderRss feedConfiguration feedCtx
+    -- Compile publications
+    match "bib/*.bib" $ compile biblioCompiler
+    match "csl/*.csl" $ compile cslCompiler
+    match "pages/pubs.md" $ do
+      route $ setExtension "html"
+      compile $ pubsCompiler pubSections
+          >>= loadAndApplyTemplate "templates/page.html"    siteCtx
+          >>= loadAndApplyTemplate "templates/default.html" siteCtx
+          >>= relativizeUrls
 
-  match "templates/*" $ compile templateBodyCompiler
+    -- Compile 404 page
+    match "404.html" $ do
+      route idRoute
+      compile $ pandocCompiler
+        >>= loadAndApplyTemplate "templates/default.html" siteCtx
+
+    -- Render RSS feed
+    create ["rss.xml"] $ do
+      route idRoute
+      compile $ loadAllSnapshots "posts/*" "content"
+          >>= fmap (take 10) . recentFirst
+          >>= renderRss feedConfiguration feedCtx
+
+    match "templates/*" $ compile templateBodyCompiler
 
 
 --------------------------------------------------------------------------------
@@ -228,5 +272,3 @@ pubsCompiler sections = do
   let Pandoc meta bs = itemBody docItem
   bibItem <- makeItem $ Pandoc meta (bs ++ bibSections)
   return $ writePandoc bibItem
-
-

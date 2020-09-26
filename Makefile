@@ -1,53 +1,32 @@
 ########################################
-# Setup Git Hooks
+# Build mode (draft, production)
 ########################################
 
-.PHONY: init
-init:
-	git config core.hooksPath .githooks
+MODE ?= draft
 
-########################################
-# Setup dependencies
-########################################
-
-STACK ?= $(shell which stack)
-NPM ?= $(shell which npm)
-BROWSER_SYNC ?= $(shell which browser-sync)
-GEM ?= $(shell which gem)
-HTML_PROOFER ?= $(shell which html-proofer)
-
-.PHONY: setup
-setup:
-ifeq (,$(wildcard $(STACK)))
-	@echo "Setup requires the Haskell Tool Stack"
-	@echo "See: https://docs.haskellstack.org/en/stable/install_and_upgrade/"
-endif
-ifeq (,$(wildcard $(BROWSER_SYNC)))
-ifeq (,$(wildcard $(NPM)))
-	@echo "Seting up HTMLProofer requires RubyGems"
-	@echo "See: https://www.ruby-lang.org/en/documentation/installation/"
+ifeq (draft,$(MODE))
+HAKYLL_FLAGS += --drafts
+BUILD_DIR := $(abspath _draft)
 else
-	@echo "Installing HTMLProofer..."
-	@$(GEM) install html-proofer
+BUILD_DIR := $(abspath _production)
 endif
-endif
-ifeq (,$(wildcard $(BROWSER_SYNC)))
-ifeq (,$(wildcard $(NPM)))
-	@echo "Seting up Browsersync requires the Node Package Manager"
-	@echo "See: https://www.npmjs.com/get-npm"
-else
-	@echo "Installing Browsersync..."
-	@$(NPM) install -g browser-sync
-endif
-endif
+
+SITE_DIR := $(BUILD_DIR)/site
+CACHE_DIR := $(BUILD_DIR)/cache
+TMP_DIR := $(CACHE_DIR)/tmp
+WATCH_PID := $(BUILD_DIR)/watch.pid
+SERVER_PID := $(BUILD_DIR)/server.pid
+
 
 ########################################
 # Build blog with Hakyll
 ########################################
 
 .PHONY: build
-build:
-	$(STACK) build && $(STACK) run build
+build: $(SITE_DIR)
+
+$(SITE_DIR): site.hs index.html bib csl css drafts pages posts public templates
+	stack build && stack run build -- $(HAKYLL_FLAGS)
 
 ########################################
 # Test blog with HTMLProofer
@@ -67,45 +46,47 @@ test: build
 		--check-opengraph \
 		.
 
+
 ########################################
 # Start server
 ########################################
 
+$(WATCH_PID):
+	@echo "Building site..."
+	@stack build && stack run build -- $(HAKYLL_FLAGS)
+	@echo "Starting watch process..."
+	@mkdir -p $(BUILD_DIR)
+	@stack run watch -- $(HAKYLL_FLAGS) --no-server 1>&2 & echo $$! > $(WATCH_PID)
+
+.PHONY: start-watch
+start-watch: $(WATCH_PID)
+
+.PHONY: stop-watch
+stop-watch:
+ifneq (,$(wildcard $(WATCH_PID)))
+	kill `cat $(WATCH_PID)` && rm $(WATCH_PID)
+endif
+
+$(SERVER_PID): $(SITE_DIR)
+	@echo "Starting server..."
+	@cd $(SITE_DIR) && { browser-sync start --server --files "." --no-ui --reload-delay 500 --reload-debounce 500 1>&2 & echo $$! > $(SERVER_PID); }
+
+.PHONY: start-server
+start-server: $(SERVER_PID)
+
+.PHONY: stop-server
+stop-server:
+ifneq (,$(wildcard $(SERVER_PID)))
+	kill `cat $(SERVER_PID)` && rm $(SERVER_PID)
+endif
+
 .PHONY: start
-start: .watch.PID .serve.PID
+start:
+	@make start-watch && make start-server
 
 .PHONY: stop
-stop: watch-stop serve-stop
-
-.PHONY: watch-start
-watch-start: .watch.PID
-
-.watch.PID:
-	@echo "Building site.hs..."
-	@$(STACK) build
-	@echo "Starting Hakyll watch process..."
-	@{ $(STACK) run watch -- --no-server 1>&2 & echo $$! > $@; }
-
-.PHONY: watch-stop
-watch-stop:
-ifneq (,$(wildcard .watch.PID))
-	kill `cat .watch.PID`
-	rm .watch.PID
-endif
-
-.PHONY: serve-start
-serve-start: .serve.PID
-
-.serve.PID:
-	@echo "Starting browser-sync..."
-	@cd _site && { $(BROWSER_SYNC) start --server --files "." --no-ui  --reload-delay 500 --reload-debounce 500 1>&2 & echo $$! > $@; }
-
-.PHONY: serve-stop
-serve-stop:
-ifneq (,$(wildcard .serve.PID))
-	kill `cat .serve.PID`
-	rm .serve.PID
-endif
+stop:
+	@make stop-watch && make stop-server
 
 
 ########################################
@@ -114,7 +95,9 @@ endif
 
 .PHONY: clean
 clean:
-	$(STACK) build && $(STACK) run clean
+	@stack build \
+		&& stack run clean \
+		&& stack run clean -- --drafts
 
 
 ########################################
@@ -123,21 +106,78 @@ clean:
 
 .PHONY: deploy
 deploy:
-	make clean
-	make build
+	MODE=production make clean
+	MODE=production make build
+	@echo "Creating main branch..."
 	git fetch --all
 	git checkout -b main --track origin/main
 	rsync -a \
-		--filter='P _site/'      \
-		--filter='P _cache/'     \
-		--filter='P .git/'       \
-		--filter='P .gitignore'  \
-		--filter='P .stack-work' \
-		--filter='P CNAME'       \
-		--delete-excluded        \
-		_site/ .
+		--filter='P _production/site/'  \
+		--filter='P _production/cache/' \
+		--filter='P .git/'							\
+		--filter='P .gitignore'					\
+		--filter='P .stack-work'				\
+		--filter='P CNAME'							\
+		--delete-excluded								\
+		_production/site/ .
 	git add -A
+	@echo "Publishing main branch..."
 	git commit -m "Publish."
 	git push origin main:main
+	@echo "Deleting main branch..."
 	git checkout dev
 	git branch -D main
+
+
+########################################
+# Setup Git Hooks
+########################################
+
+.PHONY: init
+init:
+	git config core.hooksPath .githooks
+
+
+########################################
+# Setup dependencies
+########################################
+
+.PHONY: setup
+setup: check-stack install-browser-sync install-html-proofer
+
+.PHONY: check-stack
+check-stack:
+ifeq (,$(wildcard $(shell which stack)))
+	@echo "Setup requires the Haskell Tool Stack"
+	@echo "See: https://docs.haskellstack.org/en/stable/install_and_upgrade/"
+	@exit 1
+endif
+
+.PHONY: check-npm
+ifeq (,$(wildcard $(shell which npm)))
+	@echo "Setup requires the Node Package Manager"
+	@echo "See: https://www.npmjs.com/get-npm"
+	@exit 1
+endif
+
+.PHONY: check-gem
+check-gem:
+ifeq (,$(wildcard $(shell which gem)))
+	@echo "Setup requires the RubyGems Package Manager"
+	@echo "See: https://www.ruby-lang.org/en/documentation/installation/"
+	@exit 1
+endif
+
+.PHONY: install-browser-sync
+install-browser-sync: check-npm
+ifeq (,$(wildcard $(shell which browser-sync)))
+	@echo "Installing Browsersync..."
+	npm install -g browser-sync
+endif
+
+.PHONY: install-html-proofer
+install-html-proofer: check-npm
+ifeq (,$(wildcard $(shell which htmlproofer)))
+	@echo "Installing HTMLProofer..."
+	gem install html-proofer
+endif
