@@ -13,12 +13,23 @@ init:
 STACK ?= $(shell which stack)
 NPM ?= $(shell which npm)
 BROWSER_SYNC ?= $(shell which browser-sync)
+GEM ?= $(shell which gem)
+HTML_PROOFER ?= $(shell which html-proofer)
 
 .PHONY: setup
 setup:
 ifeq (,$(wildcard $(STACK)))
 	@echo "Setup requires the Haskell Tool Stack"
 	@echo "See: https://docs.haskellstack.org/en/stable/install_and_upgrade/"
+endif
+ifeq (,$(wildcard $(BROWSER_SYNC)))
+ifeq (,$(wildcard $(NPM)))
+	@echo "Seting up HTMLProofer requires RubyGems"
+	@echo "See: https://www.ruby-lang.org/en/documentation/installation/"
+else
+	@echo "Installing HTMLProofer..."
+	@$(GEM) install html-proofer
+endif
 endif
 ifeq (,$(wildcard $(BROWSER_SYNC)))
 ifeq (,$(wildcard $(NPM)))
@@ -38,6 +49,13 @@ endif
 build:
 	$(STACK) build && $(STACK) run build
 
+########################################
+# Test blog with HTMLProofer
+########################################
+
+.PHONY: test
+test: build
+	cd _site && htmlproofer .
 
 ########################################
 # Start server

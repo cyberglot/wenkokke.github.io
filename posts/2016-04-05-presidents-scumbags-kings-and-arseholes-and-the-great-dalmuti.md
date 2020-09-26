@@ -1,9 +1,5 @@
 ---
-title        : "Presidents, Scumbags, Kings and Arseholes, and The Great Dalmuti"
-date         : 2016-04-05 12:00:00
-tags         : [games, haskell]
-extra-script : [dalmuti-extra-script.html]
-extra-style  : [dalmuti-extra-style.html]
+title: "Presidents, Scumbags, Kings and Arseholes, and The Great Dalmuti"
 ---
 
 One of my favourite card games is [The Great Dalmuti][BoardGameGeek]. It's  a variant of a widely-played card game with many, many names: President, Scumbag, Kings and Arseholes. Each of these may have *slightly* different rules, and *slightly* different decks, but they are all more or less the same game.
@@ -40,7 +36,7 @@ Each variant of the game adds their own rules to this, but this much is shared b
 
 As I mentioned above, I feel that a very simple, rule-based AI could already competently play The Great Dalmuti. As a first step in demonstrating this, I've written a small playground where AIs can compete with one another. Below, you should see a number of tabs, the first of which is labelled 'Console'. In it, there should be a button that looks like this: <span class="runmain">&#9654;</span>. If you click it, the AIs in the other tabs will be pitted against one another in a game of The Great Dalmuti. Try it!
 
-![](/public/images/dalmuti-example.png "Screenshot of UI of embedded The Great Dalmuti after an example run.")
+![Screenshot of UI of embedded The Great Dalmuti after an example run.](/public/images/dalmuti-example.png)\
 
 In implementing the game, I've made one small concession---while it isn't *technically* forbidden by the original rules, most players would probably say that a pass isn't a legal opening move. Why would you? However, in order to keep faulty AIs from breaking up the flow of the game, I've implemented it such that *it is*. This means that, in the game above, if your AI attempts an illegal move, or throws an error, it is taken as a pass instead. Furthermore, if your AI attempts to abuse the taxation system by giving away too many or too few cards, it is instead penalised by giving *the best cards.*
 
