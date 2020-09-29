@@ -70,7 +70,14 @@ endif
 
 $(SERVER_PID): $(SITE_DIR)
 	@echo "Starting server..."
-	@cd $(SITE_DIR) && { browser-sync start --server --files "." --no-ui --reload-delay 500 --reload-debounce 500 1>&2 & echo $$! > $(SERVER_PID); }
+	@cd $(SITE_DIR) && { \
+		browser-sync start \
+			--server \
+			--files "." \
+			--no-ui \
+			--reload-delay 500 \
+			--reload-debounce 500 \
+			1>&2 & echo $$! > $(SERVER_PID); }
 
 .PHONY: start-server
 start-server: $(SERVER_PID)
@@ -115,13 +122,13 @@ deploy:
 	git fetch --all
 	git checkout -b main --track origin/main
 	rsync -a \
-		--filter='P _production/site/'  \
+		--filter='P _production/site/' \
 		--filter='P _production/cache/' \
-		--filter='P .git/'							\
-		--filter='P .gitignore'					\
-		--filter='P .stack-work'				\
-		--filter='P CNAME'							\
-		--delete-excluded								\
+		--filter='P .git/' \
+		--filter='P .gitignore' \
+		--filter='P .stack-work' \
+		--filter='P CNAME' \
+		--delete-excluded \
 		_production/site/ .
 	git add -A
 	@echo "Publishing main branch..."
