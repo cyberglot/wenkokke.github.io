@@ -16,6 +16,7 @@
       <term name="chapter" form="short">ch.</term>
       <term name="presented at">presented at</term>
       <term name="available at">available</term>
+      <term name="in collaboration with">in collaboration with</term>
     </terms>
   </locale>
   <!-- Macros -->
@@ -25,22 +26,16 @@
       <date-part name="year" form="long"/>
     </date>
   </macro>
-  <macro name="author">
-    <names variable="author">
-      <name and="text" et-al-min="7" et-al-use-first="1" initialize-with=". "/>
-      <label form="short" prefix=", " text-case="capitalize-first"/>
-      <et-al font-style="italic"/>
-      <substitute>
-        <names variable="editor"/>
-        <names variable="translator"/>
-      </substitute>
-    </names>
-  </macro>
-  <macro name="editor">
-    <names variable="editor">
-      <name initialize-with=". " delimiter=", " and="text"/>
-      <label form="short" prefix=", " text-case="capitalize-first"/>
-    </names>
+  <macro name="coauthor">
+    <group delimiter=" ">
+      <text term="in collaboration with"/>
+      <names variable="author">
+        <name delimiter=", " and="text">
+          <name-part name="given"/>
+          <name-part name="family"/>
+        </name>
+      </names>
+    </group>
   </macro>
   <macro name="locators">
     <group delimiter=", ">
@@ -70,8 +65,16 @@
     </choose>
   </macro>
   <macro name="publisher">
-    <text variable="publisher"/>
-    <text variable="publisher-place"/>
+    <group delimiter=" ">
+      <text variable="publisher"/>
+      <text variable="publisher-place"/>
+    </group>
+  </macro>
+  <macro name="journal">
+    <group delimiter=" ">
+      <text term="in"/>
+      <text variable="container-title" font-style="italic" form="short"/>
+    </group>
   </macro>
   <macro name="event">
     <choose>
@@ -119,7 +122,8 @@
         <if type="article-journal">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
-            <text variable="container-title" font-style="italic" form="short"/>
+            <text macro="coauthor"/>
+            <text macro="journal"/>
             <text macro="issued"/>
           </group>
         </if>
@@ -127,6 +131,7 @@
         <else-if type="book">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
+            <text macro="coauthor"/>
             <text macro="locators"/>
           </group>
         </else-if>
@@ -134,6 +139,7 @@
         <else-if type="chapter paper-conference" match="any">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
+            <text macro="coauthor"/>
             <text macro="event"/>
           </group>
         </else-if>
@@ -141,6 +147,7 @@
         <else-if type="thesis">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
+            <text macro="coauthor"/>
             <text variable="genre"/>
             <text macro="issued"/>
           </group>

@@ -9,6 +9,7 @@ import           Text.Pandoc.Definition
 import           Text.Pandoc.Walk
 import           Text.Regex.TDFA ((=~))
 import           Text.CSL.Reference (Reference, RefType(..))
+import           Text.CSL.Style (Agent(..))
 import qualified Text.CSL as CSL
 import           System.Directory (createDirectoryIfMissing)
 import           System.Environment (getArgs, withArgs)
@@ -234,6 +235,18 @@ getAgdaModule code = case regexResult of
 --------------------------------------------------------------------------------
 -- Compile bibTeX file to publications list
 --------------------------------------------------------------------------------
+myAgent :: Agent
+myAgent = Agent
+  { givenName       = ["Wen"]
+  , droppingPart    = mempty
+  , nonDroppingPart = mempty
+  , familyName      = "Kokke"
+  , nameSuffix      = mempty
+  , literal         = mempty
+  , commaSuffix     = False
+  , parseNames      = False
+  }
+
 pubsCompiler :: [([RefType], Text)] -> Compiler (Item String)
 pubsCompiler sections = do
   -- Read Markdown file
@@ -248,10 +261,14 @@ pubsCompiler sections = do
   Biblio refs <- loadBody "bib/pubs.bib" :: Compiler Biblio
 
   -- Render the sections
+  let filterAgent :: Agent -> Reference -> Reference
+      filterAgent a ref = ref { CSL.author = filter (/= a) (CSL.author ref) }
+
   let filterRefs :: [RefType] -> [Reference] -> [Reference]
       filterRefs refTypes = filter ((`elem` refTypes) . CSL.refType)
 
-  -- NOTE: pandoc-citeproc renders URL as a link
+  -- NOTE: pandoc-citeproc renders URL as a link, which leads to problems
+  --       when you're using CSL literate HTML tags to create links
   let stripLinks :: [Inline] -> [Inline]
       stripLinks = walk $ \case { (Link _ [i] _) -> i ; i -> i }
 
@@ -260,7 +277,8 @@ pubsCompiler sections = do
         [ Header 2 (Text.pack (show refType), [], []) [Str sectionTitle]
         , BulletList [ [Para (stripLinks $ CSL.renderPandoc csl formattedRef)]
                      | let sectionRefs = filterRefs refType refs
-                     , let formattedRefs = CSL.processBibliography CSL.procOpts csl sectionRefs
+                     , let withoutMyAgent = map (filterAgent myAgent) sectionRefs
+                     , let formattedRefs = CSL.processBibliography CSL.procOpts csl withoutMyAgent
                      , formattedRef <- formattedRefs
                      ]
         ]
