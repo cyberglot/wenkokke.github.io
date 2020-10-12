@@ -50,27 +50,38 @@ config draftMode
   | otherwise = productionConfig
 
 --------------------------------------------------------------------------------
-productionPostsWithAgdaPattern :: Pattern
-productionPostsWithAgdaPattern = "posts/*.lagda.md"
+productionPostPattern :: Pattern
+productionPostPattern = "posts/*.md"
 
-productionPostsPattern :: Pattern
-productionPostsPattern = "posts/*.md" .&&. complement productionPostsWithAgdaPattern
+productionPostLagdaPattern :: Pattern
+productionPostLagdaPattern = "posts/*.lagda.md"
 
-draftPostsWithAgdaPattern :: Pattern
-draftPostsWithAgdaPattern = "drafts/*.lagda.md"
+productionPostMarkdownPattern :: Pattern
+productionPostMarkdownPattern = productionPostPattern .&&. complement productionPostLagdaPattern
 
-draftPostsPattern :: Pattern
-draftPostsPattern = "drafts/*.md" .&&. complement draftPostsWithAgdaPattern
+draftPostPattern :: Pattern
+draftPostPattern = "drafts/*.md"
 
-postsPattern :: Bool -> Pattern
-postsPattern draftMode
-  | draftMode = draftPostsPattern .||. productionPostsPattern
-  | otherwise = productionPostsPattern
+draftPostLagdaPattern :: Pattern
+draftPostLagdaPattern = "drafts/*.lagda.md"
 
-postsWithAgdaPattern :: Bool -> Pattern
-postsWithAgdaPattern draftMode
-  | draftMode = draftPostsWithAgdaPattern .||. productionPostsWithAgdaPattern
-  | otherwise = productionPostsWithAgdaPattern
+draftPostMarkdownPattern :: Pattern
+draftPostMarkdownPattern = draftPostPattern .&&. complement draftPostLagdaPattern
+
+postPattern :: Bool -> Pattern
+postPattern draftMode
+  | draftMode = draftPostPattern .||. productionPostPattern
+  | otherwise = productionPostPattern
+
+postMarkdownPattern :: Bool -> Pattern
+postMarkdownPattern draftMode
+  | draftMode = draftPostMarkdownPattern .||. productionPostMarkdownPattern
+  | otherwise = productionPostMarkdownPattern
+
+postLagdaPattern :: Bool -> Pattern
+postLagdaPattern draftMode
+  | draftMode = draftPostLagdaPattern .||. productionPostLagdaPattern
+  | otherwise = productionPostLagdaPattern
 
 --------------------------------------------------------------------------------
 pubSections :: [([RefType], Text)]
@@ -134,7 +145,7 @@ main = do
     match "index.html" $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll (postsPattern draftMode)
+        posts <- recentFirst =<< loadAll (postPattern draftMode)
         let indexCtx = listField "posts" postCtx (return posts)
                     <> siteCtx
 
@@ -144,7 +155,7 @@ main = do
           >>= relativizeUrls
 
     -- Compile posts
-    match (postsPattern draftMode) $ do
+    match (postMarkdownPattern draftMode) $ do
       route $ setExtension "html"
       compile $ pandocCompiler
         >>= saveSnapshot "content"
@@ -153,7 +164,7 @@ main = do
         >>= relativizeUrls
 
     -- Compile Literate Agda posts
-    match (postsWithAgdaPattern draftMode) $ do
+    match (postLagdaPattern draftMode) $ do
       route $ gsubRoute "\\.lagda\\.md" (const ".html")
       compile $ agdaCompiler
         >>= renderPandoc
@@ -181,7 +192,7 @@ main = do
     -- Render RSS feed
     create ["rss.xml"] $ do
       route idRoute
-      compile $ loadAllSnapshots (postsPattern draftMode) "content"
+      compile $ loadAllSnapshots (postPattern draftMode) "content"
           >>= fmap (take 10) . recentFirst
           >>= renderRss feedConfiguration feedCtx
 
