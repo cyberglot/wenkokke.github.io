@@ -1,0 +1,108 @@
+%%%%%%%%%%%%%%%%%
+% This is an sample CV template created using altacv.cls
+% (v1.0, 19 August 2016) written by LianTze Lim (liantze@gmail.com).
+%
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%%%%%%%%%%%%%%%%
+
+%% If you need to pass whatever options to xcolor
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\PassOptionsToPackage{sorting=ydnt,doi=false,isbn=false,url=false}{biblatex}
+\documentclass[10pt,a4paper,academicons]{altacv}
+
+% Change the page layout if you need to
+\geometry{%
+  left=1cm,right=9cm,marginparwidth=6.8cm,marginparsep=1.2cm,top=1.25cm,bottom=1.25cm}
+
+% Links
+\usepackage[hidelinks]{hyperref}
+
+% Change the font if you want to.
+\setmainfont{Lato}
+
+% Change the colours if you want to
+\definecolor{Mulberry}{HTML}{72243D}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+
+\colorlet{heading}{Sepia}
+\colorlet{accent}{Mulberry}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+
+%% Publications
+\DeclareSourcemap{
+  \maps[datatype=bibtex,overwrite]{
+    \map{\step[fieldset={note},null]}
+  }}
+\DeclareSourcemap{
+  \maps[datatype=bibtex,overwrite]{
+    \map{\step[fieldsource=\regexp{venue}, match={California},      replace={CA}]}
+    \map{\step[fieldsource=\regexp{venue}, match={Czech Republic},  replace={CZ}]}
+    \map{\step[fieldsource=\regexp{venue}, match={Denmark},         replace={DK}]}
+    \map{\step[fieldsource=\regexp{venue}, match={France},          replace={FR}]}
+    \map{\step[fieldsource=\regexp{venue}, match={Germany},         replace={DE}]}
+    \map{\step[fieldsource=\regexp{venue}, match={Kansas},          replace={KS}]}
+    \map{\step[fieldsource=\regexp{venue}, match={The Netherlands}, replace={NL}]}
+  }}
+\DeclareFieldFormat[performance]
+  {month}{\mkbibmonth{#1}}
+\DeclareBibliographyDriver{performance}{%
+  \cvevent%
+  {\printfield{title}}
+  {\printfield{eventtitle}}
+  {\printfield{month}\newunit\printfield{year}}
+  {\printfield{venue}}}
+\addbibresource{../bib/pubs.bib}
+
+% Use overline in text
+\makeatletter
+\newcommand*{\textoverline}[1]{$\bar{\hbox{#1}}\m@th$}
+\makeatother
+
+\begin{document}
+
+\name{Wen Kokke}
+\tagline{Programming Language Theorist and Computational Linguist}
+\photo{2.8cm}{me}
+\personalinfo{%
+  \email{wen.kokke@gmail.com}
+  \mailaddress{10 Crichton Street, EH8 9AB}
+  \location{Edinburgh, United Kingdom}
+  \homepage{wen.works}
+  \github{github.com/wenkokke}
+  \twitter{@wenkokke}
+  \pronoun{\href{https://pronoun.is/she/her}{she/her}}
+}
+
+%% Make the header extend all the way to the right, if you want. Extend the
+%% right margin by 8cm (=6.8cm marginparwidth + 1.2cm marginparsep)
+\begin{adjustwidth}{}{-8cm}
+\makecvheader
+\end{adjustwidth}
+
+\cvsection[academic-p1sidebar]{Education}
+\input{education}
+
+\clearpage
+
+\cvsection[academic-p2sidebar]{Selected Publications}
+\input{publications}
+
+\cvsection{Service}
+\input{service}
+
+\end{document}
+
+%%% Local Variables:
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-engine: luatex
+%%% End:
