@@ -4,7 +4,7 @@ date  : 2020-09-12 12:00:00
 tags  : [neural networks]
 ---
 
-Neural Networks. They’re, uh, pretty pervasive by know, so you’ve probably heard of them, telling you which of your friends is in that picture, and that they know what you wanna text better than you do. But what do they know? Do they know things? *Let’s find out!*
+Neural Networks. They’re, uh, pretty pervasive by now, so you’ve probably heard of them, telling you which of your friends is in that picture, and that they know what you wanna text better than you do. But what do they know? Do they know things? *Let’s find out!*
 
 <!--more-->
 
