@@ -25,6 +25,7 @@ WATCH_PID := $(BUILD_DIR)/watch.pid
 build: $(SITE_DIR)
 
 $(SITE_DIR): site.hs index.html bib csl css drafts pages posts public templates
+	@echo "Building site..."
 	stack build && stack run build -- $(HAKYLL_FLAGS)
 
 ########################################
@@ -51,49 +52,22 @@ test: $(SITE_DIR)
 # Start server
 ########################################
 
-$(WATCH_PID):
-	@echo "Building site..."
-	@stack build && stack run build -- $(HAKYLL_FLAGS)
+.PHONY: watch
+watch: build
 	@echo "Starting watch process..."
 	@mkdir -p $(BUILD_DIR)
-	@stack run watch -- $(HAKYLL_FLAGS) --no-server 1>&2 & echo $$! > $(WATCH_PID)
+	@stack run watch -- $(HAKYLL_FLAGS) --no-server
 
-.PHONY: start-watch
-start-watch: $(WATCH_PID)
-
-.PHONY: stop-watch
-stop-watch:
-ifneq (,$(wildcard $(WATCH_PID)))
-	kill `cat $(WATCH_PID)` && rm $(WATCH_PID)
-endif
-
-$(SERVER_PID): $(SITE_DIR)
+.PHONY: serve
+serve: build
 	@echo "Starting server..."
-	@cd $(SITE_DIR) && { \
+	@cd $(SITE_DIR) && \
 		browser-sync start \
 			--server \
 			--files "." \
 			--no-ui \
 			--reload-delay 500 \
-			--reload-debounce 500 \
-			1>&2 & echo $$! > $(SERVER_PID); }
-
-.PHONY: start-server
-start-server: $(SERVER_PID)
-
-.PHONY: stop-server
-stop-server:
-ifneq (,$(wildcard $(SERVER_PID)))
-	kill `cat $(SERVER_PID)` && rm $(SERVER_PID)
-endif
-
-.PHONY: start
-start:
-	@make start-watch && make start-server
-
-.PHONY: stop
-stop:
-	@make stop-watch && make stop-server
+			--reload-debounce 500
 
 
 ########################################
