@@ -15,7 +15,6 @@ SITE_DIR := $(BUILD_DIR)/site
 CACHE_DIR := $(BUILD_DIR)/cache
 TMP_DIR := $(CACHE_DIR)/tmp
 WATCH_PID := $(BUILD_DIR)/watch.pid
-SERVER_PID := $(BUILD_DIR)/server.pid
 
 
 ########################################
