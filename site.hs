@@ -23,7 +23,7 @@ siteCtx :: Context String
 siteCtx = constField "version" "1.0.0"
        <> constField "site_title" "All The Language"
        <> constField "site_url" "https://wenkokke.github.io"
-       <> constField "email" "wen.kokke@ed.ac.uk"
+       <> constField "email" "me@wen.works"
        <> constField "github_user" "wenkokke"
        <> constField "twitter_user" "wenkokke"
        <> constField "paypal_user" "wenkokke"
