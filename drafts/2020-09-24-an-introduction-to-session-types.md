@@ -31,7 +31,7 @@ Session types are about *channels*, which are like *tin can telephones*, in that
 : A Tin Held by Briar.
 
 *The Piece of Twine*
-: A Piece of Twine Connecting Tins A and B.
+: A Piece of Twine Connecting Tin A and B.
 
 In the vernacular of session types, the tin cans are referred to as *channel-endpoints* or simply *endpoints*, and the collection of all tin cans held together by the twine is referred to as a *channel*. A series of messages whispered back and forth over a single channel is referred to as a *session*. 
 
@@ -102,3 +102,25 @@ ada chan = tryAll MayIHaveSomePudding chan
 ```
 
 But that’s not what the protocol says! Briar doesn’t have time for more than one request, so after the first one has run its course, Ada whispers her second request into the tin can, then waits forever, pining for a response from Briar which will never come!
+
+
+## A Bit of a Roadmap
+
+Only a few short years after Ada and Briar enjoyed sweet milk puddings, a man by the name of *Alonzo Church* was born in Washington, D.C., in the United States. Three decades later, in the 1930s, Alonzo would develop [the λ-calculus][church1932], a foundational calculus which studies computation using *functions*. To this day, the λ-calculus underpins most theories of functional programming languages. Talk about influential! 
+
+Only a few short years after Alonzo developed the λ-calculus, a man by the name of *Robin Milner* was born near Yealmpton, in England. Alonzo lived a long live, over nine decades! A few years before Alonzo’s death in the mid 1990s, Robin, together with Joachim Parrow and David Walker, developed the [π-calculus][milner1992], a foundational calculus which studies concurrent computation by processes using *message-passing communication*. It wasn’t the first process calculus—it itself was heavily influenced by ideas dating back to the early 1980s—but it’s certainly one of the most influential!
+
+We’ll start out by discussing the untyped λ-calculus. It’s a wonderful little language, and it’s *really* powerful. Unfortunately, it has all sorts of programs that do all sorts of bad things, like loop forever, so with all that power, it’s *really scary* too! We’ll then discuss the idea of taming all that scary power using types, to try and get only well-behaved programs, and the challenges of taming it without taking all the *oomph* out.
+
+Then, we’ll switch to discussing the π-calculus. It’s a wonderful little language, even if it’s twice as big as the λ-calculus—with *six* constructs instead of *three*! It’s even more powerful than the λ-calculus—it can express all sorts of concurrent behaviours that the λ-calculus has no hope of expressing. Unfortunately, it’s scarier as well—there’s way more things that can go wrong! Again, we’ll turn our attention to taming all that scary power using types, and the problems of *oomph*’lessness that come with it.
+
+Finally, we’ll talk about having the best of both worlds, in a concurrent λ-calculus, which is sorta what you get when you smash the λ-calculus and the π-calculus together at high speeds! The concurrent λ-calculus has the best of both worlds: higher-order functions and concurrency with message-passing communication!
+
+- The untyped λ-calculus! *(So powerful, so scary…)*
+- Taming the λ-calculus with types…
+- The untyped π-calculus! *(Is even scarier…)*
+- Taming the π-calculus with types…
+- Concurrent λ-calculus! *(λ and π, together forever!)*
+
+[church1932]: https://www.jstor.org/stable/1968337
+[milner1992]: http://www.lfcs.inf.ed.ac.uk/reports/89/ECS-LFCS-89-85/
