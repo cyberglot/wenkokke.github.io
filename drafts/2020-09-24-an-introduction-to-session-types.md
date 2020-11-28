@@ -3,407 +3,102 @@ title: An Introduction to Session Types
 katex: true
 ---
 
-# Roadmap
+Session types. Ostensibly, I’ve studied them for the past few years. So I should know sometime about them, right?
 
-+ The λ-calculus studies *functions*. 
-+ The π-calculus studies *communication*.
+I’ll explain the basics of session types. What are they? What are the foundations for session types like? What are the interesting problems?
 
-## Example
+Let’s start out with a *dramatis personæ*. 
 
-TODO: create a running example
+## Dramatis Personæ
 
-## Introduction to the λ-calculus
+Session types are about *channels*, which are like *tin can telephones*, in that you can use your tin to whisper sweet little nothings to every friend who has a tin connected to yours. I know, I’m betraying my age a little—I’m an old Victorian lady.
 
-### Syntax and semantics
+<figure>
+    [![Two victorian ladies hold a tin can telephone pulled taut between them.](/public/images/tin-can-telephone.png)](https://books.google.com/books?id=IB8_AAAAYAAJ&dq=Ebenezer+Cobham+Brewer,+Fran%C3%A7ois+Napol%C3%A9on+Marie+Moigno,+Henri+de+Parville&pg=PA227&redir_esc=y#v=onepage&q&f=false)
+    <figcaption>“You simply must try my milk puddings, Ada”, Briar whispers into the telephone.</figcaption>
+</figure>
 
-$$
-\begin{array}{l}
-\text{Term} \; L, M, N
-\\
-\quad
-  \begin{array}{rl}
-  \coloneqq & x 
-  \;\mid\;    \lambda x.M 
-  \;\mid\;    M \; N
-  \end{array}
-\end{array}
-$$
+*Ada*
+: A Victorian Lady.
 
-<div class="mathpar">
-$$
-\begin{array}{l}
-(\lambda x.M)\;V
-\longrightarrow
-M\{V/x\}
-\end{array}
-$$
-$$
-\begin{array}{c}
-M
-\longrightarrow
-M^\prime
-\\ \hline
-M \; N
-\longrightarrow
-M^\prime \; N
-\end{array}
-$$
-$$
-\begin{array}{c}
-N
-\longrightarrow
-N^\prime
-\\ \hline
-V \; N
-\longrightarrow
-V \; N^\prime
-\end{array}
-$$
-</div>
+*Briar*
+: Ada’s Lady Friend.
+
+*The Tin Labelled A*
+: A Tin Held by Ada.
+
+*The Tin Labelled B*
+: A Tin Held by Briar.
+
+*The Piece of Twine*
+: A Piece of Twine Connecting Tins A and B.
+
+In the vernacular of session types, the tin cans are referred to as *channel-endpoints* or simply *endpoints*, and the collection of all tin cans held together by the twine is referred to as a *channel*. A series of messages whispered back and forth over a single channel is referred to as a *session*. 
+
+Most of the literature on session types considers only the classic scenario, in which we connect exactly two tin cans to form a channel—this is referred to as *binary session types*. Yet if we wanted to, we could make a telephone with any number of tin cans—this is referred to as *multiparty session types*.
+
+In this blog post, we I’ll focus on *binary session types*
 
 
-### Linear types
+## Session Types *at a Glance*
 
-<div class="mathpar">
-$$
-\begin{array}{c}
-\\ \hline
-x : A \vdash x : A
-\end{array}
-$$
-$$
-\begin{array}{c}
-\Gamma, x : A \vdash M : B
-\\ \hline
-\Gamma \vdash (\lambda x.M) : A \multimap B
-\end{array}
-$$
-$$
-\begin{array}{c}
-\Gamma \vdash M : A \multimap B \quad \Delta \vdash N : A
-\\ \hline
-\Gamma, \Delta \vdash M \; N : B
-\end{array}
-$$
-</div>
+Let’s imagine for a moment that Ada were to take Briar up on her offer, and ask her to sample her famous milk puddings. Briar, a proper lady, only offers her milk puddings to those who make a *sufficiently polite* request—Ada must be polite and say “please”, but she must not overuse it, lest she comes off as begging! 
 
+We encode the interaction between Ada and Briar using *session types* in Haskell:
 
-## Introduction to the π-calculus
+- Ada’s requests are represented using the `Request` datatype, which allows us to prefix a request for pudding with any number of uses of `Please`;
+- Briar’s response is represented using the `Response` datatype, in which she can either grant permission, in which case Briar sends an `Allow` with a sample of pudding attached, or refuse Ada’s request, in which case she sends a `Deny` with a reason.
 
-## Syntax
+The functions `ada` and `briar` represent Ada and Briar—these functions each receive an endpoint for the shared channel, and communicate along the lines of our story—Ada sends a request, Briar evaluates her politeness and responds with either pudding or a refusal, and finally Ada evaluates Briars response, and expresses her emotions accordingly.
 
-$$
-\begin{array}{l}
-\text{Process}\;{P},{Q},{R}
-\\
-\quad
-  \begin{array}{rll}
-  \coloneqq & (\nu {x}{x^\prime}){P} &\text{— create new channel }{x}{\leftrightarrow}{x^\prime}
-  \\\mid    & ({P}\parallel{Q})      &\text{— put }P\text{ and }Q\text{ in parallel}
-  \\\mid    & 0                      &\text{— done}
-  \\\mid    & x\langle{y}\rangle.{P} &\text{— send }y\text{ on }x
-  \\\mid    & x(y).{P}               &\text{— receive }y\text{ on }x
-  \end{array}
-\end{array}
-$$
+```haskell
+data Request
+  = Please Request
+  | MayIHaveSomePudding
+    
+data Response
+  = Allow Pudding
+  | Deny String
+    
+ada :: Send Request (Recv Response End) -> IO ()
+ada chan = do
+  chan' <- send (Please MayIHaveSomePudding) chan
+  (resp, chan'') <- recv chan'
+  close chan''
+  case resp of
+    Allow pudding -> putStrLn "I’m so happy!"
+    Deny reason -> putStrLn "Woe is me!"
 
-### Reduction semantics
+briar :: Recv Request (Send Response End) -> IO ()
+briar chan = do
+  (req, chan') <- recv chan
+  let resp = case req of
+    MayIHaveSomePudding -> Deny "Such rudeness!"
+    Please MayIHaveSomePudding -> Allow myPudding
+    Please (Please _) -> Deny "Such beggary!"
+  chan'' <- send resp chan'
+  close chan''
+```
 
-<div class="mathpar">
-$$
-\begin{array}{c}
-(\nu xx^\prime)(x\langle{y}\rangle.{P}\parallel x^\prime(z).{Q}) 
-\\
-\downarrow
-\\
-(\nu xx^\prime)({P}\parallel{Q}\{y/z\})
-\end{array}
-$$
-</div>
-<div class="mathpar">
-$$
-\begin{array}{c}
-  \begin{array}{c}
-    {P}
-    \longrightarrow
-    {P}^\prime
-    \\ \hline
-    (\nu xx^\prime){P}
-    \longrightarrow
-    (\nu xx^\prime){P}^\prime
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-    {P}
-    \longrightarrow
-    {P}^\prime
-    \\ \hline
-    {P}\parallel{Q}
-    \longrightarrow
-    {P}^\prime\parallel{Q}
-  \end{array}
-  \quad
-  \begin{array}{c}
-    {Q}
-    \longrightarrow
-    {Q}^\prime
-    \\ \hline
-    {P}\parallel{Q}
-    \longrightarrow
-    {P}\parallel{Q}^\prime
-  \end{array}
-\end{array}
-$$
-</div>
+The example illustrates a crucial notions for session types:
 
-### Structural congruence
+Firstly, session types are *communication protocols.* If you glance at the types of the endpoints, you see that they represent the communication protocol from each participants perspective. For instance, Ada’s endpoint says she must send a request, receive a response, and then end the session.
 
-<div class="mathpar">
-$$
-\begin{array}{lrll}
-  P \parallel Q
-  & \equiv
-  & Q \parallel P
-  \\
-  P \parallel (Q \parallel R)
-  & \equiv
-  & (P \parallel Q) \parallel R
-  \\
-  P \parallel 0
-  & \equiv
-  & P
-  \\
-  (\nu xx^\prime)(\nu yy^\prime)P
-  & \equiv
-  & (\nu yy^\prime)(\nu xx^\prime)P
-  \\
-  (\nu xx^\prime)(P \parallel Q)
-  & \equiv
-  & (\nu xx^\prime)P \parallel Q,
-  \\
-  &
-  & \text{if}\;x,x^\prime\not\in{Q}
-\end{array}
-$$
+Secondly, the types of the endpoints of a binary channel must be *dual*. When Ada’s endpoint says she must send, Briar’s endpoint says she must receive. For multiparty session types, the equivalent notion is called *coherence*, but the principle remains the same.
 
-$$
-\begin{array}{c}
-  P \equiv P^\prime \quad P^\prime \longrightarrow Q^\prime \quad Q^\prime \equiv Q
-  \\ \hline
-  P \longrightarrow Q
-\end{array}
-$$
-</div>
+Finally, each endpoint must be used *exactly once* if we want to be sure to stick to the protocol. For instance, in the code above, each channel-endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding.
 
-### Commuting conversions
+```haskell
+ada :: Send Request (Recv Response End) -> IO ()
+ada chan = tryAll MayIHaveSomePudding chan
+  where
+    tryAll req chan = do 
+      chan' <- send req chan
+      (resp, chan'') <- recv chan'
+      close chan''
+      case resp of
+        Allow pudding -> putStrLn "I’m so happy!"
+        Deny reason -> tryAll (Please req) chan
+```
 
-<div class="mathpar">
-$$
-\begin{array}{lrl}
-x\langle{y}\rangle.P \parallel Q 
-& \longrightarrow 
-& x\langle{y}\rangle.(P \parallel Q)
-\\
-x(y).P \parallel Q 
-& \longrightarrow 
-& x(y).(P \parallel Q)
-\end{array}
-$$
-</div>
-
-TODO: caveats about process calculus interpretation
-
-TODO: caveats about unrestricted conversions
-
-<div class="mathpar">
-$$
-\begin{array}{c}
-(\nu xx^\prime)(x\langle{y}\rangle.P \parallel x^\prime(y^\prime).Q)
-\\
-\downarrow
-\\
-(\nu xx^\prime)(x\langle{y}\rangle.(P \parallel x^\prime(y^\prime).Q))
-\end{array}
-$$
-</div>
-
-
-### Label transition semantics
-
-$$
-\begin{array}{l}
-\text{Label}\;{\ell}
-\\
-\quad
-  \begin{array}{rll}
-  \coloneqq & \tau                     &\text{— can do something by itself}
-  \\\mid    & \ell\parallel\ell^\prime &\text{— can do }\ell\text{ and }\ell^\prime\text{ in parallel}
-  \\\mid    & x\langle{y}\rangle       &\text{— can send }y\text{ on }x
-  \\\mid    & x(y)                     &\text{— can receive }y\text{ on }x
-  \end{array}
-\end{array}
-$$
-
-<div class="mathpar">
-$$
-\begin{array}{c}
-  x\langle{y}\rangle.P \xrightarrow{x\langle{y}\rangle} P
-  \quad
-  x(y).P \xrightarrow{x(y)} P
-  \\
-  \\
-  \begin{array}{c}
-  P \xrightarrow{x\langle{y}\rangle\parallel{x^\prime(z)}} P^\prime
-  \\ \hline
-  (\nu xx^\prime)P \xrightarrow{\tau} (\nu xx^\prime)P^\prime\{y/z\}
-  \end{array}
-\end{array}
-$$
-</div>
-
-NOTE: mention this is _late_ semantics
-
-<div class="mathpar">
-$$
-\begin{array}{c}
-  \begin{array}{c}
-    P \xrightarrow{\ell} P^\prime
-    \quad
-    x,x^\prime\not\in\text{fv}(\ell)
-    \\ \hline
-    (\nu xx^\prime)
-    P \parallel Q \xrightarrow{\ell} P^\prime \parallel Q
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-    \begin{array}{c}
-      P \xrightarrow{\ell} P^\prime
-      \\ \hline
-      P \parallel Q \xrightarrow{\ell} P^\prime \parallel Q
-    \end{array}
-    \quad
-    \begin{array}{c}
-      Q \xrightarrow{\ell} Q^\prime
-      \\ \hline
-      P \parallel Q \xrightarrow{\ell} P \parallel Q^\prime
-    \end{array}
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-    P \xrightarrow{\ell} P^\prime
-    \quad
-    Q \xrightarrow{\ell\parallel\ell^\prime} Q^\prime
-    \\ \hline
-    P \parallel Q \xrightarrow{\ell\parallel\ell^\prime} P^\prime \parallel Q^\prime
-  \end{array}
-\end{array}
-$$
-</div>
-
-## Session types
-
-$$
-\begin{array}{l}
-\text{Protocol} \; A, B
-\\
-\quad
-  \begin{array}{rl}
-  \coloneqq & {!}A.B
-  \;\mid\;    {?}A.B
-  \;\mid\;    \mathbf{end}
-  \end{array}
-\end{array}
-$$
-
-<div class="mathpar">
-$$
-\overline{{!}A.B} = {?}{A}.\overline{B}
-$$
-$$
-\overline{{?}A.B} = {!}{A}.\overline{B}
-$$
-$$
-\overline{\mathbf{end}} = \mathbf{end}
-$$
-</div>
-
-<div class="mathpar">
-$$
-\begin{array}{c}
-  \begin{array}{c}
-    \Gamma, x : A, x^\prime : \overline{A} \vdash P
-    \\ \hline
-    \Gamma \vdash (\nu xx^\prime)P
-  \end{array}
-  \quad
-  \begin{array}{c}
-    \Gamma \vdash P \quad \Delta \vdash Q
-    \\ \hline
-    \Gamma, \Delta \vdash P \parallel Q
-  \end{array}
-  \\
-  \begin{array}{c}
-    \\ \hline
-    \varnothing \vdash 0
-  \end{array}
-\end{array}
-$$
-
-$$
-\begin{array}{c}
-  \begin{array}{c}
-    \Gamma, x : B \vdash P
-    \\ \hline
-    \Gamma, x : {!}A.B, y : A \vdash x\langle{y}\rangle.P
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-    \Gamma, y : A, x : B \vdash P
-    \\ \hline
-    \Gamma, x : {?}A.B \vdash x(y).P
-  \end{array}
-  \quad
-  \begin{array}{c}
-  \Gamma \vdash P
-  \\ \hline
-  \Gamma, x : \mathbf{end} \vdash P
-  \end{array}
-\end{array}
-$$
-</div>
-
-
-## Concurrent λ-calculus
-
-+ If we want to add communication to our λ-calculus, 
-  we’re gonna have to extend it with π-calculus constructs,
-  which isn’t trivial, because…
-+ Adding π-calculus constructs forces us to think of things we don’t normally consider for functional languages…
-+ We’re used to thinking…
-
-  - Reduction is deterministic
-  - Reduction is syntax-driven
-  - Syntactically distinct is morally distinct
-
-  …but all of that goes out the window when we move to the π-calculus.
-
-
-## Lessons from the π-calculus
-
-### Dealing with non-determinism…
- 
-- Non-deterministic local choice
-- Guarded local choice
-- Controlled non-determinism
-
-### Dealing with deadlocks…
-
-- Syntactic restrictions
-- Dependency analysis
-
-<!--
--->
+But that’s not what the protocol says! Briar doesn’t have time for more than one request, so after the first one has run its course, Ada whispers her second request into the tin can, then waits forever, pining for a response from Briar which will never come!
