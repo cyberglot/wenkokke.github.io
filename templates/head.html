@@ -15,13 +15,6 @@
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
 
-    $if(bibtex)$
-    <!-- bibTeX -->
-    <script src="/public/js/jquery.min.js" type="text/javascript"></script>
-    <script src="/public/js/bibtex_js.min.js" type="text/javascript" charset="utf-8"></script>
-    <bibtex src="/public/pubs.bib"></bibtex>
-    $endif$
-
     $if(katex)$
     <!-- KaTeX -->
     <link
@@ -35,12 +28,20 @@
         integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
         crossorigin="anonymous">
     </script>
-    <script
-        defer
-        src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
-        integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
-        crossorigin="anonymous"
-        onload="renderMathInElement(document.body);">
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         var mathElements = document.getElementsByClassName("math");
+         var macros = [];
+         for (var i = 0; i < mathElements.length; i++) {
+             var texText = mathElements[i].firstChild;
+             if (mathElements[i].tagName == "SPAN") {
+                 katex.render(texText.data, mathElements[i], {
+                     displayMode: mathElements[i].classList.contains('display'),
+                     throwOnError: false,
+                     macros: macros,
+                     fleqn: true
+                 });
+     }}});
     </script>
     $endif$
 </head>

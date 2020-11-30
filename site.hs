@@ -5,6 +5,7 @@ import           Data.List (isPrefixOf, delete)
 import           Data.Text (Text)
 import qualified Data.Text as Text
 import           Hakyll
+import           Text.Pandoc.Options
 import           Text.Pandoc.Definition
 import           Text.Pandoc.Walk
 import           Text.Regex.TDFA ((=~))
@@ -116,9 +117,21 @@ feedConfiguration = FeedConfiguration
     { feedTitle       = "All The Language"
     , feedDescription = "Personal website of Wen Kokke"
     , feedAuthorName  = "Wen Kokke"
-    , feedAuthorEmail = "wen.kokke@gmail.com"
-    , feedRoot        = "http://wenkokke.github.io"
+    , feedAuthorEmail = "me@wen.works"
+    , feedRoot        = "http://wen.works"
     }
+
+--------------------------------------------------------------------------------
+readerOptions :: ReaderOptions
+readerOptions = defaultHakyllReaderOptions
+
+writerOptions :: WriterOptions
+writerOptions = defaultHakyllWriterOptions
+  { writerHTMLMathMethod = KaTeX defaultKaTeXUrl
+  }
+
+defaultKaTeXUrl :: Text
+defaultKaTeXUrl = "https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/"
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -157,7 +170,7 @@ main = do
     -- Compile posts
     match (postMarkdownPattern draftMode) $ do
       route $ setExtension "html"
-      compile $ pandocCompiler
+      compile $ pandocCompilerWith readerOptions writerOptions
         >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/post.html"    postCtx
         >>= loadAndApplyTemplate "templates/default.html" siteCtx
@@ -167,7 +180,7 @@ main = do
     match (postLagdaPattern draftMode) $ do
       route $ gsubRoute "\\.lagda\\.md" (const ".html")
       compile $ agdaCompiler
-        >>= renderPandoc
+        >>= renderPandocWith readerOptions writerOptions
         >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/post.html"    postCtx
         >>= loadAndApplyTemplate "templates/default.html" siteCtx
@@ -186,7 +199,7 @@ main = do
     -- Compile 404 page
     match "404.html" $ do
       route idRoute
-      compile $ pandocCompiler
+      compile $ pandocCompilerWith readerOptions writerOptions
         >>= loadAndApplyTemplate "templates/default.html" siteCtx
 
     -- Render RSS feed
