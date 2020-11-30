@@ -3,15 +3,15 @@ title: An Introduction to Session Types
 katex: true
 ---
 
-Session types. Ostensibly, I’ve studied them for the past few years. So I should know sometime about them, right?
+Session types. Ostensibly, I’ve studied them for the past few years, so I should know something about them, right? I am going to try and explain the *foundations* of session types, and along the way, there will be programs which crash, Victorian ladies having milk puddings, and tin can telephones.
 
-I’ll explain the basics of session types. What are they? What are the foundations for session types like? What are the interesting problems?
+<!--more-->
 
 Let’s start out with a *dramatis personæ*. 
 
 ## Dramatis Personæ
 
-Session types are about *channels*, which are like *tin can telephones*, in that you can use your tin to whisper sweet little nothings to every friend who has a tin connected to yours. I know, I’m betraying my age a little—I’m an old Victorian lady.
+Session types are about *channels*, which are like *tin can telephones*, in that you can use your tin to whisper sweet little nothings to every friend who has a tin connected to yours. I know, my love for tin can telephones is betraying my age a little—I’m an old Victorian lady.
 
 <figure>
     [![Two victorian ladies hold a tin can telephone pulled taut between them.](/public/images/tin-can-telephone.png)](https://books.google.com/books?id=IB8_AAAAYAAJ&dq=Ebenezer+Cobham+Brewer,+Fran%C3%A7ois+Napol%C3%A9on+Marie+Moigno,+Henri+de+Parville&pg=PA227&redir_esc=y#v=onepage&q&f=false)
@@ -119,7 +119,7 @@ Finally, we’ll talk about having the best of both worlds, in a concurrent λ-c
 
 ## The λ-calculus! *(So powerful, so scary…)*
 
-The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function application to get rid of ’em.
+The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function applications to get rid of ’em.
 
 $$
 \begin{array}{l}
@@ -204,7 +204,7 @@ $$
 
 That’s scary, I’d prefer not to have that! Programs which run forever, but never do a single thing—or worse, programs which are doing things the whole time, but never produce any outputs!
 
-Most functional languages don’t just implement the core λ-calculus, but rather extend the λ-calculus with various constructs—numbers, addition, multiplication, pairs, sums, *etc.* *Technically speaking*, these can all be encoded using just function—see, *e.g.*, [Church encodings][church-encodings]—but it tends to be *a lot* more practical and faster to use, *e.g.*, machine numbers.
+Most functional languages don’t just implement the core λ-calculus, but rather extend the λ-calculus with various constructs—numbers, addition, multiplication, pairs, sums, *etc.* *Technically speaking*, these can all be encoded using just function—see, *e.g.*, Church encodings—but it tends to be *a lot* more practical and faster to use, *e.g.*, machine numbers.
 
 For example, we can extend the untyped λ-calculus with Peano numbers. First, we extend the term language with the number *zero*, written $\text{zero}$, the successor function, written $\text{suc}$, and a pattern matching construct for numbers, written $\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}$.
 
@@ -283,7 +283,7 @@ $$
 
 Woe is us! We have *another* kind of problem! We now have to worry about programs like $\text{plus}\;(\lambda x.x)\;\text{zero}$. What does that even mean?! According to our semantics, it means exactly that, since it doesn’t reduce any further… It’s stuck on the pattern match on $\lambda x.x$, since there’s no case for functions.
 
-Problems like these are less obvious when using, *e.g.*, Church encodings, since everything is just functions. For instance, if we use Church-encoded Peano numbers to compute $\text{plus}_{ch} \; (\lambda x.x) \; \text{zero}_{ch}$, and convert the result to our builtin Peano numbers, we find that adding the identity function to the number *zero* equals *one*.
+Problems like these are less obvious when using, *e.g.*, Church encodings, since everything is just functions. For instance, if we use Church-encoded Peano numbers to compute $\text{plus}_{ch} \; (\lambda x.x) \; \text{zero}_{ch}$, and convert the result to our builtin Peano numbers, we find that adding the identity function to the number *zero* gives us *one*.
 
 $$
 \begin{array}{lcl}
