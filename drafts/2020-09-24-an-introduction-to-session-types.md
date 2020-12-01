@@ -3,7 +3,7 @@ title: An Introduction to Session Types
 katex: true
 ---
 
-Session types. Ostensibly, I’ve studied them for the past few years, so I should know something about them, right? I am going to try and explain the *foundations* of session types, and along the way, there will be programs which crash, Victorian ladies having milk puddings, and tin can telephones.
+Session types. Ostensibly, I’ve studied them for the past few years, so I should know something about them, right? I am gonna try and explain the *foundations* of session types, and along the way, there will be programs which crash, Victorian ladies having milk puddings, and tin can telephones.
 
 <!--more-->
 
@@ -46,7 +46,7 @@ Let’s imagine for a moment that Ada were to take Briar up on her offer, and a
 
 We encode the interaction between Ada and Briar using *session types* in Haskell:
 
-- Ada’s requests are represented using the `Request` datatype, which allows us to prefix a request for pudding with any number of uses of `Please`;
+- Ada’s requests are represented using the `Request` datatype, which allows us to prefix a request for pudding with any number of uses of `Please`.
 - Briar’s response is represented using the `Response` datatype, in which she can either grant permission, in which case Briar sends an `Allow` with a sample of pudding attached, or refuse Ada’s request, in which case she sends a `Deny` with a reason.
 
 The functions `ada` and `briar` represent Ada and Briar—these functions each receive an endpoint for the shared channel, and communicate along the lines of our story—Ada sends a request, Briar evaluates her politeness and responds with either pudding or a refusal, and finally Ada evaluates Briars response, and expresses her emotions accordingly.
@@ -320,6 +320,32 @@ Specifically, for the second problem, we have the choice between programs which 
 
 ## Taming the λ-calculus with types…
 
+So, we’ve got a lot of scary stuff going on, stuff we really rather wouldn’t have, like programs which uselessly loop forever, and programs which try to add numbers to functions. What can we do?
+
+One of the *simplest* solutions—horrible pun *absolutely* intended—is to use simple types. You see, in 1940, in an attempt to get rid of these unhelpful loops, Alonzo developed [the simply-typed λ-calculus][church1940]. I’m guessing you’ve probably seen this before, but if you haven’t… 
+
+We start by formalising what we mean by *type*. Since all we’ve got is functions, all we need is a function type $A \to B$ and *some* base type—it doesn’t really matter what, so we’re gonna call it $\star$.
+
+$$
+\begin{array}{l}
+\text{Type} \; A, B, C
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \star
+  \;\mid\; A \to B
+  \end{array}
+\end{array}
+$$
+
+With types in hand, we write down some *typing rules*. The goal is that *if* we can construct a typing derivation for a term, that term will be well-behaved. Terms are checked in some context $\Gamma$, which is a bag of typing assignments $x : A$. There are three rules, corresponding to the three term constructs:
+
+1. A variable $x$ has type $A$ if there’s an assignment in the bag that says so.
+2. If we’ve got something of type $B$ which uses something of type $A$ from the bag, we can abstract over that something to create a function of type $A \to B$.
+3. If we’ve got something of type $A \to B$ and something of type $A$, then we can apply the former to the latter to get something of type $B$.
+
+Here’s those same ideas written down as inference rules:
+
 $$
 \begin{array}{c}
   \begin{array}{c}
@@ -341,6 +367,56 @@ $$
   \end{array}
 \end{array}
 $$
+
+Guess what?! It works! All the programs you can type with these rules are super well-behaved and nice! Buuuut… there’s kinda a lot of programs that are really nice and good, that you can’t type with these rules… Very, *very*, notably, you can’t type the $Y$ combinator. Oh no! We lost recursion!
+
+Queue the history of type theory, trying to wrangle with this, trying to make this system more permissive while still keeping lots of the scary stuff out! 
+
+It’s, *uh*, pretty hard to get *extactly* the bad looping stuff out, so some folks are like “eh, we’ll keep the looping stuff, but still use types to get rid of all that ‘adding functions to numbers’ nonsense”, whereas other folks are all hardcore and decide that “no it has to be terminating all the way even if it becomes pretty hard to use!”
+
+Let’s briefly talk about another type system for the λ-calculus—but only because it’ll turn out to be highly relevant to session types, I haven’t forgotten what I promised to write about! Let’s talk about [the linear λ-calculus][wadler1993].
+
+In its most minimal form, the linear λ-calculus demands that every variable is used *exactly once*. When you check a function application, you have to decide which parts of the bag are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the bag is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.
+
+Also, we write this cute little lollipop now, instead of the function arrow.
+
+$$
+\begin{array}{l}
+\text{Type} \; A, B, C
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \star
+  \;\mid\; A \multimap B
+  \end{array}
+\end{array}
+$$
+
+$$
+\begin{array}{c}
+  \begin{array}{c}
+  \\ \hline
+  x : A \vdash x : A
+  \end{array}
+  \quad
+  \begin{array}{c}
+  \Gamma, x : A \vdash M : B
+  \\ \hline
+  \Gamma \vdash \lambda x.M : A \multimap B
+  \end{array}
+  \\\\
+  \begin{array}{c}
+  \Gamma \vdash M : A \multimap B \quad \Delta \vdash N : A
+  \\ \hline
+  \Gamma, \Delta \vdash M \; N : B
+  \end{array}
+\end{array}
+$$
+
+As a type system, this is *highly restrictive*. Essentially, what we’re left with is a calculus of permutations. Think of lists… if you’re writing a function from lists to lists, but you *have to* use every element in the list exactly once, what kinds of programs can you write? Permutations. That’s it.
+
+Oof, that was a bit of a detour, wasn’t it? Wanna talk about *session types*, the thing that I promised I’d talk about?
+
 
 ## The π-calculus! *(Is even scarier…)*
 
@@ -651,4 +727,6 @@ $$
 $$
 
 [church1932]: https://www.jstor.org/stable/1968337
+[church1940]: https://www.jstor.org/stable/2266170
 [milner1992]: http://www.lfcs.inf.ed.ac.uk/reports/89/ECS-LFCS-89-85/
+[wadler1993]: https://homepages.inf.ed.ac.uk/wadler/papers/lineartaste/lineartaste-revised.pdf
