@@ -378,7 +378,7 @@ Let’s briefly talk about another type system for the λ-calculus—but only b
 
 In its most minimal form, the linear λ-calculus demands that every variable is used *exactly once*. When you check a function application, you have to decide which parts of the bag are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the bag is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.
 
-Also, we write this cute little lollipop now, instead of the function arrow.
+Also, we now use this cute little lollipop instead of the function arrow.
 
 $$
 \begin{array}{l}
