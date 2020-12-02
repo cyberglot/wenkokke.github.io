@@ -106,7 +106,7 @@ But that’s not what the protocol says! Briar doesn’t have time for more tha
 
 ## A Bit of a Roadmap
 
-Only a few short years after Ada and Briar enjoyed sweet milk puddings, a man by the name of *Alonzo Church* was born in Washington, D.C., in the United States. Three decades later, in the 1930s, Alonzo would develop [the λ-calculus][church1932], a foundational calculus which studies computation using *functions*. To this day, the λ-calculus underpins most theories of functional programming languages. Talk about influential! 
+Only a few short years after Ada and Briar enjoyed sweet milk puddings, a man by the name of *Alonzo Church* was born in Washington, D.C., in the United States. Three decades later, in the 1930s, Alonzo developed [the λ-calculus][church1932], a foundational calculus which studies computation using *functions*. To this day, the λ-calculus underpins most theories of functional programming languages. Talk about influential! 
 
 Only a few short years after Alonzo developed the λ-calculus, a man by the name of *Robin Milner* was born near Yealmpton, in England. Alonzo lived a long live, over nine decades! A few years before Alonzo’s death in the mid 1990s, Robin, together with Joachim Parrow and David Walker, developed the [π-calculus][milner1992], a foundational calculus which studies concurrent computation by processes using *message-passing communication*. It wasn’t the first process calculus—it itself was heavily influenced by ideas dating back to the early 1980s—but it’s certainly one of the most influential!
 
@@ -134,7 +134,7 @@ $$
 \end{array}
 $$
 
-There’s only one computation rule—if a function $\lambda x.M$ meets its argument $N$ we replace all occurrences of $x$ in the function body $M$ with the argument $N$. The other two reduction rules are really just there to let us reduce inside of function applications.
+There’s only one computation rule—if a function $\lambda x.M$ meets its argument $N$ we replace all occurrences of $x$ in the function body $M$ with the argument $N$. The other two reduction rules are really just there to let us reduce under function applications.
 
 $$
 \begin{array}{c}
@@ -222,7 +222,7 @@ $$
 \end{array}
 $$
 
-Then, we extend the reduction rules with two reduction rules for pattern matches on numbers—depending on whether the number is zero or a successor—and a rule to let us reduce inside of pattern matches.
+Then, we extend the reduction rules with two reduction rules for pattern matches on numbers—depending on whether the number is zero or a successor—and a rule to let us reduce under pattern matches.
 
 $$
 \begin{array}{c}
@@ -420,6 +420,10 @@ Oof, that was a bit of a detour, wasn’t it? Wanna talk about *session types*, 
 
 ## The π-calculus! *(Is even scarier…)*
 
+Okay, let’s talk π-calculus. The π-calculus is pretty young—it didn’t show up until 1992, though it’s heavily influenced by ideas dating back to the 1980s.
+
+It’s also pretty big! It’s got twice as many *things* in it as the λ-calculus. Instead of functions, we’re talking about processes, which are built using *six* different constructors:
+
 $$
 \begin{array}{l}
 \text{Process}\;{P},{Q},{R}
@@ -436,12 +440,25 @@ $$
 \end{array}
 $$
 
+In order of appearance:
+
+- We’ve got ν-binders, written $(\nu x)P$, which create a new channel $x$, which can be used in $P$.
+- We’ve got parallel composition, written $\parallel$, to let you know that two processes are running in parallel.
+- We’ve got nil, written $0$, the process which is done.
+- We’ve got *send*, written $x \langle y \rangle.P$, which sends some value $y$ on $x$, and then continues as $P$.
+- We’ve got *receive*, written $x ( y ).P$, which receives some value on $x$, names it $y$, and then continues as $P$.
+- We’ve got replication, written $! P$, which represents a process $P$ which is replicated an arbitrary number of times.
+
+Replication isn’t truly *essential* to the π-calculus, it’s just that we can’t do any sort of *infinite* behaviour with just sending and receiving, so we have to add it explicitly. Other solutions, like adding recursive definitions, work as well.
+
+There’s only one computation rule—if we’ve got a send and a receive in parallel, we perform the communication, and replace all instances of the name bound by the receive instruction by the actual value sent. The other three reduction rules are just there to let us reduce under parallel compositions and ν-binders.
+
 $$
 \begin{array}{c}
   \begin{array}{c}
-  (\nu x)(x\langle{y}\rangle.{P}\parallel x(z).{Q})
+  x\langle{y}\rangle.{P}\parallel x(z).{Q}
   \longrightarrow
-  (\nu x)({P}\parallel{Q}\{y/z\})
+  {P}\parallel{Q}\{y/z\}
   \end{array}
   \\
   \\
@@ -478,15 +495,21 @@ $$
 \end{array}
 $$
 
+However, these rules in and of themselves are not enough. You see, a parallel composition $P \parallel Q$ isn’t intended to be *ordered*—I mean, if you’ve got two processes in parallel, does it make sense to say that one of them is “to the left of” the other?—but we haven’t told the reduction semantics about that. That means that with the rules we’ve given so far, we cannot reduce the following:
+
 $$
 (\nu x)(x(z).{Q}\parallel x\langle{y}\rangle.{P})
 $$
 
+Why not? The send and the receive are in the wrong order—our computation rule requires that the send is *to the left of* the receive, so we can’t apply it.
+
 $$
-(\nu x)(x\langle{y}\rangle.{P}\parallel x(z).{Q})
+x\langle{y}\rangle.{P}\parallel x(z).{Q}
 \longrightarrow
-(\nu x)({P}\parallel{Q}\{y/z\})
+{P}\parallel{Q}\{y/z\}
 $$
+
+One solution is to tell the reduction semantics that the order of processes doesn’t matter—along with a few other things:
 
 $$
 \begin{array}{lrll}
@@ -501,6 +524,10 @@ $$
   P \parallel 0
   & \equiv
   & P
+  \\
+  (\nu x)0
+  & \equiv
+  & 0
   \\
   (\nu x)(\nu y)P
   & \equiv
@@ -517,6 +544,17 @@ $$
 \end{array}
 $$
 
+In order of appearance:
+
+- Parallel composition is *commutative* and *associative*, *i.e.* the order of parallel processes doesn’t matter.
+- We can remove (and add) processes which are done.
+- We can remove (and add) ν-binders which aren’t used.
+- The order of ν-binders doesn’t matter.
+- We can swap ν-binders and parallel compositions as long as we don’t accidentally move an endpoint out of the scope of its binder.
+- Replicated processes can be, *well*, replicated. We kinda forgot to add this at first, so we didn’t have any infinite behaviour… but now we do!
+
+Now that we have this equivalence of processes—usually called *structural congruence*—we can embed it in the reduction relation:
+
 $$
 \begin{array}{c}
   P \equiv P^\prime \quad P^\prime \longrightarrow Q^\prime \quad Q^\prime \equiv Q
@@ -525,8 +563,36 @@ $$
 \end{array}
 $$
 
+The reason we’re embedding it this way, with a reduction step sandwiched between two equivalence, is because the equivalence relation isn’t super well-behaved—there’s plenty of infinite chains of rewrite rules, *e.g.*, imagine swapping $P \parallel Q$ back and forth forever, or duplicating $! P$ forever—and we’d prefer not to have any infinite chains of reductions. Embedding it this way forces there to be at least one *real* computation step in each reduction step, because the only way to construct a reduction is to start with a computation.
+
+If you thought the λ-calculus had problems, have I got news for you. There’s all the old problems we had with the lambda calculus. We’ve got processes that reduce forever without doing anything.
+
 $$
-\begin{array}{c}
+\begin{array}{l}
+(\nu x)(!{x}\langle{y}\rangle.0 \parallel !{x}({z}).0)
+\\
+\quad
+  \begin{array}{rl}
+  \equiv
+  & (\nu x)( !{x}\langle{y}\rangle.0 
+    \parallel {x}\langle{y}\rangle.0 
+    \parallel !{x}({z}).0 
+    \parallel {x}({z}).0)
+  \\
+  \longrightarrow
+  & (\nu x)( !{x}\langle{y}\rangle.0 \parallel !{x}({z}).0)
+  \end{array}
+\end{array}
+$$
+
+Ah! One process which just *keeps* sending the value $y$ to another process, which throws it away immediately, just sending and throwing away, *forever*. Isn’t that the kind of programs we all like to write?
+
+Plus, if we add numbers, we could try to send over the number 5, foolishly assuming it’s a channel.
+
+But *what fun*! There’s new problems as well! If we’ve got two *pairs* of processes, both of which are trying to communicate over $x$ at the same time, then reduction is not longer *deterministic*—it’s anyone’s guess which message will end up where! Yaaay, it’s *race conditions*!
+
+$$
+\begin{array}{l}
   (\nu x)%
   \left(
   \begin{array}{l}
@@ -537,42 +603,46 @@ $$
   \right)
   \\
   \\
-  \downarrow
-  \\
-  \\
-  (\nu x)%
-  \left(
-  \begin{array}{l}
-  {P_1}\parallel {Q_1}\{y_1/z_1\}\parallel
-  \\
-  {P_2}\parallel {Q_2}\{y_2/z_2\}
-  \end{array}
-  \right)
-  \\
+  \quad
+  \begin{array}{rl}
+  \longrightarrow
+  & (\nu x)%
+    \left(
+    \begin{array}{l}
+    {P_1}\parallel {Q_1}\{y_1/z_1\}\parallel
+    \\
+    {P_2}\parallel {Q_2}\{y_2/z_2\}
+    \end{array}
+    \right)
   \\
   \mathit{or}
   \\
-  \\
-  (\nu x)%
-  \left(
-  \begin{array}{l}
-  {P_1}\parallel {Q_1}\{y_2/z_1\}\parallel
-  \\
-  {P_2}\parallel {Q_2}\{y_1/z_2\}
+  \longrightarrow
+  & (\nu x)%
+    \left(
+    \begin{array}{l}
+    {P_1}\parallel {Q_1}\{y_2/z_1\}\parallel
+    \\
+    {P_2}\parallel {Q_2}\{y_1/z_2\}
+    \end{array}
+    \right)
   \end{array}
-  \right)
 \end{array}
 $$
+
+Another *fun* thing we can do is write two processes which echo a message on $x$—they receive something and send it back… but the twist is, they’re both wanting to *receive* first! Ack, it’s a *deadlock*!
 
 $$
 \begin{array}{c}
   (\nu x)%
   \left(
-  x(z).{P}\parallel x(w).{Q}
+  x(y).x\langle{y}\rangle.0 \parallel x(z).x\langle{z}\rangle.0
   \right)
   \not\longrightarrow
 \end{array}
 $$
+
+To be fair, it’s not surprising that race conditions and deadlocks show up in a foundational calculus for *concurrency*—it’d be weird if they didn’t. But that does mean that as programming languages people, we now have two new problems to worry about!
 
 
 ## Taming the π-calculus with types…
