@@ -168,7 +168,7 @@ main = do
           >>= relativizeUrls
 
     -- Compile posts
-    match (postMarkdownPattern draftMode) $ do
+    match (postMarkdownPattern True) $ do
       route $ setExtension "html"
       compile $ pandocCompilerWith readerOptions writerOptions
         >>= saveSnapshot "content"
@@ -177,7 +177,7 @@ main = do
         >>= relativizeUrls
 
     -- Compile Literate Agda posts
-    match (postLagdaPattern draftMode) $ do
+    match (postLagdaPattern True) $ do
       route $ gsubRoute "\\.lagda\\.md" (const ".html")
       compile $ agdaCompiler
         >>= renderPandocWith readerOptions writerOptions
