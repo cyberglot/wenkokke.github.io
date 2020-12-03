@@ -49,7 +49,7 @@ We encode the interaction between Ada and Briar using *session types* in Haskell
 - Ada’s requests are represented using the `Request` datatype, which allows us to prefix a request for pudding with any number of uses of `Please`.
 - Briar’s response is represented using the `Response` datatype, in which she can either grant permission, in which case Briar sends an `Allow` with a sample of pudding attached, or refuse Ada’s request, in which case she sends a `Deny` with a reason.
 
-The functions `ada` and `briar` represent Ada and Briar—these functions each receive an endpoint for the shared channel, and communicate along the lines of our story—Ada sends a request, Briar evaluates her politeness and responds with either pudding or a refusal, and finally Ada evaluates Briars response, and expresses her emotions accordingly.
+The functions `ada` and `briar` represent Ada and Briar—these functions each receive an endpoint for the shared channel, and communicate along the lines of our story—Ada sends a request, Briar evaluates her politeness and responds with either pudding or a refusal, and finally Ada evaluates Briars response, and expresses her emotions accordingly:
 
 ```haskell
 data Request
@@ -86,7 +86,7 @@ Firstly, session types are *communication protocols.* If you glance at the types
 
 Secondly, the types of the endpoints of a binary channel must be *dual*. When Ada’s endpoint says she must send, Briar’s endpoint says she must receive. For multiparty session types, the equivalent notion is called *coherence*, but the principle remains the same.
 
-Finally, each endpoint must be used *exactly once* if we want to be sure to stick to the protocol. For instance, in the code above, each channel-endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding.
+Finally, each endpoint must be used *exactly once* if we want to be sure to stick to the protocol. For instance, in the code above, each channel-endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding:
 
 ```haskell
 ada :: Send Request (Recv Response End) -> IO ()
@@ -114,12 +114,10 @@ We’ll start out by discussing the untyped λ-calculus. It’s a wonderful lit
 
 Then, we’ll switch to discussing the π-calculus. It’s a wonderful little language, even if it’s twice as big as the λ-calculus—with *six* constructs instead of *three*! It’s even more powerful than the λ-calculus—it can express all sorts of concurrent behaviours that the λ-calculus has no hope of expressing. Unfortunately, it’s scarier as well—there’s way more things that can go wrong! Again, we’ll turn our attention to taming all that scary power using types, and the problems of *oomph*’lessness that comes with it.
 
-Finally, we’ll talk about having the best of both worlds, in a concurrent λ-calculus, which is sorta what you get when you smash the λ-calculus and the π-calculus together at high speeds! The concurrent λ-calculus has the best of both worlds: higher-order functions and concurrency with message-passing communication!
-
 
 ## The λ-calculus! *(So powerful, so scary…)*
 
-The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function applications to get rid of ’em.
+The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function applications to get rid of ’em:
 
 $$
 \begin{array}{l}
@@ -134,42 +132,38 @@ $$
 \end{array}
 $$
 
-There’s only one computation rule—if a function $\lambda x.M$ meets its argument $N$ we replace all occurrences of $x$ in the function body $M$ with the argument $N$. The other two reduction rules are really just there to let us reduce under function applications.
+There’s only one computation rule—if a function $\lambda x.M$ meets its argument $N$ we replace all occurrences of $x$ in the function body $M$ with the argument $N$. The other two reduction rules are really just there to let us reduce under function applications:
 
-$$
-\begin{array}{c}
-  \begin{array}{c}
-  (\lambda x.M)\;N
-  \longrightarrow
-  M\{N/x\}
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-  M
-  \longrightarrow
-  M^\prime
-  \\ \hline
-  M \; N
-  \longrightarrow
-  M^\prime \; N
-  \end{array}
-  \quad
-  \begin{array}{c}
-  N
-  \longrightarrow
-  N^\prime
-  \\ \hline
-  M \; N
-  \longrightarrow
-  M \; N^\prime
-  \end{array}
-\end{array}
-$$
+::: mathpar
+$\begin{array}{c}
+(\lambda x.M)\;N
+\longrightarrow
+M\{N/x\}
+\end{array}$
+
+$\begin{array}{c}
+M
+\longrightarrow
+M^\prime
+\\ \hline
+M \; N
+\longrightarrow
+M^\prime \; N
+\end{array}$
+$\begin{array}{c}
+N
+\longrightarrow
+N^\prime
+\\ \hline
+M \; N
+\longrightarrow
+M \; N^\prime
+\end{array}$
+:::
 
 The λ-calculus is *very* powerful—*some stuff about it being a “universal model of computation”*—but that power comes at the cost of also being able to express quite a lot of scary programs that do bad stuff.
 
-For instance, the λ-calculus comes with general recursion out of the box, via the $Y$ combinator! We’ll see an example of using the $Y$ combinator below, but essentially, $Y\;f$ represents an infinite series of applications of $f$.
+For instance, the λ-calculus comes with general recursion out of the box, via the $Y$ combinator! We’ll see an example of using the $Y$ combinator below, but essentially, $Y\;f$ represents an infinite series of applications of $f$:
 
 $$
 \begin{array}{lrl}
@@ -189,7 +183,7 @@ $$
 
 That’s good—as programmers, we like recursion! Really simplifies your programs, not having to write out the case for every possible input!
 
-However, if you pass $Y$ the identity function, you’ll get $Ω$—the program which runs forever, but never gets anything done! Watch it reduce to right back to itself in a single step!
+However, if you pass $Y$ the identity function, you’ll get $Ω$—the program which runs forever, but never gets anything done! Watch it reduce to right back to itself in a single step:
 
 $$
 \begin{array}{lrl}
@@ -206,7 +200,7 @@ That’s scary, I’d prefer not to have that! Programs which run forever, but 
 
 Most functional languages don’t just implement the core λ-calculus, but rather extend the λ-calculus with various constructs—numbers, addition, multiplication, pairs, sums, *etc.* *Technically speaking*, these can all be encoded using just function—see, *e.g.*, Church encodings—but it tends to be *a lot* more practical and faster to use, *e.g.*, machine numbers.
 
-For example, we can extend the untyped λ-calculus with Peano numbers. First, we extend the term language with the number *zero*, written $\text{zero}$, the successor function, written $\text{suc}$, and a pattern matching construct for numbers, written $\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}$.
+For example, we can extend the untyped λ-calculus with Peano numbers. First, we extend the term language with the number *zero*, written $\text{zero}$, the successor function, written $\text{suc}$, and a pattern matching construct for numbers, written $\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}$:
 
 $$
 \begin{array}{l}
@@ -222,35 +216,31 @@ $$
 \end{array}
 $$
 
-Then, we extend the reduction rules with two reduction rules for pattern matches on numbers—depending on whether the number is zero or a successor—and a rule to let us reduce under pattern matches.
+Then, we extend the reduction rules with two reduction rules for pattern matches on numbers—depending on whether the number is zero or a successor—and a rule to let us reduce under pattern matches:
 
-$$
-\begin{array}{c}
-  \text{case}\;\text{zero}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
-  \longrightarrow
-  M
-  \\
-  \\
-  \text{case}\;\text{suc}\;{L}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
-  \longrightarrow
-  N\{L/x\}
-  \\
-  \\
-  \begin{array}{c}
-  L
-  \longrightarrow
-  L^\prime
-  \\ \hline
-  \text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
-  \\
-  \downarrow
-  \\
-  \text{case}\;L^\prime\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
-  \end{array}
-\end{array}
-$$
+::: mathpar
+$\text{case}\;\text{zero}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
+\longrightarrow
+M$
 
-We can now define addition on Peano numbers in our calculus! Ideally, we’d write something like the following, familiar definition for addition.
+$\text{case}\;\text{suc}\;{L}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
+\longrightarrow
+N\{L/x\}$
+
+$\begin{array}{c}
+L
+\longrightarrow
+L^\prime
+\\ \hline
+\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
+\\
+\downarrow
+\\
+\text{case}\;L^\prime\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
+\end{array}$
+:::
+
+We can now define addition on Peano numbers in our calculus! Ideally, we’d write something like the following, familiar definition for addition:
 
 $$
 \begin{array}{lllcl}
@@ -260,7 +250,7 @@ $$
 \end{array}
 $$
 
-Our core language doesn’t support recursive or pattern matching definitions, so we’ll have to elaborate the above definition into something less familiar, which uses the $Y$ combinator and the pattern matching construct. It’s a bit more verbose, but it’s addition nonetheless!
+Our core language doesn’t support recursive or pattern matching definitions, so we’ll have to elaborate the above definition into something less familiar, which uses the $Y$ combinator and the pattern matching construct. It’s a bit more verbose, but it’s addition nonetheless:
 
 $$
 \begin{array}{l}
@@ -283,7 +273,7 @@ $$
 
 Woe is us! We have *another* kind of problem! We now have to worry about programs like $\text{plus}\;(\lambda x.x)\;\text{zero}$. What does that even mean?! According to our semantics, it means exactly that, since it doesn’t reduce any further… It’s stuck on the pattern match on $\lambda x.x$, since there’s no case for functions.
 
-Problems like these are less obvious when using, *e.g.*, Church encodings, since everything is just functions. For instance, if we use Church-encoded Peano numbers to compute $\text{plus}_{ch} \; (\lambda x.x) \; \text{zero}_{ch}$, and convert the result to our builtin Peano numbers, we find that adding the identity function to the number *zero* gives us *one*.
+Problems like these are less obvious when using, *e.g.*, Church encodings, since everything is just functions. For instance, if we use Church-encoded Peano numbers to compute $\text{plus}_{ch} \; (\lambda x.x) \; \text{zero}_{ch}$, and convert the result to our builtin Peano numbers, we find that adding the identity function to the number *zero* gives us *one*:
 
 $$
 \begin{array}{lcl}
@@ -324,7 +314,7 @@ So, we’ve got a lot of scary stuff going on, stuff we really rather wouldn’t
 
 One of the *simplest* solutions—horrible pun *absolutely* intended—is to use simple types. You see, in 1940, in an attempt to get rid of these unhelpful loops, Alonzo developed [the simply-typed λ-calculus][church1940]. I’m guessing you’ve probably seen this before, but if you haven’t… 
 
-We start by formalising what we mean by *type*. Since all we’ve got is functions, all we need is a function type $A \to B$ and *some* base type—it doesn’t really matter what, so we’re gonna call it $\star$.
+We start by formalising what we mean by *type*. Since all we’ve got is functions, all we need is a function type $A \to B$ and *some* base type—it doesn’t really matter what, so we’re gonna call it $\star$:
 
 $$
 \begin{array}{l}
@@ -340,33 +330,29 @@ $$
 
 With types in hand, we write down some *typing rules*. The goal is that *if* we can construct a typing derivation for a term, that term will be well-behaved. Terms are checked in some context $\Gamma$, which is a bag of typing assignments $x : A$. There are three rules, corresponding to the three term constructs:
 
-1. A variable $x$ has type $A$ if there’s an assignment in the bag that says so.
-2. If we’ve got something of type $B$ which uses something of type $A$ from the bag, we can abstract over that something to create a function of type $A \to B$.
-3. If we’ve got something of type $A \to B$ and something of type $A$, then we can apply the former to the latter to get something of type $B$.
+::: mathpar
+$\begin{array}{c}
+\Gamma \ni x : A
+\\ \hline
+\Gamma \vdash x : A
+\end{array}$
+$\begin{array}{c}
+\Gamma, x : A \vdash M : B
+\\ \hline
+\Gamma \vdash \lambda x.M : A \to B
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash M : A \to B \quad \Gamma \vdash N : A
+\\ \hline
+\Gamma \vdash M \; N : B
+\end{array}$
+:::
 
-Here’s those same ideas written down as inference rules:
+In order of appearance:
 
-$$
-\begin{array}{c}
-  \begin{array}{c}
-  \Gamma \ni x : A
-  \\ \hline
-  \Gamma \vdash x : A
-  \end{array}
-  \quad
-  \begin{array}{c}
-  \Gamma, x : A \vdash M : B
-  \\ \hline
-  \Gamma \vdash \lambda x.M : A \to B
-  \end{array}
-  \\\\
-  \begin{array}{c}
-  \Gamma \vdash M : A \to B \quad \Gamma \vdash N : A
-  \\ \hline
-  \Gamma \vdash M \; N : B
-  \end{array}
-\end{array}
-$$
+- A variable $x$ has type $A$ if there’s an assignment in the bag that says so.
+- If we’ve got something of type $B$ which uses something of type $A$ from the bag, we can abstract over that something to create a function of type $A \to B$.
+- If we’ve got something of type $A \to B$ and something of type $A$, then we can apply the former to the latter to get something of type $B$.
 
 Guess what?! It works! All the programs you can type with these rules are super well-behaved and nice! Buuuut… there’s kinda a lot of programs that are really nice and good, that you can’t type with these rules… Very, *very*, notably, you can’t type the $Y$ combinator. Oh no! We lost recursion!
 
@@ -378,7 +364,7 @@ Let’s briefly talk about another type system for the λ-calculus—but only b
 
 In its most minimal form, the linear λ-calculus demands that every variable is used *exactly once*. When you check a function application, you have to decide which parts of the bag are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the bag is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.
 
-Also, we now use this cute little lollipop instead of the function arrow.
+Also, we now use this cute little lollipop instead of the function arrow:
 
 $$
 \begin{array}{l}
@@ -392,26 +378,22 @@ $$
 \end{array}
 $$
 
-$$
-\begin{array}{c}
-  \begin{array}{c}
-  \\ \hline
-  x : A \vdash x : A
-  \end{array}
-  \quad
-  \begin{array}{c}
-  \Gamma, x : A \vdash M : B
-  \\ \hline
-  \Gamma \vdash \lambda x.M : A \multimap B
-  \end{array}
-  \\\\
-  \begin{array}{c}
-  \Gamma \vdash M : A \multimap B \quad \Delta \vdash N : A
-  \\ \hline
-  \Gamma, \Delta \vdash M \; N : B
-  \end{array}
-\end{array}
-$$
+::: mathpar
+$\begin{array}{c}
+\\ \hline
+x : A \vdash x : A
+\end{array}$
+$\begin{array}{c}
+\Gamma, x : A \vdash M : B
+\\ \hline
+\Gamma \vdash \lambda x.M : A \multimap B
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash M : A \multimap B \quad \Delta \vdash N : A
+\\ \hline
+\Gamma, \Delta \vdash M \; N : B
+\end{array}$
+:::
 
 As a type system, this is *highly restrictive*. Essentially, what we’re left with is a calculus of permutations. Think of lists… if you’re writing a function from lists to lists, but you *have to* use every element in the list exactly once, what kinds of programs can you write? Permutations. That’s it.
 
@@ -451,49 +433,43 @@ In order of appearance:
 
 Replication isn’t truly *essential* to the π-calculus, it’s just that we can’t do any sort of *infinite* behaviour with just sending and receiving, so we have to add it explicitly. Other solutions, like adding recursive definitions, work as well.
 
-There’s only one computation rule—if we’ve got a send and a receive in parallel, we perform the communication, and replace all instances of the name bound by the receive instruction by the actual value sent. The other three reduction rules are just there to let us reduce under parallel compositions and ν-binders.
+There’s only one computation rule—if we’ve got a send and a receive in parallel, we perform the communication, and replace all instances of the name bound by the receive instruction by the actual value sent. The other three reduction rules are just there to let us reduce under parallel compositions and ν-binders:
 
-$$
-\begin{array}{c}
-  \begin{array}{c}
-  x\langle{y}\rangle.{P}\parallel x(z).{Q}
-  \longrightarrow
-  {P}\parallel{Q}\{y/z\}
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-    {P}
-    \longrightarrow
-    {P}^\prime
-    \\ \hline
-    (\nu x){P}
-    \longrightarrow
-    (\nu x){P}^\prime
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-    {P}
-    \longrightarrow
-    {P}^\prime
-    \\ \hline
-    {P}\parallel{Q}
-    \longrightarrow
-    {P}^\prime\parallel{Q}
-  \end{array}
-  \quad
-  \begin{array}{c}
-    {Q}
-    \longrightarrow
-    {Q}^\prime
-    \\ \hline
-    {P}\parallel{Q}
-    \longrightarrow
-    {P}\parallel{Q}^\prime
-  \end{array}
-\end{array}
-$$
+::: mathpar
+$\begin{array}{c}
+x\langle{y}\rangle.{P}\parallel x(z).{Q}
+\longrightarrow
+{P}\parallel{Q}\{y/z\}
+\end{array}$
+
+$\begin{array}{c}
+{P}
+\longrightarrow
+{P}^\prime
+\\ \hline
+(\nu x){P}
+\longrightarrow
+(\nu x){P}^\prime
+\end{array}$
+$\begin{array}{c}
+{P}
+\longrightarrow
+{P}^\prime
+\\ \hline
+{P}\parallel{Q}
+\longrightarrow
+{P}^\prime\parallel{Q}
+\end{array}$
+$\begin{array}{c}
+{Q}
+\longrightarrow
+{Q}^\prime
+\\ \hline
+{P}\parallel{Q}
+\longrightarrow
+{P}\parallel{Q}^\prime
+\end{array}$
+:::
 
 However, these rules in and of themselves are not enough. You see, a parallel composition $P \parallel Q$ isn’t intended to be *ordered*—I mean, if you’ve got two processes in parallel, does it make sense to say that one of them is “to the left of” the other?—but we haven’t told the reduction semantics about that. That means that with the rules we’ve given so far, we cannot reduce the following:
 
@@ -501,7 +477,7 @@ $$
 (\nu x)(x(z).{Q}\parallel x\langle{y}\rangle.{P})
 $$
 
-Why not? The send and the receive are in the wrong order—our computation rule requires that the send is *to the left of* the receive, so we can’t apply it.
+Why not? The send and the receive are in the wrong order—our computation rule requires that the send is *to the left of* the receive, so we can’t apply it:
 
 $$
 x\langle{y}\rangle.{P}\parallel x(z).{Q}
@@ -565,7 +541,7 @@ $$
 
 The reason we’re embedding it this way, with a reduction step sandwiched between two equivalence, is because the equivalence relation isn’t super well-behaved—there’s plenty of infinite chains of rewrite rules, *e.g.*, imagine swapping $P \parallel Q$ back and forth forever, or duplicating $! P$ forever—and we’d prefer not to have any infinite chains of reductions. Embedding it this way forces there to be at least one *real* computation step in each reduction step, because the only way to construct a reduction is to start with a computation.
 
-If you thought the λ-calculus had problems, have I got news for you. There’s all the old problems we had with the lambda calculus. We’ve got processes that reduce forever without doing anything.
+If you thought the λ-calculus had problems, have I got news for you. There’s all the old problems we had with the lambda calculus. We’ve got processes that reduce forever without doing anything:
 
 $$
 \begin{array}{l}
@@ -589,7 +565,7 @@ Ah! One process which just *keeps* sending the value $y$ to another process, whi
 
 Plus, if we add numbers, we could try to send over the number 5, foolishly assuming it’s a channel.
 
-But *what fun*! There’s new problems as well! If we’ve got two *pairs* of processes, both of which are trying to communicate over $x$ at the same time, then reduction is not longer *deterministic*—it’s anyone’s guess which message will end up where! Yaaay, it’s *race conditions*!
+But *what fun*! There’s new problems as well! If we’ve got two *pairs* of processes, both of which are trying to communicate over $x$ at the same time, then reduction is not longer *deterministic*—it’s anyone’s guess which message will end up where! Yaaay, it’s *race conditions*:
 
 $$
 \begin{array}{l}
@@ -630,7 +606,7 @@ $$
 \end{array}
 $$
 
-Another *fun* thing we can do is write two processes which echo a message on $x$—they receive something and send it back… but the twist is, they’re both wanting to *receive* first! Ack, it’s a *deadlock*!
+Another *fun* thing we can do is write two processes which echo a message on $x$—they receive something and send it back… but the twist is, they’re both wanting to *receive* first! Ack, it’s a *deadlock*:
 
 $$
 \begin{array}{c}
@@ -642,22 +618,25 @@ $$
 \end{array}
 $$
 
-To be fair, it’s not surprising that race conditions and deadlocks show up in a foundational calculus for *concurrency*—it’d be weird if they didn’t. But that does mean that as programming languages people, we now have two new problems to worry about!
+To be fair, it’s not surprising that race conditions and deadlocks show up in a foundational calculus for *concurrency*—it’d be weird if they didn’t. But that does mean that as programming languages people, we now have two new problems to worry about! To summarise, we’ve identifier *four* main problems with the untyped π-calculus as a foundation for programming languages:
+
+1. it has programs which loop forever but produce nothing;
+2. it has no way of making sure that data is used as intended;
+3. it has *race conditions*; and
+4. it has *deadlocks*.
 
 
 ## Taming the π-calculus with types…
 
-$$
-\begin{array}{l}
-\text{Process}\;{P},{Q},{R}
-\\
-\quad
-  \begin{array}{rll}
-     ::=    & (\nu xx'){P} &\text{— create new channel }{x}{\leftrightarrow}{x'}
-  \\\mid    & \dots
-  \end{array}
-\end{array}
-$$
+Oh dear, so many problems to solve. Where do we begin? 
+
+It may help to think a little deeper about the latter three problems. In a sense, we could see a deadlock as the consequence of us not using a channel as intended. After all, we probably intended for one party to be sending while the other was receiving. We could see a race condition in a similar light. We intended for the two pairs of processes to communicate in a *predictable* pattern, in pairs of two. 
+
+These are overly simplistic descriptions—sometimes we truly don’t care about the order of messages, and a bit of a race is fine. However, much like with the λ-calculus, we’re gonna try and cut all the bad stuff out first, no matter what cost, and then get to the business recovering what we lost.
+
+Let’s have a look at *session types*, invented in the early 1990s by [Kohei Honda][honda1993], and let’s focus first and foremost on one important property—*session fidelity*. Essentially, it means that we communicate over a channel as intended by its protocol—or *session type*. 
+
+Let’s start with the simplest system, where there’s only two things we can do with a channel—send and receive. That’ll be our language of session types—either we send on a channel, we receive from a channel, or we’re done:
 
 $$
 \begin{array}{l}
@@ -673,130 +652,245 @@ $$
 \end{array}
 $$
 
+A crucial notion in session types—as mentioned in the introduction—is *duality*, the idea that while I’m sending a message, you should be expecting to receive one, and vice versa. Duality is a function on session types:
+
 $$
-\begin{array}{l}
-\text{Duality}
+\begin{array}{lrl}
+\overline{!S.S'}        & = & ?S.\overline{S'}
 \\
-\quad
-    \begin{array}{lrl}
-    \overline{!S.S'}        & = & ?S.\overline{S'}
-    \\
-    \overline{?S.S'}        & = & !S.\overline{S'}
-    \\
-    \overline{\mathbf{end}} & = & \mathbf{end}
-    \end{array}
+\overline{?S.S'}        & = & !S.\overline{S'}
+\\
+\overline{\mathbf{end}} & = & \mathbf{end}
 \end{array}
 $$
 
-$$
-\begin{array}{c}
-  \begin{array}{c}
-  \Gamma, x : S, x' : \overline{S} \vdash P
-  \\ \hline
-  \Gamma \vdash (\nu xx') P
-  \end{array}
-  \quad
-  \begin{array}{c}
-  \Gamma \vdash P
-  \quad
-  \Delta \vdash Q
-  \\ \hline
-  \Gamma, \Delta \vdash P \parallel Q
-  \end{array}
-  \\
-  \\
-  \begin{array}{c}
-  \\ \hline
-  \varnothing \vdash 0
-  \end{array}
-  \quad
-  \begin{array}{c}
-  \Gamma, x : B \vdash P
-  \\ \hline
-  \Gamma, x : {!}A.B, y : A \vdash x\langle{y}\rangle.P
-  \end{array}
-  \\
-  \\
-  \quad
-  \begin{array}{c}
-  \Gamma, y : A, x : B \vdash P
-  \\ \hline
-  \Gamma, x : {?}A.B \vdash x(y).P
-  \end{array}
-  \quad
-  \begin{array}{c}
-  \Gamma \vdash P
-  \\ \hline
-  \Gamma, x : \mathbf{end} \vdash P
-  \end{array}
-\end{array}
-$$
-
-
-
-## λ and π, together at last!
+Finally, before we get to the typing rules, we’re gonna make one tiny tweak to the syntax for processes. Before, our ν-binders introduced a *channel name*, which any process could then use to communicate on. Now, ν-binders introduce a channel by its two *channel-endpoint names*. It’s gonna make the typing rules a *bunch* easier to write down:
 
 $$
-\begin{array}{c}
-\begin{array}{l}
-  \begin{array}{l}
-  \text{Term} \; L, M, N
-  \\
-  \quad
-    \begin{array}{rl}
-    ::=    & x 
-    \\\mid & \lambda x.M
-    \\\mid & M \; N
-    \\\mid & K
-    \end{array}
-  \end{array}
-\end{array}
-\quad
 \begin{array}{l}
 \text{Process}\;{P},{Q},{R}
 \\
 \quad
   \begin{array}{rll}
-     ::=    & (\nu xx'){P}
-  \\\mid    & ({P}\parallel{Q})
-  \\\mid    & M
-  \\
-  \\
+     ::=    & (\nu xx'){P} &\text{— create new channel }{x}{\leftrightarrow}{x'}
+  \\\mid    & \dots
   \end{array}
-\\
-\end{array}
-\\
-\\
-\text{Const} \; K ::= \mathbf{send} \mid \mathbf{recv} \mid \mathbf{new} \mid \mathbf{spawn}
 \end{array}
 $$
 
+We’ve also gotta propagate this changes through the structural congruence and the reduction rules. It’s pretty straightforward for most of the changes—just replace $(\nu x)$ with $(\nu x x')$—but there’s one extra change we have to make to the computation rule, which is a bit of a shift in perspective. See, in our first iteration of the π-calculus, processes were connected by virtue of having access to the same *channel name*, and ν-binders were merely a convenience to let us hide channel names from the outside world. However, in our current version, processes use *unrelated* endpoint names, and it’s the ν-binder who connects them to form a channel. Or—if you will—each participant is just holding a tin can, and they can’t be used to communicate until they’re bound together with twine. That means that we’ll have to *require* that reduction takes place under a ν-binder:
+
+$$
+(\nu x x')(x\langle{y}\rangle.{P}\parallel x'(z).{Q})
+\longrightarrow
+(\nu x x')({P}\parallel{Q}\{y/z\})
+$$
+
+Okay, typing rules! One thing that’s very different from the λ-calculus is that the typing rules only check whether processes use channels correctly—the processes themselves don’t have types. There are six rules, corresponding to the six term constructs:
+
+::: mathpar
+$\begin{array}{c}
+\Gamma, x : S, x' : \overline{S} \vdash P
+\\ \hline
+\Gamma \vdash (\nu xx') P
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash P
+\quad
+\Delta \vdash Q
+\\ \hline
+\Gamma, \Delta \vdash P \parallel Q
+\end{array}$
+
+$\begin{array}{c}
+\\ \hline
+\varnothing \vdash 0
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash P
+\\ \hline
+\Gamma, x : \mathbf{end} \vdash P
+\end{array}$
+
+$\begin{array}{c}
+\Gamma, x : B \vdash P
+\\ \hline
+\Gamma, x : {!}A.B, y : A \vdash x\langle{y}\rangle.P
+\end{array}$
+$\begin{array}{c}
+\Gamma, y : A, x : B \vdash P
+\\ \hline
+\Gamma, x : {?}A.B \vdash x(y).P
+\end{array}$
+:::
+
+In order of appearance:
+
+- If we’ve got a process $P$ which uses two endpoints $x$ and $x'$ at dual session types, then we can connect them to form a channel, written $(\nu x x')P$.
+- If we’ve got two processes $P$ and $Q$, which use channels according to the session types in $\Gamma$ and $\Delta$, then we can put those processes in parallel, written $P \parallel Q$, and the resulting process will use channels according to the session types in $\Gamma, \Delta$, where $\Gamma$ and $\Delta$ *must be disjoint*.
+- The terminated process is done—it doesn’t use any channels.
+- If we’ve got a channel $x$ of type $!A.B$ and some $y$ of type $A$, then we can send $y$ over $x$. We lose access to $y$—we’ve sent it away, after all—and the channel $x$ continues as a channel of type $B$.
+- If we’ve got a channel $x$ of type $?A.B$, then we can receive something of type $A$ over $x$—call it $y$—after which the channel $x$ continues as a channel of type $B$.
+- Finally, if we’ve got a channel which is done, we can forget about it.
+
+This type system is *linear*, much like the linear λ-calculus we saw earlier. Told you it’d be relevant! Anyway, it’s not linear in quite the same way, since channels can be used *multiple times*. However, each step in the protocol has to be executed *exactly once*!
+
+So, did it work? Are we safe from the bad programs? Yes and no. Which, *uh*, kinda just means no? But there’s *some* bad programs we got rid of! There are no longer programs which misuse data, since everything strictly follows protocols. Since every channel has *exactly two* processes communicating over it, we no longer have any race conditions. Furthermore, because those two processes must act *dually* on the channel, we no longer have any deadlocks *within a single session*—that is to say, as long as each two processes only share *one* means of communication, we don’t have any deadlocks. Unfortunately, it’s quite easy to write a program which interleaves *two* sessions and deadlocks:
 
 $$
 \begin{array}{c}
-  (\nu xx')(\nu yy')%
+  (\nu x x')(\nu y y')%
   \left(
-  \begin{array}{l}
-  \mathbf{let}\;(\_,z)=\mathbf{recv}\;{x}
-  \\
-  \mathbf{in}\;\mathbf{send}\;{z}\;{y}; M
-  \parallel
-  \\
-  \mathbf{let}\;(\_,w)=\mathbf{recv}\;{x'}
-  \\
-  \mathbf{in}\;\mathbf{send}\;{w}\;{y'}; N
-  \end{array}
+  x(z).y\langle{z}\rangle.0 \parallel y'(w).x'\langle{w}\rangle.0
   \right)
-  \\
-  \\
-  \downarrow
-  \\
-  \\
-  ✨\;\mathit{nothing}\;✨
+  \not\longrightarrow
 \end{array}
 $$
+
+We also don’t have looping programs anymore, but, *uh*, that’s mostly because we removed replication, so… win?
+
+How do we get rid of those last few deadlocks? The ones caused by having multiple open lines of communication? There’s several different ways to do this, and they all have their advantages and disadvantages:
+
+The first option, used in, *e.g.*, the logic-inspired session type systems by [Luís Caires and Frank Pfenning][caires2012] and [Philip Wadler][wadler2014], is to just say “The problem happens when you’ve got multiple sessions open? Well, have you considered just not doing that?” Essentially, these type systems require that the *communication graph is acyclic*—what that means is that, if you drew all the participants, and then drew lines between each two participants who share a channel, you wouldn’t draw any cycles. This works! Can’t share multiple channels if you don’t share multiple channels, am I right? But it’s a *wee bit* restrictive… Got some homework about [forks and hungry, hungry philosophers][dining-philosophers] you need to do? Nope. Wanna write a neat cyclic scheduler? Not for you. However, it has some *nice* aspects too—it composes! Got two deadlock-free programs? Well, you can put ’em together, and it’s gonna be a deadlock-free program! If we updated our typing rules, they’d look a little like this:
+
+::: mathpar
+$\begin{array}{c}
+\Gamma, x : S \vdash P
+\quad
+\Delta, x' : \overline{S} \vdash Q
+\\ \hline
+\Gamma \vdash (\nu x x')(P \parallel Q)
+\end{array}$
+
+$\begin{array}{c}
+\\ \hline
+\varnothing \vdash 0
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash P
+\\ \hline
+\Gamma, x : \mathbf{end} \vdash P
+\end{array}$
+
+$\begin{array}{c}
+\Gamma, x : B \vdash P
+\\ \hline
+\Gamma, x : {!}A.B, y : A \vdash x\langle{y}\rangle.P
+\end{array}$
+$\begin{array}{c}
+\Gamma, y : A, x : B \vdash P
+\\ \hline
+\Gamma, x : {?}A.B \vdash x(y).P
+\end{array}$
+:::
+
+We’ve glued the ν-binder and the parallel composition together in a single operation which makes sure that one endpoint goes one way and the other the other.
+
+The second option, developed by [Naoki Kobayashi][kobayashi2002], is to just do a whole-program check for deadlocks. Take out a piece of paper, and draw a blob for every dual pair of send and receive actions in your program. For every action, if it *has to* happen before another action, draw an arrow between their blobs. Finally, check to see if there’s any *directed* cycles—for each blob, see if you can follow the arrows and end up back at the same blob. We can do this *formally* by adding some little blobs to our session types—since each session type connective corresponds to an action—and requiring a particular order on the little blobs. For reference, little blobs are more commonly known as *priorities*. If we updated our typing rules, they’d look a little like this… first, we add little blobs to our session types. Duality *preserves* session types.
+
+::: mathpar
+$\begin{array}{l}
+\text{Session type}\;{S}\quad
+\\
+\quad
+  \begin{array}{rll}
+     ::= & !^oS.S'        &\text{— send}
+  \\\mid & ?^oS.S'        &\text{— receive}
+  \\\mid & \mathbf{end}^o &\text{— done}
+  \end{array}
+\\
+\end{array}$
+$\begin{array}{lrl}
+\overline{!^oS.S'}        & = & ?^oS.\overline{S'}
+\\
+\overline{?^oS.S'}        & = & !^oS.\overline{S'}
+\\
+\overline{\mathbf{end}^o} & = & \mathbf{end}^o
+\end{array}$
+:::
+
+We also define a function, $\text{Pr}$, to nab the topmost priority from a session type. If we apply $\text{Pr}$ to a $\Gamma$ we mean to get the *smallest* priority of all types in $\Gamma$—actions with smaller priorities happen earlier, so we essentially wanna know when the *first* action in $\Gamma$ is gonna happen.
+
+$$
+\begin{array}{lrl}
+\text{Pr}{(!^oS.S')}        & = & o
+\\
+\text{Pr}{(?^oS.S')}        & = & o
+\\
+\text{Pr}{(\mathbf{end}^o)} & = & o
+\end{array}
+$$
+
+Then we change the typing rules:
+
+::: mathpar
+$\begin{array}{c}
+\Gamma, x : S, x' : \overline{S} \vdash P
+\\ \hline
+\Gamma \vdash (\nu xx') P
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash P
+\quad
+\Delta \vdash Q
+\\ \hline
+\Gamma, \Delta \vdash P \parallel Q
+\end{array}$
+
+$\begin{array}{c}
+\\ \hline
+\varnothing \vdash 0
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash P
+\\ \hline
+\Gamma, x : \mathbf{end} \vdash P
+\end{array}$
+
+$\begin{array}{c}
+\Gamma, x : B \vdash P
+\quad
+o < \text{Pr}{(\Gamma, x : B)}
+\\ \hline
+\Gamma, x : {!^o}A.B, y : A \vdash x\langle{y}\rangle.P
+\end{array}$
+
+$\begin{array}{c}
+\Gamma, y : A, x : B \vdash P
+\quad
+o < \text{Pr}{(\Gamma, y : A, x : B)}
+\\ \hline
+\Gamma, x : {?^o}A.B \vdash x(y).P
+\end{array}$
+:::
+
+We’re enforcing two things here:
+
+1. If we write $x(y).P$, then the action $x(y)$ must happen before *everything else in* $P$. Similarly for $x\langle{y}\rangle.P$.
+2. If we connect two endpoints, $(\nu x x')$, then the dual actions on those endpoints must each happen *at the same time*. 
+
+There’s a really nice recent example of a session type system which uses this technique by [Ornela Dardha and Simon Gay][dardha2018]. The upside of this technique is that you can have all sorts of neat cyclic communication graphs, and still rest assured knowing that they don’t do anything scary. The downside is that it’s a *whole-program* check, meaning that if you’ve got two deadlock-free programs, and you put ’em together, you have to check again, to see that you didn’t introduce any deadlocks.
+
+Anyway, we’ve now got a *mostly* safe foundation for session types. However, you don’t see type systems *this* simple touted in papers much—or *at all*, as far as I’m aware—and the reason is probably that they’re kinda *too simple*. Just like with the *purely* linear λ-calculus, there’s not much you can actually compute with these programs, and you have to put in a little bit of work before you can actually get to a point where you get back enough expressivity to be taken seriously as a programming language. However, I thought it would be illustrative to discuss the *simplest possible* type systems.
+
+There’s still *lots* of ground to cover. For instance, while the π-calculus is a universal model of computation, and in some sense is more expressive than the λ-calculus, it’s actually really annoying to program in. It lacks the capacity for abstraction that *functions* offer, for one. There’s been [a few programming languages][pi-calculus-impl] based on the π-calculus—notably, [occam-π][occam-pi] and [Pict][pict]—but none of these have really taken off. So one thing I’d love to cover in the future is how to *combine* the λ- and π-calculus to form *concurrent λ-calculus*. The thing that you’d get if you’d crash both calculi together at high speeds, if you will.
+
+However, I’m coming up on, *like*, seven-and-a-half thousand words. Yeah, if you’ve read until here, you’ve read a lot of words, congrats. Anyway, I might continue this post in the future, but for now, thanks for listening—*uh*, reading, I mean!
+
+---
+
+**Disclaimer**: I haven’t proven any safety properties for any of the calculi presented here. The simply-typed λ-calculus is pretty well established, so you can trust that’s good, but the other systems are potentially destructive simplifications of existent systems, so all bets are off! I guess you could do the proofs yourself—or if you wanna be really safe, refer to the papers I’ve linked. However, I’ve opted to make these simplifications because the smallest typed π-calculi which are *actually* expressive tend to be pretty big already
 
 [church1932]: https://www.jstor.org/stable/1968337
 [church1940]: https://www.jstor.org/stable/2266170
 [milner1992]: http://www.lfcs.inf.ed.ac.uk/reports/89/ECS-LFCS-89-85/
 [wadler1993]: https://homepages.inf.ed.ac.uk/wadler/papers/lineartaste/lineartaste-revised.pdf
+[honda1993]: http://www.kurims.kyoto-u.ac.jp/~kyodo/kokyuroku/contents/pdf/0851-05.pdf
+[kobayashi2002]: https://doi.org/10.1016/S0890-5401(02)93171-8
+[wadler2014]: https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-sessions/propositions-as-sessions-jfp.pdf
+[caires2012]: https://widgets.figshare.com/articles/6606974/embed
+[dardha2018]: http://www.dcs.gla.ac.uk/~ornela/publications/DG18-Extended.pdf
+[dining-philosophers]: https://en.wikipedia.org/wiki/Dining_philosophers_problem
+[pi-calculus-impl]: https://en.wikipedia.org/wiki/%CE%A0-calculus#Implementations
+[occam-pi]: https://web.archive.org/web/20190214193147/http://pop-users.org:80/occam-pi/
+[pict]: https://www.cis.upenn.edu/~bcpierce/papers/pict/Html/Pict.html
