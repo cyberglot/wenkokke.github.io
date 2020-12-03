@@ -3,14 +3,14 @@
     xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>All The Language</title>
-        <link>http://wenkokke.github.io</link>
+        <link>http://wen.works</link>
         <description><![CDATA[Personal website of Wen Kokke]]></description>
-        <atom:link href="http://wenkokke.github.io/rss.xml" rel="self"
+        <atom:link href="http://wen.works/rss.xml" rel="self"
                    type="application/rss+xml" />
         <lastBuildDate>Sat, 12 Sep 2020 12:00:00 UT</lastBuildDate>
         <item>
     <title>Neural Networks with Cube Cats</title>
-    <link>http://wenkokke.github.io/posts/2020-09-12-neural-networks-with-cube-cats.html</link>
+    <link>http://wen.works/posts/2020-09-12-neural-networks-with-cube-cats.html</link>
     <description><![CDATA[<p>Neural Networks. They’re, uh, pretty pervasive by now, so you’ve probably heard of them, telling you which of your friends is in that picture, and that they know what you wanna text better than you do. But what do they know? Do they know things? <em>Let’s find out!</em></p>
 <!--more-->
 <p>So uh, it’s kinda important that we talk about <em>discrete</em> versus <em>continuous</em> things first, but I checked Wikipedia, and it just told me that <em>discrete</em> things are things that aren’t continuous. So far duh. But that’s not super helpful, so I guess I’ll have a crack at it.</p>
@@ -86,19 +86,19 @@
 </ol>
 </section>]]></description>
     <pubDate>Sat, 12 Sep 2020 12:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2020-09-12-neural-networks-with-cube-cats.html</guid>
+    <guid>http://wen.works/posts/2020-09-12-neural-networks-with-cube-cats.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>Paper Girls, Substitution Ciphers, and Frequency Analysis</title>
-    <link>http://wenkokke.github.io/posts/2018-12-09-paper-girls-substitution-ciphers-and-frequency-analysis.html</link>
+    <link>http://wen.works/posts/2018-12-09-paper-girls-substitution-ciphers-and-frequency-analysis.html</link>
     <description><![CDATA[<p><span class="font-papergirls"> WARNING! IF YOU’RE READING THIS, YOU’RE DOING IT WRONG. CLICK THE LINK, READ IT ON MY BLOG. IT’LL BE WAY LESs CONFUSING. ANYWAY. THIS WEeKEND, I PICKED UP A COPY OF PAPER GIRLS, A MYSTERY/SCIENCE FICTION COMIC ABOUT FOUR GIRLS ON A PAPER ROUTE. WAIT, YOU CAN’T UNDERSTAND ME? OH, FUCK, DOESN’T LOoK LIKE IT. SORrY, LET ME ADJUST. </span></p>
 <!--more-->
 <p>Ah, I’m so sorry, is this any better? Once again, so sorry, I think I’ve been reading this stuff for too long, think I got carried away… Anyway, I’ll take it from the start. So this weekend, I picked up a copy of <em><a href="https://imagecomics.com/comics/releases/paper-girls-1">Paper Girls</a></em>, a mystery/science fiction comic about four girls on a paper route…</p>
-<p><img src="/public/images/PaperGirls_1.jpg" alt="Image from Paper Girls. MacKenzie, smoking, sits on her bicycle, while Erin, KJ, and Tiffany stand behind her." /><br />
+<p><img src="/public/images/paper-girls-1.jpg" alt="Image from Paper Girls. MacKenzie, smoking, sits on her bicycle, while Erin, KJ, and Tiffany stand behind her." /><br />
 </p>
 <p>It starts simple. Our four heroes band together to deliver papers on Halloween morning. But it quickly escalates. Testament to this fact, thirty-five pages in we meet three time traveling teenagers, wrapped in black bandages, speaking in <em>these things</em>…</p>
-<p><img src="/public/images/PaperGirls_2.png" alt="Image from Paper Girls. Two figures wrapped in dark bandages bend over their fallen friend. Their speech is written using strange glyphs." /><br />
+<p><img src="/public/images/paper-girls-2.png" alt="Image from Paper Girls. Two figures wrapped in dark bandages bend over their fallen friend. Their speech is written using strange glyphs." /><br />
 </p>
 <p>These glyphs are used for the rest of the book, and—best I can tell—the rest of the series without any real explanation… which leaves me with the following question:</p>
 <blockquote>
@@ -106,7 +106,7 @@
 </blockquote>
 <p>Wanna guess what today’s topic is? Yep. Welcome to my class, “Help! These letters are all funky! (Part 1, Substitution Ciphers)”.</p>
 <p>Now, I’ve done this before. Several years ago, I was given a copy of <em><a href="https://www.goodreads.com/book/show/11161195-johnny-23">Johnny 23</a></em> by Charles Burns which is, euh, a book put together using panels from <em><a href="https://www.goodreads.com/book/show/7814774-x-ed-out">X’ed Out</a></em>, with an entirely new “story” written in strange glyphs… Sound, well, semi-familiar at least?</p>
-<p><img src="/public/images/XedOut.jpg" alt="Image from X’ed Out. A person is shown a crying worm by a hooded figure with a wound for a nose. The hooded figure then eats the worm. Their speech is written using strange glyphs." /><br />
+<p><img src="/public/images/xed-out.jpg" alt="Image from X’ed Out. A person is shown a crying worm by a hooded figure with a wound for a nose. The hooded figure then eats the worm. Their speech is written using strange glyphs." /><br />
 </p>
 <p>It turns out that what Charles had done was basically a substitution cipher—you make up one crazy glyph for each letter of the alphabet, and then instead of writing letters from the alphabet, you use the alien glyphs you came up with…</p>
 <p>Honestly, there’s some pretty good reasons to assume that <em>Paper Girls</em> does the same. Substitution ciphers are really easy to come up with—you basically have to come up with one weird glyph for ever letter in your alphabet. Plus, they get the job done! At least, it’s pretty clear to me that our time traveling teenagers are speaking some arcane language!</p>
@@ -145,10 +145,10 @@
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>    <span class="bu">sorted</span>(letters_counts_emma.items(), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>[(<span class="st">&#39;e&#39;</span>, <span class="dv">86021</span>), (<span class="st">&#39;t&#39;</span>, <span class="dv">59201</span>), (<span class="st">&#39;a&#39;</span>, <span class="dv">54379</span>), (<span class="st">&#39;o&#39;</span>, <span class="dv">53199</span>), (<span class="st">&#39;n&#39;</span>, <span class="dv">47288</span>), … ]</span></code></pre></div>
 <p>Let’s plot those side by side, see if anything looks off about this.</p>
-<p><img src="/public/images/PaperGirls_FA.png" alt="Frequency analysis graphs for single characters in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graphs look similar." /><br />
+<p><img src="/public/images/paper-girls-frequency-analysis.png" alt="Frequency analysis graphs for single characters in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graphs look similar." /><br />
 </p>
 <p>Great news! The distribution of the letters looks like <em>language</em>. For comparison, if we encrypt <em>Emma</em> and then do frequency analysis, it looks something like this:</p>
-<p><img src="/public/images/PaperGirls_Encrypted_FA.png" alt="Frequency analysis graphs for single characters in the speech in Jane Austen’s Emma encrypted compared to the speech in Jane Austen’s Emma unencrypted. The frequency counts for the encrypted speech are virtually uniform." /><br />
+<p><img src="/public/images/paper-girls-frequency-analysis-encrypted.png" alt="Frequency analysis graphs for single characters in the speech in Jane Austen’s Emma encrypted compared to the speech in Jane Austen’s Emma unencrypted. The frequency counts for the encrypted speech are virtually uniform." /><br />
 </p>
 <p>Ok, so hypothesis:</p>
 <blockquote>
@@ -187,7 +187,7 @@
 <pre><code class="highlight"><span class="p">[</span><span class="s font-papergirls">'I'</span><span class="p">]</span></code></pre>
 <p>Well, that’s disappointing, now we have to pick. At least we’re fairly sure now that ‘<span class="s font-papergirls">I</span>’ will turn out to be either ‘i’ or ‘a’.</p>
 <p>We can repeat this trick for two letter words, three letter words, four letter words, etc. However, we’ll probably need quite a lot of data for word counts to start looking like your average word counts for English—like those found in <em>Emma</em> and only <em>Emma</em>. Let’s count up the two-letter words, and plot their frequencies:</p>
-<p><img src="/public/images/PaperGirls_TwoLetter_FA.png" alt="Frequency analysis graphs for two-letter words in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graphs look similar." /><br />
+<p><img src="/public/images/paper-girls-frequency-analysis-two-letter.png" alt="Frequency analysis graphs for two-letter words in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graphs look similar." /><br />
 </p>
 <p>It’s tempting to assume that those plots align exactly, but we’re dealing with <em>really</em> sparse data at this point. Instead, let’s use the knowledge that we’ve uncovered so far to see if we can find any of those common words. The words ‘<span class="font-papergirls">TO</span>’, ‘<span class="font-papergirls">IT</span>’, and ‘<span class="font-papergirls">AT</span>’ all feature a ‘<span class="font-papergirls">T</span>’. They seem like pretty likely candidates for ‘to’, ‘it’, and ‘at’, so it seems quite likely that ‘<span class="font-papergirls">O</span>’ is ‘o’, and that ‘<span class="font-papergirls">I</span>’ is ‘i’ and ‘<span class="font-papergirls">A</span>’ is ‘a’, or vice versa. Note that ‘<span class="font-papergirls">A</span>’ is the fourth most character, like we’d expect from an ‘i’ or an ‘a’. Based on the frequencies—‘a’ is a more common character than ‘i’, but ‘I’ is a more common word than ‘a’—we can guess that ‘<span class="font-papergirls">I</span>’ is ‘i’ and ‘<span class="font-papergirls">a</span>’ is ‘a’.</p>
 <p>We could continue with this trick for quite a while, using three-letter words, four-letter words, bi-grams, tri-grams, etc. However, we could quite quickly run into the problem that the data we have is really quite sparse, and we can only really solve that by reading more <em>Paper Girls</em> and adding more phrases to our database… which… well, the first part of that sounds like fun. However, there is one trick which we can still quite easily exploit…</p>
@@ -197,7 +197,7 @@
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>doubles_counts <span class="op">=</span> collections.Counter(doubles)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>doubles_counts <span class="op">=</span> <span class="bu">sorted</span>(doubles_counts.items(), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
 <p>You’ve got the hang of this by now—we count doubles in <em>Emma</em> as well, and plot both distributions.</p>
-<p><img src="/public/images/PaperGirls_Doubles_FA_1.png" alt="Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graph for paper girls has only two entries." /><br />
+<p><img src="/public/images/paper-girls-frequency-analysis-doubles-1.png" alt="Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graph for paper girls has only two entries." /><br />
 </p>
 <p>Whoa, so something kinda weird is going on here. First off, really? There’s only <em>two</em> characters that are ever repeated? Like, our sample size is small, but not <em>that</em> small. Also, neither of these characters are anything we have a guess for yet… so if our guesses are correct, we don’t have <em>any</em> occurances of ‘ee’ or ‘tt’. Look at the chart for <em>Emma</em>, they’re pretty common.</p>
 <p>It may be a good idea to have a closer look at the data. If you scroll up to where we defined <code>data</code>, you’ll find ‘<span class="font-papergirls">Dd</span>’ and ‘<span class="font-papergirls">Ee</span>’, and actually, if we look at all the data, we’ll find ‘<span class="font-papergirls">Oo</span>’ and ‘<span class="font-papergirls">Ss</span>’ as well. These mirrored versions of the characters only seem to appear directly after a neutral versions of the same character, and they look <em>suspiciously</em> like repeated characters. Actually, we should’ve asked this <em>a long time ago</em>. How many characters do we even have?</p>
@@ -210,7 +210,7 @@
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>doubles_or_mirrored_counts <span class="op">=</span> collections.Counter(doubles_or_mirrored)</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>doubles_or_mirrored_counts <span class="op">=</span> <span class="bu">sorted</span>(</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    doubles_or_mirrored_counts.items(), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
-<p><img src="/public/images/PaperGirls_Doubles_FA_2.png" alt="Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graphs look similar." /><br />
+<p><img src="/public/images/paper-girls-frequency-analysis-doubles-2.png" alt="Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen’s Emma. The graphs look similar." /><br />
 </p>
 <p>Ah, that makes <em>way</em> more sense. We can still probably assume that ‘<span class="font-papergirls">LL</span>’ is ‘ll’, and it probably makes sense to stick to our guns and say that ‘<span class="font-papergirls">Oo</span>’ is ‘oo’ and ‘<span class="font-papergirls">Ee</span>’ is ‘ee’.</p>
 <h3 id="too-many-characters">Too many characters</h3>
@@ -465,12 +465,12 @@ z
 <p>Wrapping up, what have we learned? I guess the important things are that you can pretty easily crack any substitution cipher by boldly making some assumptions about what the language is, and then exploiting letter frequencies from that language… and that you can exploit way more than just <em>plain</em> letter freqencies—short words, n-grams, repeated characters, they’re all good candidates for frequency analysis.</p>
 <p>Also… <em>Paper Girls</em> is fucking rad, go read that shit.</p>]]></description>
     <pubDate>Sun, 09 Dec 2018 12:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2018-12-09-paper-girls-substitution-ciphers-and-frequency-analysis.html</guid>
+    <guid>http://wen.works/posts/2018-12-09-paper-girls-substitution-ciphers-and-frequency-analysis.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>VISL CG-3 is the new assembler</title>
-    <link>http://wenkokke.github.io/posts/2017-05-15-visl-cg-3-is-the-new-assembler.html</link>
+    <link>http://wen.works/posts/2017-05-15-visl-cg-3-is-the-new-assembler.html</link>
     <description><![CDATA[<p>This post is a continuation of <em><a href="/posts/2016-03-16-constraint-grammar-can-count.html">Constraint Grammar can count!</a></em>, in which I talked a bunch about how expressive constraint grammar is. Now, for most of that post, what I actually meant was the fragment of constraint grammar where you only use the <code>REMOVE</code> rule. However, I always had the suspicion that I’d be pretty easy to simulate a Turing machine using only the <code>ADDCOHORT</code> and <code>REMCOHORT</code> commands, treating the list of cohorts as the Turing machine’s tape—and I don’t think I was the only one to feel that way.</p>
 <!--more-->
 <p>Now, this would be wonderful news. It would prove that <code>ADDCOHORT</code> and <code>REMCOHORT</code> are Turing-complete—given that VISL CG-3 itself is a pretty decent proof that we can run constraint grammars on a universal computer. Not only that, but VISL CG-3 is an extremely optimized piece of software—so the fact that we could compile <em>any Turing machine</em> to VISL CG-3 would be great news for the HPC community<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
@@ -569,12 +569,12 @@ _	_ 🤖	0	0	1	1 # Stop</code></pre>
 </ol>
 </section>]]></description>
     <pubDate>Mon, 15 May 2017 12:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2017-05-15-visl-cg-3-is-the-new-assembler.html</guid>
+    <guid>http://wen.works/posts/2017-05-15-visl-cg-3-is-the-new-assembler.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>Presidents, Scumbags, Kings and Arseholes, and The Great Dalmuti</title>
-    <link>http://wenkokke.github.io/posts/2016-04-05-presidents-scumbags-kings-and-arseholes-and-the-great-dalmuti.html</link>
+    <link>http://wen.works/posts/2016-04-05-presidents-scumbags-kings-and-arseholes-and-the-great-dalmuti.html</link>
     <description><![CDATA[<p>One of my favourite card games is <a href="https://boardgamegeek.com/boardgame/929/great-dalmuti">The Great Dalmuti</a>. It’s a variant of a widely-played card game with many, many names: President, Scumbag, Kings and Arseholes. Each of these may have <em>slightly</em> different rules, and <em>slightly</em> different decks, but they are all more or less the same game.</p>
 <p>I’ve had a bunch of discussions about this game over the years, most of which were about the possible strategies. Personally, I don’t believe that this game is all that hard to play well—and consequently, that it isn’t all that hard to write an AI for it. Pehaps even a very simple, rule-based AI can play passably. However, friends of mine think that it is a much harder problem, and that much more advanced techniques will be needed. Therefore, I thought I’d write a little playground for AIs to play in.</p>
 <!--more-->
@@ -654,12 +654,12 @@ _	_ 🤖	0	0	1	1 # Stop</code></pre>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a>})<span class="op">;</span></span></code></pre></div>
 <p>That’s it for now. I’ll be back later with a <em>proper</em> AI for The Great Dalmuti—though, I probably won’t be implementing it in JavaScript. If you’ve had a look under the hood, you may have noticed a bunch of completely garbled JavaScript files. This is because I’ve actually implemented the game in Haskell, and compiled it to JavaScript using <a href="https://github.com/ghcjs/ghcjs">GHCJS</a>—which is awesome! Thanks a whole bunch to the GHCJS project, helping Haskell get into the browser!</p>]]></description>
     <pubDate>Tue, 05 Apr 2016 00:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2016-04-05-presidents-scumbags-kings-and-arseholes-and-the-great-dalmuti.html</guid>
+    <guid>http://wen.works/posts/2016-04-05-presidents-scumbags-kings-and-arseholes-and-the-great-dalmuti.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>Breadboxes, Plenty Questions and Distributional Semantics</title>
-    <link>http://wenkokke.github.io/posts/2016-03-21-breadboxes-and-distributional-semantics.html</link>
+    <link>http://wen.works/posts/2016-03-21-breadboxes-and-distributional-semantics.html</link>
     <description><![CDATA[<p>Quite a while ago, <a href="https://github.com/UnicornPower">UnicornPower</a> introduced me to a game called <em>Breadbox</em>. It’s an experimental cousin of <em>20 Questions</em>, also known as <em>Plenty Questions</em>, which is played by two players—or more, really—who we’ll name Allie and Blake:</p>
 <ul>
 <li>Allie thinks of something.</li>
@@ -880,12 +880,12 @@ _	_ 🤖	0	0	1	1 # Stop</code></pre>
 </ol>
 </section>]]></description>
     <pubDate>Mon, 21 Mar 2016 12:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2016-03-21-breadboxes-and-distributional-semantics.html</guid>
+    <guid>http://wen.works/posts/2016-03-21-breadboxes-and-distributional-semantics.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>One λ-calculus, many times…</title>
-    <link>http://wenkokke.github.io/posts/2016-03-20-one-lambda-calculus-many-times.html</link>
+    <link>http://wen.works/posts/2016-03-20-one-lambda-calculus-many-times.html</link>
     <description><![CDATA[<!--
 <pre class="Agda"><a id="14" class="Keyword">module</a> <a id="21" href="2016-03-20-one-lambda-calculus-many-times.html" class="Module">2016-03-20-one-lambda-calculus-many-times</a> <a id="63" class="Keyword">where</a>
 </pre>-->
@@ -907,7 +907,7 @@ _	_ 🤖	0	0	1	1 # Stop</code></pre>
     <a id="Syntax.Type._⇒_"></a><a id="2396" href="2016-03-20-one-lambda-calculus-many-times.html#2396" class="InductiveConstructor Operator">_⇒_</a> <a id="2400" class="Symbol">:</a> <a id="2402" href="2016-03-20-one-lambda-calculus-many-times.html#2353" class="Datatype">Type</a> <a id="2407" class="Symbol">→</a> <a id="2409" href="2016-03-20-one-lambda-calculus-many-times.html#2353" class="Datatype">Type</a> <a id="2414" class="Symbol">→</a> <a id="2416" href="2016-03-20-one-lambda-calculus-many-times.html#2353" class="Datatype">Type</a>
 </pre>
 <p>Now we’ll define sequents. Even though this is just a tiny piece of syntax, we should put some thought behind it…</p>
-<p>Traditionally, the antecedent of some sequent would be a <em>set</em> of formulas. However, we’re looking at this from the perspective of λ-calculus, and there may well be a difference between two terms of the same type. This is usually solved by changing the antecedent to a set of <em>type assignments</em>, which means <span class="math inline"><em>x</em> : <em>A</em></span> and <span class="math inline"><em>y</em> : <em>A</em></span> are now distinct. From the logical perspective, this is the same as using a <em>bag</em> or <em>multiset</em> antecedent. If we were doing mathematics, we’d be done, but implementation-wise a bag is actually a rather complex beast. For this reason, we’ll use a <em>list</em>:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Traditionally, the antecedent of some sequent would be a <em>set</em> of formulas. However, we’re looking at this from the perspective of λ-calculus, and there may well be a difference between two terms of the same type. This is usually solved by changing the antecedent to a set of <em>type assignments</em>, which means <span class="math inline">x:A</span> and <span class="math inline">y:A</span> are now distinct. From the logical perspective, this is the same as using a <em>bag</em> or <em>multiset</em> antecedent. If we were doing mathematics, we’d be done, but implementation-wise a bag is actually a rather complex beast. For this reason, we’ll use a <em>list</em>:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <!--
 <pre class="Agda">  <a id="3142" class="Keyword">open</a> <a id="3147" class="Keyword">import</a> <a id="3154" href="Data.Nat.html" class="Module">Data.Nat</a>             <a id="3175" class="Keyword">using</a> <a id="3181" class="Symbol">(</a><a id="3182" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="3183" class="Symbol">;</a> <a id="3185" href="Agda.Builtin.Nat.html#223" class="InductiveConstructor">suc</a><a id="3188" class="Symbol">;</a> <a id="3190" href="Agda.Builtin.Nat.html#210" class="InductiveConstructor">zero</a><a id="3194" class="Symbol">)</a>
   <a id="3198" class="Keyword">open</a> <a id="3203" class="Keyword">import</a> <a id="3210" href="Data.Fin.html" class="Module">Data.Fin</a>             <a id="3231" class="Keyword">using</a> <a id="3237" class="Symbol">(</a><a id="3238" href="Data.Fin.Base.html#1138" class="Datatype">Fin</a><a id="3241" class="Symbol">;</a> <a id="3243" href="Data.Fin.Base.html#1191" class="InductiveConstructor">suc</a><a id="3246" class="Symbol">;</a> <a id="3248" href="Data.Fin.Base.html#1160" class="InductiveConstructor">zero</a><a id="3252" class="Symbol">)</a>
@@ -926,23 +926,25 @@ _	_ 🤖	0	0	1	1 # Stop</code></pre>
     <a id="Syntax.Sequent._⊢_"></a><a id="3811" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">_⊢_</a> <a id="3815" class="Symbol">:</a> <a id="3817" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#148" class="Datatype">List</a> <a id="3822" href="2016-03-20-one-lambda-calculus-many-times.html#2353" class="Datatype">Type</a> <a id="3827" class="Symbol">→</a> <a id="3829" href="2016-03-20-one-lambda-calculus-many-times.html#2353" class="Datatype">Type</a> <a id="3834" class="Symbol">→</a> <a id="3836" href="2016-03-20-one-lambda-calculus-many-times.html#3787" class="Datatype">Sequent</a>
 </pre>
 <p>So what does a <em>proof</em> of a sequent look like? The logical system that is most familiar to a computer scientist is probably <em>natural deduction</em>. The natural deduction system for minimal propositional logic has <em>three</em> rules:</p>
-<p><br /><span class="math display">$$
+<p><span class="math display">
     \frac{A \in \Gamma}{\Gamma \vdash A}{\small ax}
     \quad
     \frac{A , \Gamma \vdash B}{\Gamma \vdash A \Rightarrow B}{\small{\Rightarrow}\!i}
     \quad
     \frac{\Gamma \vdash A \Rightarrow B \quad \Gamma \vdash A}{\Gamma \vdash B}{\small{\Rightarrow}\!e}
-$$</span><br /></p>
+</span></p>
 <p>Recall that λ-terms are constructed in one of three ways: a λ-term is either a <em>variable</em>, an <em>abstraction</em> or an <em>application</em>:</p>
-<p><br /><span class="math display"><em>M</em>, <em>N</em> :  := <em>x</em> ∣ (<em>λ</em><em>x</em>.<em>M</em>) ∣ (<em>M</em> <em>N</em>)</span><br /></p>
+<p><span class="math display">
+    M, N ::= x \mid (\lambda x . M) \mid (M\;N)
+</span></p>
 <p>These correspond exactly to the rules of natural deduction. In fact, in type systems they are usually presented together:</p>
-<p><br /><span class="math display">$$
+<p><span class="math display">
     \frac{(x : A) \in \Gamma}{\Gamma \vdash x : A}
     \quad
     \frac{x : A , \Gamma \vdash M : B}{\Gamma \vdash (\lambda x. M) : A \Rightarrow B}
     \quad
     \frac{\Gamma \vdash M : A \Rightarrow B \quad \Gamma \vdash N : A}{\Gamma \vdash (M\;N) : B}
-$$</span><br /></p>
+</span></p>
 <p>However, I like the clean look of the logical notation, so in the interest of keeping things simple I will use that.</p>
 <p>In what follows, we’ll use the following metavariables for types, contexts, and sequents. That means that if you see one of these names, and you can’t find a binding site, it’s implicitly bound at the top-level:</p>
 <pre class="Agda">  <a id="5251" class="Keyword">variable</a> <a id="5260" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a> <a id="5262" href="2016-03-20-one-lambda-calculus-many-times.html#5262" class="Generalizable">B</a> <a id="5264" href="2016-03-20-one-lambda-calculus-many-times.html#5264" class="Generalizable">C</a> <a id="5266" class="Symbol">:</a> <a id="5268" href="2016-03-20-one-lambda-calculus-many-times.html#2353" class="Datatype">Type</a>
@@ -957,25 +959,25 @@ $$</span><br /></p>
     <a id="Syntax.ND_.⇒i"></a><a id="5546" href="2016-03-20-one-lambda-calculus-many-times.html#5546" class="InductiveConstructor">⇒i</a> <a id="5549" class="Symbol">:</a> <a id="5551" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="5554" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a> <a id="5556" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="5558" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="5560" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="5562" href="2016-03-20-one-lambda-calculus-many-times.html#5262" class="Generalizable">B</a> <a id="5564" class="Symbol">→</a> <a id="5566" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="5569" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="5571" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="5573" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a> <a id="5575" href="2016-03-20-one-lambda-calculus-many-times.html#2396" class="InductiveConstructor Operator">⇒</a> <a id="5577" href="2016-03-20-one-lambda-calculus-many-times.html#5262" class="Generalizable">B</a>
     <a id="Syntax.ND_.⇒e"></a><a id="5583" href="2016-03-20-one-lambda-calculus-many-times.html#5583" class="InductiveConstructor">⇒e</a> <a id="5586" class="Symbol">:</a> <a id="5588" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="5591" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="5593" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="5595" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a> <a id="5597" href="2016-03-20-one-lambda-calculus-many-times.html#2396" class="InductiveConstructor Operator">⇒</a> <a id="5599" href="2016-03-20-one-lambda-calculus-many-times.html#5262" class="Generalizable">B</a> <a id="5601" class="Symbol">→</a> <a id="5603" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="5606" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="5608" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="5610" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a> <a id="5612" class="Symbol">→</a> <a id="5614" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="5617" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="5619" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="5621" href="2016-03-20-one-lambda-calculus-many-times.html#5262" class="Generalizable">B</a>
 </pre>
-<p>Note: for the sake of brevity, I’m using an Agda notation in which implicit arguments are hidden. That means that any unbound variable—such as the <span class="math inline"><em>A</em></span>s, <span class="math inline"><em>B</em></span>s and <span class="math inline"><em>Γ</em></span>s above—is implicitly universally quantified.</p>
+<p>Note: for the sake of brevity, I’m using an Agda notation in which implicit arguments are hidden. That means that any unbound variable—such as the <span class="math inline">A</span>s, <span class="math inline">B</span>s and <span class="math inline">\Gamma</span>s above—is implicitly universally quantified.</p>
 <p>I prefer to think of things of the type <a class="Agda Datatype Operator">ND</a> as proofs made up of rules, but if you prefer to think of them as programs made up of the constructors of lambda terms, just use the following syntax:</p>
 <pre class="Agda">  <a id="6088" class="Keyword">pattern</a> <a id="Syntax.var"></a><a id="6096" href="2016-03-20-one-lambda-calculus-many-times.html#6096" class="InductiveConstructor">var</a>   <a id="6102" href="2016-03-20-one-lambda-calculus-many-times.html#6111" class="Bound">x</a> <a id="6104" class="Symbol">=</a> <a id="6106" href="2016-03-20-one-lambda-calculus-many-times.html#5520" class="InductiveConstructor">ax</a>   <a id="6111" href="2016-03-20-one-lambda-calculus-many-times.html#6111" class="Bound">x</a>
   <a id="6115" class="Keyword">pattern</a> <a id="Syntax.lam"></a><a id="6123" href="2016-03-20-one-lambda-calculus-many-times.html#6123" class="InductiveConstructor">lam</a>   <a id="6129" href="2016-03-20-one-lambda-calculus-many-times.html#6138" class="Bound">x</a> <a id="6131" class="Symbol">=</a> <a id="6133" href="2016-03-20-one-lambda-calculus-many-times.html#5546" class="InductiveConstructor">⇒i</a>   <a id="6138" href="2016-03-20-one-lambda-calculus-many-times.html#6138" class="Bound">x</a>
   <a id="6142" class="Keyword">pattern</a> <a id="Syntax._∙_"></a><a id="6150" href="2016-03-20-one-lambda-calculus-many-times.html#6150" class="InductiveConstructor Operator">_∙_</a> <a id="6154" href="2016-03-20-one-lambda-calculus-many-times.html#6163" class="Bound">f</a> <a id="6156" href="2016-03-20-one-lambda-calculus-many-times.html#6165" class="Bound">x</a> <a id="6158" class="Symbol">=</a> <a id="6160" href="2016-03-20-one-lambda-calculus-many-times.html#5583" class="InductiveConstructor">⇒e</a> <a id="6163" href="2016-03-20-one-lambda-calculus-many-times.html#6163" class="Bound">f</a> <a id="6165" href="2016-03-20-one-lambda-calculus-many-times.html#6165" class="Bound">x</a>
 </pre>
-<p>Earlier, we made the conscious choice to use <em>lists</em> to represent the antecedent. However, this introduced a minor problem: while two programs of the same type may not do the same thing, they <em>should</em> be equivalent, as far as the type system is concerned, and so it <em>should</em> be possible to rewrite a program which needs <em>two</em> values of type <span class="math inline"><em>A</em></span> to a program which needs only <em>one</em>.</p>
-<p>Similarily, by using lists, we have introduced a fixed order in our antecedent which isn’t exactly desirable. While they may be different programs, we <em>should</em> be able to rewrite the program <span class="math inline"><em>f</em> : <em>A</em> → <em>B</em> → <em>C</em></span> to receive its arguments in the different order, i.e. to a program <span class="math inline"><em>f</em>′ : <em>B</em> → <em>A</em> → <em>C</em></span>.</p>
+<p>Earlier, we made the conscious choice to use <em>lists</em> to represent the antecedent. However, this introduced a minor problem: while two programs of the same type may not do the same thing, they <em>should</em> be equivalent, as far as the type system is concerned, and so it <em>should</em> be possible to rewrite a program which needs <em>two</em> values of type <span class="math inline">A</span> to a program which needs only <em>one</em>.</p>
+<p>Similarily, by using lists, we have introduced a fixed order in our antecedent which isn’t exactly desirable. While they may be different programs, we <em>should</em> be able to rewrite the program <span class="math inline">f : A \to B \to C</span> to receive its arguments in the different order, i.e. to a program <span class="math inline">f\prime : B \to A \to C</span>.</p>
 <p>Collectively, such properties are known as <em>structural</em> properties, and for this particular logic we can summarise them neatly as follows:</p>
 <blockquote>
-<p>If <span class="math inline"><em>Γ</em> ⊆ <em>Γ</em>′</span> and <span class="math inline"><em>Γ</em> ⊢ <em>A</em></span>, then <span class="math inline"><em>Γ</em>′ ⊢ <em>A</em></span>.</p>
+<p>If <span class="math inline">\Gamma \subseteq \Gamma\prime</span> and <span class="math inline">\Gamma \vdash A</span>, then <span class="math inline">\Gamma\prime \vdash A</span>.</p>
 </blockquote>
-<p>We can give a proof of this theorem by induction on the structure of natural deduction proofs. Note that we represent the subset relation as a <em>function</em>, that is to say <span class="math inline"><em>Γ</em> ⊆ <em>Γ</em>′</span> is the <em>function</em> <span class="math inline"><em>A</em> ∈ <em>Γ</em> → <em>A</em> ∈ <em>Γ</em>′</span>:</p>
+<p>We can give a proof of this theorem by induction on the structure of natural deduction proofs. Note that we represent the subset relation as a <em>function</em>, that is to say <span class="math inline">\Gamma \subseteq \Gamma\prime</span> is the <em>function</em> <span class="math inline">A\in\Gamma\to A\in\Gamma\prime</span>:</p>
 <pre class="Agda">  <a id="Syntax.struct"></a><a id="7353" href="2016-03-20-one-lambda-calculus-many-times.html#7353" class="Function">struct</a> <a id="7360" class="Symbol">:</a> <a id="7362" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="7364" href="https://agda.github.io/agda-stdlib/Data.List.Relation.Binary.Sublist.Setoid.html#1328" class="Function Operator">⊆</a> <a id="7366" href="2016-03-20-one-lambda-calculus-many-times.html#5286" class="Generalizable">Γ′</a> <a id="7369" class="Symbol">→</a> <a id="7371" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="7374" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="7376" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="7378" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a> <a id="7380" class="Symbol">→</a> <a id="7382" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="7385" href="2016-03-20-one-lambda-calculus-many-times.html#5286" class="Generalizable">Γ′</a> <a id="7388" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="7390" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a>
   <a id="7394" href="2016-03-20-one-lambda-calculus-many-times.html#7353" class="Function">struct</a> <a id="7401" href="2016-03-20-one-lambda-calculus-many-times.html#7401" class="Bound">Γ⊆Γ′</a> <a id="7406" class="Symbol">(</a><a id="7407" href="2016-03-20-one-lambda-calculus-many-times.html#5520" class="InductiveConstructor">ax</a> <a id="7410" href="2016-03-20-one-lambda-calculus-many-times.html#7410" class="Bound">x</a><a id="7411" class="Symbol">)</a>   <a id="7415" class="Symbol">=</a> <a id="7417" href="2016-03-20-one-lambda-calculus-many-times.html#5520" class="InductiveConstructor">ax</a> <a id="7420" class="Symbol">(</a><a id="7421" href="https://agda.github.io/agda-stdlib/Data.List.Relation.Binary.Sublist.Propositional.html#1176" class="Function">lookup</a> <a id="7428" href="2016-03-20-one-lambda-calculus-many-times.html#7401" class="Bound">Γ⊆Γ′</a> <a id="7433" href="2016-03-20-one-lambda-calculus-many-times.html#7410" class="Bound">x</a><a id="7434" class="Symbol">)</a>
   <a id="7438" href="2016-03-20-one-lambda-calculus-many-times.html#7353" class="Function">struct</a> <a id="7445" href="2016-03-20-one-lambda-calculus-many-times.html#7445" class="Bound">Γ⊆Γ′</a> <a id="7450" class="Symbol">(</a><a id="7451" href="2016-03-20-one-lambda-calculus-many-times.html#5546" class="InductiveConstructor">⇒i</a> <a id="7454" href="2016-03-20-one-lambda-calculus-many-times.html#7454" class="Bound">f</a><a id="7455" class="Symbol">)</a>   <a id="7459" class="Symbol">=</a> <a id="7461" href="2016-03-20-one-lambda-calculus-many-times.html#5546" class="InductiveConstructor">⇒i</a> <a id="7464" class="Symbol">(</a><a id="7465" href="2016-03-20-one-lambda-calculus-many-times.html#7353" class="Function">struct</a> <a id="7472" class="Symbol">(</a><a id="7473" href="https://agda.github.io/agda-stdlib/Data.List.Relation.Binary.Sublist.Setoid.Properties.html#4573" class="Function">++⁺</a> <a id="7477" href="https://agda.github.io/agda-stdlib/Data.List.Relation.Binary.Sublist.Setoid.html#2214" class="Function">⊆-refl</a> <a id="7484" href="2016-03-20-one-lambda-calculus-many-times.html#7445" class="Bound">Γ⊆Γ′</a><a id="7488" class="Symbol">)</a> <a id="7490" href="2016-03-20-one-lambda-calculus-many-times.html#7454" class="Bound">f</a><a id="7491" class="Symbol">)</a>
   <a id="7495" href="2016-03-20-one-lambda-calculus-many-times.html#7353" class="Function">struct</a> <a id="7502" href="2016-03-20-one-lambda-calculus-many-times.html#7502" class="Bound">Γ⊆Γ′</a> <a id="7507" class="Symbol">(</a><a id="7508" href="2016-03-20-one-lambda-calculus-many-times.html#5583" class="InductiveConstructor">⇒e</a> <a id="7511" href="2016-03-20-one-lambda-calculus-many-times.html#7511" class="Bound">f</a> <a id="7513" href="2016-03-20-one-lambda-calculus-many-times.html#7513" class="Bound">g</a><a id="7514" class="Symbol">)</a> <a id="7516" class="Symbol">=</a> <a id="7518" href="2016-03-20-one-lambda-calculus-many-times.html#5583" class="InductiveConstructor">⇒e</a> <a id="7521" class="Symbol">(</a><a id="7522" href="2016-03-20-one-lambda-calculus-many-times.html#7353" class="Function">struct</a> <a id="7529" href="2016-03-20-one-lambda-calculus-many-times.html#7502" class="Bound">Γ⊆Γ′</a> <a id="7534" href="2016-03-20-one-lambda-calculus-many-times.html#7511" class="Bound">f</a><a id="7535" class="Symbol">)</a> <a id="7537" class="Symbol">(</a><a id="7538" href="2016-03-20-one-lambda-calculus-many-times.html#7353" class="Function">struct</a> <a id="7545" href="2016-03-20-one-lambda-calculus-many-times.html#7502" class="Bound">Γ⊆Γ′</a> <a id="7550" href="2016-03-20-one-lambda-calculus-many-times.html#7513" class="Bound">g</a><a id="7551" class="Symbol">)</a>
 </pre>
-<p>Note that values of type <span class="math inline"><em>A</em> ∈ <em>Γ</em></span> are constructed using <a class="Agda InductiveConstructor">here</a> and <a class="Agda InductiveConstructor">there</a>, which makes them more or less just numbers, i.e. “first value”, “second value”, etc…</p>
+<p>Note that values of type <span class="math inline">A\in\Gamma</span> are constructed using <a class="Agda InductiveConstructor">here</a> and <a class="Agda InductiveConstructor">there</a>, which makes them more or less just numbers, i.e. “first value”, “second value”, etc…</p>
 <p>I mentioned two uses of this structural rule: contracting two different variables of the <em>same</em> type into one, and exchanging the order of the types in the antecedent. There is one more canonical use: <em>weakning</em>.</p>
 <p>Weakening is so obvious to programmers that they don’t really think of it, but what it says is that if you can run a program in <em>some</em> environment, then you should <em>certainly</em> be able to run that program in that enviroment with some irrelevant stuff added to it. Formally, we write it as:</p>
 <pre class="Agda">  <a id="Syntax.w′"></a><a id="8312" href="2016-03-20-one-lambda-calculus-many-times.html#8312" class="Function">w′</a> <a id="8315" class="Symbol">:</a> <a id="8317" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="8320" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="8322" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="8324" href="2016-03-20-one-lambda-calculus-many-times.html#5262" class="Generalizable">B</a> <a id="8326" class="Symbol">→</a> <a id="8328" href="2016-03-20-one-lambda-calculus-many-times.html#5490" class="Datatype Operator">ND</a> <a id="8331" href="2016-03-20-one-lambda-calculus-many-times.html#5260" class="Generalizable">A</a> <a id="8333" href="https://agda.github.io/agda-stdlib/Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="8335" href="2016-03-20-one-lambda-calculus-many-times.html#5284" class="Generalizable">Γ</a> <a id="8337" href="2016-03-20-one-lambda-calculus-many-times.html#3811" class="InductiveConstructor Operator">⊢</a> <a id="8339" href="2016-03-20-one-lambda-calculus-many-times.html#5262" class="Generalizable">B</a>
@@ -984,7 +986,7 @@ $$</span><br /></p>
 <p>Passing <a class="Agda InductiveConstructor">there</a> to <a class="Agda Function">struct</a> simply moves every value by one: the first value becomes the second, the second becomes the third, etc… In the new antecedent, the first value will be our “irrelevant stuff”.</p>
 <h3 id="sequent-calculus-and-natural-deduction">Sequent Calculus and Natural Deduction</h3>
 <p>We’ve got enough to start talking about the sequent calculus now. The sequent calculus is a different way of writing down logical systems, and it has some pros and cons when compared to natural deduction. It’s usual presentation is as follows:</p>
-<p><br /><span class="math display">$$
+<p><span class="math display">
     \frac{A \in \Gamma}{\Gamma \vdash A}{\small ax}
     \quad
     \frac{\Gamma \vdash A \quad A , \Gamma \vdash B}{\Gamma \vdash B}{\small cut}
@@ -992,7 +994,7 @@ $$</span><br /></p>
     \frac{\Gamma \vdash A \quad B , \Gamma \vdash C}{A \Rightarrow  B , \Gamma \vdash C}{\small{\Rightarrow}\!l}
     \quad
     \frac{A , \Gamma \vdash B}{\Gamma \vdash A \Rightarrow B}{\small{\Rightarrow}\!r}
-$$</span><br /></p>
+</span></p>
 <p>We can encode these rules in Agda as follows:</p>
 <pre class="Agda">  <a id="9363" class="Keyword">infix</a> <a id="9369" class="Number">3</a> <a id="9371" href="2016-03-20-one-lambda-calculus-many-times.html#9383" class="Datatype Operator">SC_</a>
 
@@ -1023,7 +1025,7 @@ $$</span><br /></p>
     <a id="10336" href="2016-03-20-one-lambda-calculus-many-times.html#10204" class="Function">⟸</a> <a id="10338" class="Symbol">(</a><a id="10339" href="2016-03-20-one-lambda-calculus-many-times.html#9538" class="InductiveConstructor">⇒r</a>  <a id="10343" href="2016-03-20-one-lambda-calculus-many-times.html#10343" class="Bound">f</a><a id="10344" class="Symbol">)</a>   <a id="10348" class="Symbol">=</a> <a id="10350" href="2016-03-20-one-lambda-calculus-many-times.html#5546" class="InductiveConstructor">⇒i</a> <a id="10353" class="Symbol">(</a><a id="10354" href="2016-03-20-one-lambda-calculus-many-times.html#10204" class="Function">⟸</a> <a id="10356" href="2016-03-20-one-lambda-calculus-many-times.html#10343" class="Bound">f</a><a id="10357" class="Symbol">)</a>
 </pre>
 <p>The rules for sequent calculus obviously no longer correspond <em>directly</em> to the λ-calculus. However, we’ve just shown that there is in fact <em>some</em> correspondence between them. In the λ-calculus, computation is represented by β-reduction, which is the iterative removal of redexes</p>
-<p><br /><span class="math display">(<em>λ</em><em>x</em>.<em>M</em>) <em>N</em> ↦ <em>M</em>[<em>x</em> := <em>N</em>]</span><br /></p>
+<p><span class="math display">(\lambda x.M)\; N\mapsto M[x := N]</span></p>
 <p>Likewise, sequent calculus comes equipped with its own notion of computation: cut-elimination. And the beautiful thing about cut elimination is that it has a <em>very</em> concrete normal form. Instead of faffing about, claiming the structure is free of β-redexes, cut elimination—as its name implies—allows you to all occurances of the “cut” rule. It would be interesting to show exactly what kind of relation cut elimination has to β-reduction…</p>
 <p><em>Alas</em>! It may be too much effort for a single post to implement both of these logics <em>and</em> a procedure for cut elimination. However, there <em>is</em> a much simpler thing we can do. Agda itself has a pretty servicable implementation of β-reduction for Agda terms, and we can quite easily piggyback on that mechanism. In fact, most of the articles I linked to at the beginning do exactly this.</p>
 <h3 id="interpretations-in-agda">Interpretations in Agda</h3>
@@ -1099,7 +1101,7 @@ $$</span><br /></p>
     <a id="14839" href="2016-03-20-one-lambda-calculus-many-times.html#14798" class="Function">InterpretSC</a> <a id="14851" class="Symbol">=</a> <a id="14853" class="Keyword">record</a> <a id="14860" class="Symbol">{</a> <a id="14862" href="2016-03-20-one-lambda-calculus-many-times.html#11940" class="Field Operator">⟦_⟧</a> <a id="14866" class="Symbol">=</a> <a id="14868" href="2016-03-20-one-lambda-calculus-many-times.html#11940" class="Field Operator">⟦_⟧</a> <a id="14872" href="https://agda.github.io/agda-stdlib/Function.Base.html#1031" class="Function Operator">∘</a> <a id="14874" href="2016-03-20-one-lambda-calculus-many-times.html#10204" class="Function">ND⇔SC.⟸</a> <a id="14882" class="Symbol">}</a>
 </pre>
 <p>Which means that we’ve now implemented the following functions:</p>
-<p><br /><span class="math display">$$
+<p><span class="math display">
     \begin{array}{ccc}
     ND &amp; \rightarrow &amp; Agda \\
                             \\
@@ -1107,7 +1109,7 @@ $$</span><br /></p>
                             \\
     SC                      \\
     \end{array}
-$$</span><br /></p>
+</span></p>
 <p>If you are looking for more reading on this topic, I can recommend the highly readible <em><a href="http://journals.cambridge.org/action/displayAbstract?fromPage=online&amp;aid=44279#">Lambda terms for natural deduction, sequent calculus and cut elimination</a></em> by Henk Barendregt and Silvia Ghilezan.</p>
 <p>Next time, I’ll talk about Gentzen’s LJ, which has explicit structural rules, and variations which use other, non-list structures as the antecedent.</p>
 <hr />
@@ -1118,22 +1120,22 @@ $$</span><br /></p>
 </ol>
 </section>]]></description>
     <pubDate>Sun, 20 Mar 2016 00:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2016-03-20-one-lambda-calculus-many-times.html</guid>
+    <guid>http://wen.works/posts/2016-03-20-one-lambda-calculus-many-times.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>Constraint Grammar can count!</title>
-    <link>http://wenkokke.github.io/posts/2016-03-16-constraint-grammar-can-count.html</link>
+    <link>http://wen.works/posts/2016-03-16-constraint-grammar-can-count.html</link>
     <description><![CDATA[<p>Constraint grammar—it is a natural language processing formalism with great two distinctions: it routinely scores amongst the highest in tasks such as part-of-speech tagging and word-sense disambiguation, with F-scores at around 99%; and it has made some of the most dubious choices in programming language syntax in history. Though its specification has changed tremendously since CG1, it is nontheless a grammar formalism which sees a lot of usage. One natural question to ask of any grammar formalism is “how expressive is it?”</p>
 <p>Over the weekend, <a href="https://github.com/inariksit">inariksit</a> visited me, and we decided to find out!</p>
 <!--more-->
-<p>It’s not immediately obvious how to even approach this question, as constraint grammar doesn’t <em>generate</em> strings per se. It simply <em>constrains</em> existing, ambiguous strings. We took the following approach: we view a constraint grammar as a formal language <span class="math inline">ℒ</span>, generated over an alphabet <span class="math inline"><em>Σ</em></span>. We generate the strings in our language by passing maximally ambiguous strings of <em>every</em> length to the grammar. With maximally ambiguous, I mean those strings where each position contains the entire alphabet, so <span class="math inline">⟨<em>Σ</em>⟩<sub><em>n</em></sub></span>. A constraint grammar is said to <em>accept</em> a string <span class="math inline"><em>w</em></span> of length <span class="math inline"><em>n</em></span> if, when we pass <span class="math inline">⟨<em>Σ</em>⟩<sub><em>n</em></sub></span> as an input to the CG, <span class="math inline"><em>w</em></span> is one of the possible interpretations of its output.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<p>The specification of CG3 mentions tags such as <code>EXTERNAL</code>, which passes information to an external command. So constraint grammar is obviously Turing complete. However, that’s a little bit boring, so let’s see what we can say about the expressiveness of the absolute core of constraint grammar: <code>REMOVE</code> with sections. If we leave out sections, there is no recursion, and therefore the language will be strictly finite and boring. If we leave out <code>REMOVE</code> then there is no way to restrict strings, so we’d only have the languages <span class="math inline"><em>Σ</em><sup>*</sup></span> for any <span class="math inline"><em>Σ</em></span>.</p>
-<p>There are a few concessions we will allow ourselves. If we had <code>MAP</code>, <code>ADD</code>, or any such other command, we would have a way to store information. In this strict fragment, all we have is the current set of symbol assignments. Therefore, we will allow ourselves a second alphabet <span class="math inline"><em>Σ</em>′</span> of <em>hidden</em> symbols—i.e. symbols that we are not allowed to pass to the output. In addition, we update our definition of <span class="math inline">ℒ</span> to state that we pass in <span class="math inline">⟨<em>Σ</em> ∪ <em>Σ</em>′⟩<sub><em>n</em></sub></span>. This is not <em>strictly</em> necessary in CG3, as we could use <code>APPEND</code> to add these hidden characters, but we would like to stay as faithful to our fragment as possible.</p>
+<p>It’s not immediately obvious how to even approach this question, as constraint grammar doesn’t <em>generate</em> strings per se. It simply <em>constrains</em> existing, ambiguous strings. We took the following approach: we view a constraint grammar as a formal language <span class="math inline">\mathcal{L}</span>, generated over an alphabet <span class="math inline">\Sigma</span>. We generate the strings in our language by passing maximally ambiguous strings of <em>every</em> length to the grammar. With maximally ambiguous, I mean those strings where each position contains the entire alphabet, so <span class="math inline">\langle \Sigma \rangle_n</span>. A constraint grammar is said to <em>accept</em> a string <span class="math inline">w</span> of length <span class="math inline">n</span> if, when we pass <span class="math inline">\langle \Sigma \rangle_n</span> as an input to the CG, <span class="math inline">w</span> is one of the possible interpretations of its output.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>The specification of CG3 mentions tags such as <code>EXTERNAL</code>, which passes information to an external command. So constraint grammar is obviously Turing complete. However, that’s a little bit boring, so let’s see what we can say about the expressiveness of the absolute core of constraint grammar: <code>REMOVE</code> with sections. If we leave out sections, there is no recursion, and therefore the language will be strictly finite and boring. If we leave out <code>REMOVE</code> then there is no way to restrict strings, so we’d only have the languages <span class="math inline">\Sigma^*</span> for any <span class="math inline">\Sigma</span>.</p>
+<p>There are a few concessions we will allow ourselves. If we had <code>MAP</code>, <code>ADD</code>, or any such other command, we would have a way to store information. In this strict fragment, all we have is the current set of symbol assignments. Therefore, we will allow ourselves a second alphabet <span class="math inline">\Sigma\prime</span> of <em>hidden</em> symbols—i.e. symbols that we are not allowed to pass to the output. In addition, we update our definition of <span class="math inline">\mathcal{L}</span> to state that we pass in <span class="math inline">\langle \Sigma \cup \Sigma\prime \rangle_n</span>. This is not <em>strictly</em> necessary in CG3, as we could use <code>APPEND</code> to add these hidden characters, but we would like to stay as faithful to our fragment as possible.</p>
 <p>One last hurdle is that constraint grammar has no notion of <em>failure</em>. The worst that can happen is that a grammar changes nothing. Worse so, if there is only one reading left, the <code>REMOVE</code> command will have no effect. So one more concession we make is that we allow ourselves to use the <code>REMCOHORT</code> command—which removes an entire “cohort”, or “position” in our terminology—for the <em>sole purpose</em> of deleting the entire string if it is not accepted.</p>
 <p>From here on out, when we say ‘CG3’, we are referring to this fragment of constraint grammar.</p>
-<h3 id="cg3-is-not-regular-the-language-anbn">CG3 is not regular; the language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup></span></h3>
-<p>In this section we show that CG3, restricted to sections and <code>REMOVE</code> is not regular. We show this by implementing a grammar for the counting language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup></span>.</p>
+<h3 id="cg3-is-not-regular-the-language-anbn">CG3 is not regular; the language <span class="math inline">a^nb^n</span></h3>
+<p>In this section we show that CG3, restricted to sections and <code>REMOVE</code> is not regular. We show this by implementing a grammar for the counting language <span class="math inline">a^nb^n</span>.</p>
 <p>The first thing we do is to try and detect the edges of the string. CG3 has “magical” constants for this, called <code>&gt;&gt;&gt;</code> and <code>&lt;&lt;&lt;</code> for the left and right edge, respectively. However, we cannot use those. Instead, we define them ourselves using two hidden variables, which we also call <code>&gt;&gt;&gt;</code> and <code>&lt;&lt;&lt;</code>. We do this as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>SET ANY <span class="op">=</span> A OR B<span class="op">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
@@ -1141,7 +1143,7 @@ $$</span><br /></p>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>REMOVE <span class="op">&gt;&gt;&gt;</span> (<span class="op">-</span><span class="dv">1</span> ANY)<span class="op">;</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>REMOVE <span class="op">&lt;&lt;&lt;</span> ( <span class="dv">1</span> ANY)<span class="op">;</span></span></code></pre></div>
 <p>Initially, all positions will be labeled with both <code>&gt;&gt;&gt;</code> and <code>&lt;&lt;&lt;</code>. These above rules check whether there is <em>any</em> position preceding or succeeding the current position, and if so, delete <code>&gt;&gt;&gt;</code> or <code>&lt;&lt;&lt;</code>. As a result, the first position will be the only one tagged <code>&gt;&gt;&gt;</code>, and the last the only one tagged <code>&lt;&lt;&lt;</code>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<p>Next, we note that <em>all</em> strings in the language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup></span> are of even length, and that every even length corresponds to <em>exactly</em> one string. Therefore, we must reject all strings of uneven length. We assume two more hidden symbols, <code>EVEN</code> and <code>ODD</code>. We can use these to label whether a position is even or odd: we know the first position is odd, so we delete <code>EVEN</code>; we know that positions following odd positions must be even, so we delete <code>ODD</code>; and we know that positions following even positions are <code>ODD</code>, so we delete <code>EVEN</code>…<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>Next, we note that <em>all</em> strings in the language <span class="math inline">a^nb^n</span> are of even length, and that every even length corresponds to <em>exactly</em> one string. Therefore, we must reject all strings of uneven length. We assume two more hidden symbols, <code>EVEN</code> and <code>ODD</code>. We can use these to label whether a position is even or odd: we know the first position is odd, so we delete <code>EVEN</code>; we know that positions following odd positions must be even, so we delete <code>ODD</code>; and we know that positions following even positions are <code>ODD</code>, so we delete <code>EVEN</code>…<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>BEFORE<span class="op">-</span>SECTIONS</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>REMOVE EVEN (<span class="dv">0</span> <span class="op">&gt;&gt;&gt;</span>)<span class="op">;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a></span>
@@ -1153,20 +1155,20 @@ $$</span><br /></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>AFTER<span class="op">-</span>SECTIONS</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>REMCOHORT ANY (<span class="dv">1</span><span class="op">*</span> <span class="op">&lt;&lt;&lt;</span> LINK NOT <span class="dv">0</span> EVEN)<span class="op">;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>REMCOHORT <span class="op">&lt;&lt;&lt;</span> (NOT <span class="dv">0</span> EVEN)<span class="op">;</span></span></code></pre></div>
-<p>Now that we are certain that we only accept even-length strings, it is safe to say that the first symbol must be an <span class="math inline"><em>a</em></span>, and the last must be a <span class="math inline"><em>b</em></span>:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>Now that we are certain that we only accept even-length strings, it is safe to say that the first symbol must be an <span class="math inline">a</span>, and the last must be a <span class="math inline">b</span>:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>BEFORE<span class="op">-</span>SECTIONS</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>SELECT A (<span class="dv">0</span> <span class="op">&gt;&gt;&gt;</span>)<span class="op">;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>SELECT B (<span class="dv">0</span> <span class="op">&lt;&lt;&lt;</span>)<span class="op">;</span></span></code></pre></div>
-<p>And now it’s only a matter of slowly growing these <span class="math inline"><em>a</em></span>s and <span class="math inline"><em>b</em></span>s until they meet. We do this as follows: in each pass, we mark the position <em>after</em> the last definite <span class="math inline"><em>a</em></span> as a candidate for <span class="math inline"><em>a</em></span> (written <code>OPT_A</code>), and do likewise for the last position <em>before</em> the first definite <span class="math inline"><em>b</em></span>. Then we mark each candidate <span class="math inline"><em>a</em></span> and <span class="math inline"><em>b</em></span> as <em>definite</em>, and we continue:<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>And now it’s only a matter of slowly growing these <span class="math inline">a</span>s and <span class="math inline">b</span>s until they meet. We do this as follows: in each pass, we mark the position <em>after</em> the last definite <span class="math inline">a</span> as a candidate for <span class="math inline">a</span> (written <code>OPT_A</code>), and do likewise for the last position <em>before</em> the first definite <span class="math inline">b</span>. Then we mark each candidate <span class="math inline">a</span> and <span class="math inline">b</span> as <em>definite</em>, and we continue:<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>SECTION</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>REMOVE OPT_B (<span class="op">-</span>1C A)<span class="op">;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>REMOVE OPT_A ( 1C B)<span class="op">;</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>SELECT A (NOT <span class="dv">0</span> OPT_B)<span class="op">;</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>SELECT B (NOT <span class="dv">0</span> OPT_A)<span class="op">;</span></span></code></pre></div>
-<p>The grammar described so far exactly expresses the language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup></span>.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> Since this language is not regular, we can conclude that constraint grammar is not regular.</p>
-<h3 id="cg3-is-not-context-free-the-language-anbncn">CG3 is not context-free; the language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup><em>c</em><sup><em>n</em></sup></span></h3>
-<p>In this section we show that CG3, restricted to sections and <code>REMOVE</code> is not context-free. We show this by implementing a grammar for the counting language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup><em>c</em><sup><em>n</em></sup></span>.</p>
-<p>The language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup><em>c</em><sup><em>n</em></sup></span> has us divide strings whose length is a multiple of three into three even chunks. The first part of this is obviously to find the bounds of the input string, as before, and make sure that it has a length divisible by three. We can trivially extend our previous approach—now abandoning “even” and “odd” in favour of <code>X1</code>, <code>X2</code> and <code>X3</code>:</p>
+<p>The grammar described so far exactly expresses the language <span class="math inline">a^nb^n</span>.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> Since this language is not regular, we can conclude that constraint grammar is not regular.</p>
+<h3 id="cg3-is-not-context-free-the-language-anbncn">CG3 is not context-free; the language <span class="math inline">a^nb^nc^n</span></h3>
+<p>In this section we show that CG3, restricted to sections and <code>REMOVE</code> is not context-free. We show this by implementing a grammar for the counting language <span class="math inline">a^nb^nc^n</span>.</p>
+<p>The language <span class="math inline">a^nb^nc^n</span> has us divide strings whose length is a multiple of three into three even chunks. The first part of this is obviously to find the bounds of the input string, as before, and make sure that it has a length divisible by three. We can trivially extend our previous approach—now abandoning “even” and “odd” in favour of <code>X1</code>, <code>X2</code> and <code>X3</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>SET X1_OR_X2 <span class="op">=</span> X1 OR X2<span class="op">;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>SET X2_OR_X3 <span class="op">=</span> X2 OR X3<span class="op">;</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>SET X3_OR_X1 <span class="op">=</span> X3 OR X1<span class="op">;</span></span>
@@ -1183,7 +1185,7 @@ $$</span><br /></p>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>REMCOHORT ANY (<span class="dv">1</span><span class="op">*</span> <span class="op">&lt;&lt;&lt;</span> LINK NOT <span class="dv">0</span> X3)</span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>REMCOHORT <span class="op">&lt;&lt;&lt;</span> (NOT <span class="dv">0</span> X3)</span></code></pre></div>
 <p>Note that, somewhat counterintuitively, <code>REMOVE X1_OR_X2</code><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> removes <em>both</em> <code>X1</code> and <code>X2</code>, but <code>0 X1_OR_X2</code> matches if the current position still has either option.</p>
-<p>Now that we can be sure that our string is of some length <span class="math inline">3<em>n</em></span>, we can proceed to divide it into three equal chunks. One good way to do this, is to start by finding the middle. This is <em>exactly</em> what we did in our grammar for <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup></span>. Below we implement the same, but now <em>without</em> using <code>SELECT</code>, as using this would erase all other tags. For this, we assume four new hidden symbols <code>FST</code>, <code>SND</code>—for first and second half—and <code>OPT_*</code> varieties:</p>
+<p>Now that we can be sure that our string is of some length <span class="math inline">3n</span>, we can proceed to divide it into three equal chunks. One good way to do this, is to start by finding the middle. This is <em>exactly</em> what we did in our grammar for <span class="math inline">a^nb^n</span>. Below we implement the same, but now <em>without</em> using <code>SELECT</code>, as using this would erase all other tags. For this, we assume four new hidden symbols <code>FST</code>, <code>SND</code>—for first and second half—and <code>OPT_*</code> varieties:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>SET NOT_FST <span class="op">=</span> OPT_FST OR SND OR OPT_SND <span class="op">;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>SET NOT_SND <span class="op">=</span> FST OR OPT_FST OR OPT_SND <span class="op">;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a></span>
@@ -1196,7 +1198,7 @@ $$</span><br /></p>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a>REMOVE OPT_FST ( <span class="dv">1</span> SND LINK (NOT <span class="dv">0</span> NOT_SND))</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a>REMOVE NOT_FST (<span class="dv">0</span> FST LINK <span class="dv">0</span> SND LINK <span class="dv">0</span> OPT_FST LINK NOT <span class="dv">0</span> OPT_SND)</span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a>REMOVE NOT_SND (<span class="dv">0</span> FST LINK <span class="dv">0</span> SND LINK <span class="dv">0</span> OPT_SND LINK NOT <span class="dv">0</span> OPT_FST)</span></code></pre></div>
-<p>Once we’ve divided the word in half, it becomes fairly easy to point out the middle. Below, we mark the first position as <span class="math inline"><em>a</em></span>, the last position as <span class="math inline"><em>c</em></span> and the middle position as <span class="math inline"><em>b</em></span>:<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
+<p>Once we’ve divided the word in half, it becomes fairly easy to point out the middle. Below, we mark the first position as <span class="math inline">a</span>, the last position as <span class="math inline">c</span> and the middle position as <span class="math inline">b</span>:<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>SET OPT_A_OR_B <span class="op">=</span> (OPT_A OR OPT_B)<span class="op">;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>SET OPT_B_OR_C <span class="op">=</span> (OPT_A OR OPT_B)<span class="op">;</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>SET OPT_C_OR_D <span class="op">=</span> (OPT_A OR OPT_B)<span class="op">;</span></span>
@@ -1208,7 +1210,7 @@ $$</span><br /></p>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a>SECTION</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a>REMOVE OPT_C_OR_A (<span class="dv">0</span> FST LINK  <span class="dv">1</span> SND LINK NOT <span class="dv">0</span> FST)</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true"></a>REMOVE OPT_C_OR_A (<span class="dv">0</span> SND LINK <span class="op">-</span><span class="dv">1</span> FST LINK NOT <span class="dv">0</span> SND)</span></code></pre></div>
-<p>And finally, we grow <span class="math inline"><em>a</em></span> and <span class="math inline"><em>b</em></span>, and <span class="math inline"><em>b</em></span> and <span class="math inline"><em>c</em></span> towards one another as we did before. Note that we have to let <span class="math inline"><em>a</em></span> and <span class="math inline"><em>c</em></span> grow twice every time we grow <span class="math inline"><em>b</em></span>, because <span class="math inline"><em>b</em></span> is growing in <em>two</em> directions at the same time:</p>
+<p>And finally, we grow <span class="math inline">a</span> and <span class="math inline">b</span>, and <span class="math inline">b</span> and <span class="math inline">c</span> towards one another as we did before. Note that we have to let <span class="math inline">a</span> and <span class="math inline">c</span> grow twice every time we grow <span class="math inline">b</span>, because <span class="math inline">b</span> is growing in <em>two</em> directions at the same time:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>SECTION</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>REMOVE OPT_B_OR_C (<span class="op">-</span>1C A)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>REMOVE OPT_A_OR_B ( 1C C)</span>
@@ -1223,33 +1225,33 @@ $$</span><br /></p>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true"></a>REMOVE OPT_A_OR_B ( 1C C)</span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true"></a>SELECT A (<span class="dv">0</span> OPT_A LINK NOT <span class="dv">0</span> OPT_B_OR_C)</span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true"></a>SELECT C (<span class="dv">0</span> OPT_C LINK NOT <span class="dv">0</span> OPT_A_OR_B)</span></code></pre></div>
-<p>The grammar described so far exactly expresses the language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup><em>c</em><sup><em>n</em></sup></span>. Since this language is not context-free, we can conclude that constraint grammar is not context-free.</p>
+<p>The grammar described so far exactly expresses the language <span class="math inline">a^nb^nc^n</span>. Since this language is not context-free, we can conclude that constraint grammar is not context-free.</p>
 <h3 id="beyond-context-free">Beyond Context-Free</h3>
-<p>It seems pretty obvious that a language formalism whose only construct has the power to observe <em>all</em> of its surrounding context ends up being at least context-sensitive. I could continue. It is still fairly straightforward to generate the language <span class="math inline"><em>a</em><sup><em>n</em></sup><em>b</em><sup><em>n</em></sup><em>c</em><sup><em>n</em></sup><em>d</em><sup><em>n</em></sup></span>—divide into half, and divide halves into half—and using similar strategies, you can keep on constructing CGs which compute the counting language <span class="math inline"><em>σ</em><sub>1</sub><sup><em>n</em></sup>⋯<em>σ</em><sub><em>k</em></sub><sup><em>n</em></sup></span> for any <span class="math inline"><em>k</em></span> as long as you can come up with new strategies for prime numbers.. but this won’t do us a whole lot of good—at least, it won’t help us escape the class of context-sensitive languages.</p>
+<p>It seems pretty obvious that a language formalism whose only construct has the power to observe <em>all</em> of its surrounding context ends up being at least context-sensitive. I could continue. It is still fairly straightforward to generate the language <span class="math inline">a^nb^nc^nd^n</span>—divide into half, and divide halves into half—and using similar strategies, you can keep on constructing CGs which compute the counting language <span class="math inline">\sigma_1^n\cdots \sigma_k^n</span> for any <span class="math inline">k</span> as long as you can come up with new strategies for prime numbers.. but this won’t do us a whole lot of good—at least, it won’t help us escape the class of context-sensitive languages.</p>
 <p>So for now, let’s leave it at this. I’m a little bored of programming CG at any rate. If you want to have a go, <a href="https://gist.github.com/wenkokke/e5f76d82939ecc9d3a4c">my full code and examples are available here</a>, and <a href="http://beta.visl.sdu.dk/cg3/chunked/installation.html">vislcg3 is available here</a>.</p>
 <hr />
 <section class="footnotes" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1" role="doc-endnote"><p>An obvious downside to this approach is that for finite languages (as well as infinite ones, but duh) the CG will never stop generating the language, as we have to feed it <span class="math inline">⟨<em>Σ</em>⟩<sub><em>n</em></sub></span> <em>for every <span class="math inline"><em>n</em></span></em>. But we’re playing fast and loose here, so what gives.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1" role="doc-endnote"><p>An obvious downside to this approach is that for finite languages (as well as infinite ones, but duh) the CG will never stop generating the language, as we have to feed it <span class="math inline">\langle \Sigma \rangle_n</span> <em>for every <span class="math inline">n</span></em>. But we’re playing fast and loose here, so what gives.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2" role="doc-endnote"><p>CG3’s magic constants are just outside of the string, whereas ours are right at the edge of the string. Therefore, all indices using magic constants are moved by one.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3" role="doc-endnote"><p>While we use <code>BEFORE-SECTIONS</code> and <code>AFTER-SECTIONS</code> throughout this post, their usage is not strictly necessary. The grammar also works if everything is executed under a single <code>SECTION</code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p>Note that <code>LINK</code> is a conjunction, but one in which indices in the <em>second</em> argument are interpreted from the perspective of the position matched in the first.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5" role="doc-endnote"><p>We have chosen to describe faillure by outputting the empty string. If we would have been more careful, we could have added a dedicated symbol for failure. However, under our current definitions we compare languages <em>minus</em> the empty string.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6" role="doc-endnote"><p>We can use <code>SELECT</code>, since it is equivalent to calling <code>REMOVE</code> with the complement—i.e. remove everything <em>but</em> its argument.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7" role="doc-endnote"><p>Note that <code>SELECT A</code> has no effect if <span class="math inline"><em>a</em></span> is not a valid option, and that <code>REMOVE A</code> has no effect if <span class="math inline"><em>a</em></span> is the <em>only</em> remaining option.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>Note that <code>SELECT A</code> has no effect if <span class="math inline">a</span> is not a valid option, and that <code>REMOVE A</code> has no effect if <span class="math inline">a</span> is the <em>only</em> remaining option.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8" role="doc-endnote"><p>We have chosen to describe faillure by outputting the empty string. If we would have been more careful, we could have added a dedicated symbol for failure. However, under our current definitions we compare languages <em>minus</em> the empty string.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9" role="doc-endnote"><p>When we write <code>X_OR_Y</code>, this means that we have defined a “set” as <code>SET X1_OR_X2 = X1 OR X2;</code>. The reason for this is that CG3 does not allow the <em>inline</em> use of set primitives.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10" role="doc-endnote"><p>If the string has an even-numbered length, we in fact mark the middle <em>two</em> positions as <span class="math inline"><em>b</em></span>.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10" role="doc-endnote"><p>If the string has an even-numbered length, we in fact mark the middle <em>two</em> positions as <span class="math inline">b</span>.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>]]></description>
     <pubDate>Wed, 16 Mar 2016 12:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2016-03-16-constraint-grammar-can-count.html</guid>
+    <guid>http://wen.works/posts/2016-03-16-constraint-grammar-can-count.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>Side-effects in English</title>
-    <link>http://wenkokke.github.io/posts/2016-03-09-side-effects-in-english.html</link>
+    <link>http://wen.works/posts/2016-03-09-side-effects-in-english.html</link>
     <description><![CDATA[<p>Back when I wrote this, I had just discovered <a href="http://okmij.org/ftp/Haskell/extensible/">“Extensible Effects: an alternative to Monad Transformers”</a> by Oleg Kiselyov, Amr Sabry, Cameron Swords, and Hiromi Ishii, and I’ve always had a penchant for mucking about with linguistics and Haskell… so… let’s have a little fun with this library and some basic AB grammars in Haskell, see how far we can get within the universally well-defined maximum length of a blog post!</p>
 <!--more-->
 <p>Before we start, let’s get a clear idea of what we’re going to try and accomplish. It’s more or less a well known fact that natural language has tons of side-effects—sometimes also referred to as “non-compositional phenomena”. Let’s look at some examples:</p>
@@ -1305,22 +1307,22 @@ import Text.Parsec (char,letter,spaces,many1,chainr1,parse)
 <p>I’ve included a copy the extensible effects code in <a href="https://github.com/wenkokke/side-effects-in-english/">the repository</a>.</p>
 <p>Before we start off, let’s review some basic AB-grammar knowledge. In general, a categorial grammar—of which AB-grammars are an instance—consist of three things:</p>
 <ol type="1">
-<li>a typed language <span class="math inline">ℒ<sub>1</sub></span>;</li>
-<li>a typed language <span class="math inline">ℒ<sub>2</sub></span>; and</li>
-<li>a translation <span class="math inline"><em>T</em><em>r</em></span> from <span class="math inline">ℒ<sub>1</sub></span> to <span class="math inline">ℒ<sub>2</sub></span>.</li>
+<li>a typed language <span class="math inline">\mathcal{L}_1</span>;</li>
+<li>a typed language <span class="math inline">\mathcal{L}_2</span>; and</li>
+<li>a translation <span class="math inline">Tr</span> from <span class="math inline">\mathcal{L}_1</span> to <span class="math inline">\mathcal{L}_2</span>.</li>
 </ol>
-<p>The language <span class="math inline">ℒ<sub>1</sub></span> describes the <em>grammar</em> of our language, whereas <span class="math inline">ℒ<sub>2</sub></span> will describe its <em>meaning</em>. And one more important requirement: if we have a type in <span class="math inline">ℒ<sub>1</sub></span>, then we should have some efficient way of getting all the programs of that type—this will be our parsing algorithm.</p>
-<p>In the case of AB-grammars, <span class="math inline">ℒ<sub>1</sub></span> has the following types:</p>
-<p><br /><span class="math display">Type <em>A</em>, <em>B</em> ≔ <em>S</em> ∣ <em>N</em> ∣ <em>N</em><em>P</em> ∣ <em>A</em> ∖ <em>B</em> ∣ <em>B</em>/<em>A</em></span><br /></p>
+<p>The language <span class="math inline">\mathcal{L}_1</span> describes the <em>grammar</em> of our language, whereas <span class="math inline">\mathcal{L}_2</span> will describe its <em>meaning</em>. And one more important requirement: if we have a type in <span class="math inline">\mathcal{L}_1</span>, then we should have some efficient way of getting all the programs of that type—this will be our parsing algorithm.</p>
+<p>In the case of AB-grammars, <span class="math inline">\mathcal{L}_1</span> has the following types:</p>
+<p><span class="math display">\text{Type }A, B \coloneqq S \mid N \mid NP \mid A \backslash B \mid B/A</span></p>
 <p>The programs in this language consist of a bunch of constants, which represent words. It also has two rules for building programs, of them variants of function application:</p>
-<p><br /><span class="math display">$$
+<p><span class="math display">
 \frac{x:A \quad f:A \backslash B}{(fx):B}{\small \backslash e}\quad\frac{f:B / A \quad x:A}{(fx):B}{\small / e}
-$$</span><br /></p>
-<p>The language <span class="math inline">ℒ<sub>2</sub></span> is the simply-typed lambda calculus, typed with only the primitive types <span class="math inline"><em>e</em></span> and <span class="math inline"><em>t</em></span>, for entities and truth-values:</p>
-<p><br /><span class="math display">Type <em>σ</em>, <em>τ</em> ≔ <em>e</em> ∣ <em>t</em> ∣ <em>σ</em> → <em>τ</em></span><br /></p>
-<p>It also has a set of typed constants, which we use to represent the abstract meanings of words. This means it contains familiar logical operators, like <span class="math inline"> ∧  : <em>t</em> → <em>t</em> → <em>t</em></span> or <span class="math inline">∀ : (<em>e</em> → <em>t</em>) → <em>t</em></span>, but also things like <span class="math inline">cat : <em>e</em> → <em>t</em></span>, the predicate which tests whether or not something is a cat.</p>
-<p>The translation function then maps the types for <span class="math inline">ℒ<sub>1</sub></span> to types for <span class="math inline">ℒ<sub>2</sub></span>, and the words in <span class="math inline">ℒ<sub>1</sub></span> to expressions in <span class="math inline">ℒ<sub>2</sub></span>. For the types, the translation is as follows:</p>
-<p><br /><span class="math display">$$
+</span></p>
+<p>The language <span class="math inline">\mathcal{L}_2</span> is the simply-typed lambda calculus, typed with only the primitive types <span class="math inline">e</span> and <span class="math inline">t</span>, for entities and truth-values:</p>
+<p><span class="math display">\text{Type }\sigma, \tau \coloneqq e \mid t \mid \sigma \to \tau</span></p>
+<p>It also has a set of typed constants, which we use to represent the abstract meanings of words. This means it contains familiar logical operators, like <span class="math inline">{\wedge} : t \to t \to t</span> or <span class="math inline">\forall : (e \to t) \to t</span>, but also things like <span class="math inline">\text{cat} : e \to t</span>, the predicate which tests whether or not something is a cat.</p>
+<p>The translation function then maps the types for <span class="math inline">\mathcal{L}_1</span> to types for <span class="math inline">\mathcal{L}_2</span>, and the words in <span class="math inline">\mathcal{L}_1</span> to expressions in <span class="math inline">\mathcal{L}_2</span>. For the types, the translation is as follows:</p>
+<p><span class="math display">
   \begin{array}{lcl}
     Tr(S) &amp;= &amp;t\\
     Tr(N) &amp;= &amp;e\to t\\
@@ -1328,8 +1330,8 @@ $$</span><br /></p>
     Tr(A \backslash B) &amp;= &amp;Tr(A)\to Tr(B)\\
     Tr(B / A) &amp;= &amp;Tr(A)\to Tr(B)
   \end{array}
-$$</span><br /></p>
-<p>The translation on the level of programs is simple: programs in <span class="math inline">ℒ<sub>1</sub></span> consist <em>solely</em> of function applications and some constants. As long as we don’t make promises in the types of those constants that we cannot keep, we should be fine!</p>
+</span></p>
+<p>The translation on the level of programs is simple: programs in <span class="math inline">\mathcal{L}_1</span> consist <em>solely</em> of function applications and some constants. As long as we don’t make promises in the types of those constants that we cannot keep, we should be fine!</p>
 <p>So, let’s start off by creating some Haskell data types to represent the syntactic and semantic types described above:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>singletons [d|</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a></span>
@@ -1360,7 +1362,7 @@ $$</span><br /></p>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a>sIV <span class="ot">=</span> <span class="dt">SNP</span> <span class="op">:%</span>\ <span class="dt">SS</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>sTV <span class="ot">=</span> sIV <span class="op">:%/</span> <span class="dt">SNP</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>sAP <span class="ot">=</span> <span class="dt">SNP</span> <span class="op">:%/</span> <span class="dt">SNP</span></span></code></pre></div>
-<p>So now that we’ve defined the types of the languages <span class="math inline">ℒ<sub>1</sub></span> and <span class="math inline">ℒ<sub>2</sub></span>, we can define our translation <em>on types</em>. Note that our previous definition of our translation function was already more-or-less valid Haskell:</p>
+<p>So now that we’ve defined the types of the languages <span class="math inline">\mathcal{L}_1</span> and <span class="math inline">\mathcal{L}_2</span>, we can define our translation <em>on types</em>. Note that our previous definition of our translation function was already more-or-less valid Haskell:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="kw">type</span> <span class="kw">family</span> <span class="dt">Tr</span> (<span class="ot">ty ::</span> <span class="dt">SynT</span>)<span class="ot"> ::</span> <span class="dt">SemT</span> <span class="kw">where</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>  <span class="dt">Tr</span> <span class="dt">S</span>        <span class="ot">=</span> <span class="dt">T</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>  <span class="dt">Tr</span> <span class="dt">N</span>        <span class="ot">=</span> <span class="dt">E</span> <span class="op">:-&gt;</span> <span class="dt">T</span></span>
@@ -1504,12 +1506,12 @@ the unicorn found jack first</code></pre>
 </ol>
 </section>]]></description>
     <pubDate>Wed, 09 Mar 2016 12:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2016-03-09-side-effects-in-english.html</guid>
+    <guid>http://wen.works/posts/2016-03-09-side-effects-in-english.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 <item>
     <title>Insertion sort in Agda</title>
-    <link>http://wenkokke.github.io/posts/2016-03-01-insertion-sort-in-agda.html</link>
+    <link>http://wen.works/posts/2016-03-01-insertion-sort-in-agda.html</link>
     <description><![CDATA[<!--
 <pre class="Agda"><a id="14" class="Keyword">module</a> <a id="21" href="2016-03-01-insertion-sort-in-agda.html" class="Module">2016-03-01-insertion-sort-in-agda</a> <a id="55" class="Keyword">where</a>
 </pre>-->
@@ -1670,7 +1672,7 @@ the unicorn found jack first</code></pre>
 <p>The second question that usually follows is “How do you know that you’ve written down the right <em>property</em>?” For instance, one small mistake in my definition of <code>OVec</code> would have it mean “a list where sometimes an element is smaller than one of the elements after it”. Obviously, sorting algorithms would have this property… Now, the simple answer is that you don’t. And this holds for Agda, Coq, JavaScript, set theory… There is no real way to ensure that what you write down, in general, corresponds to what you wanted to write down.</p>
 <p>But there is one redeeming factor. Set theory is believed to not be a hot mess because there are <em>tons</em> of people who’ve checked the proofs, and who’ve used the proved properties to prove other, more complex properties. When you prove a lemma, you intend to <em>use</em> it to prove some different lemma. And in general, if you’ve proven the wrong lemma, your next proof will <em>fail</em>. And obviously, the notion that the <em>usage</em> of properties and and <em>repeated checking</em> of proofs strengthens a theory applies even more strongly to theories which are also <em>machine-checked</em>.</p>]]></description>
     <pubDate>Tue, 01 Mar 2016 12:00:00 UT</pubDate>
-    <guid>http://wenkokke.github.io/posts/2016-03-01-insertion-sort-in-agda.html</guid>
+    <guid>http://wen.works/posts/2016-03-01-insertion-sort-in-agda.html</guid>
     <dc:creator>Wen Kokke</dc:creator>
 </item>
 

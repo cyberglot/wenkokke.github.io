@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+    <link href="http://gmpg.org/xfn/11" rel="profile">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <title>An Introduction to Session Types</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:wght@400;700|Raleway:ital,wght@0,400;0,700;1,400" rel="stylesheet"> 
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+
+    
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous">
+    </script>
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         var mathElements = document.getElementsByClassName("math");
+         var macros = [];
+         for (var i = 0; i < mathElements.length; i++) {
+             var texText = mathElements[i].firstChild;
+             if (mathElements[i].tagName == "SPAN") {
+                 katex.render(texText.data, mathElements[i], {
+                     displayMode: mathElements[i].classList.contains('display'),
+                     throwOnError: false,
+                     macros: macros,
+                     fleqn: true
+                 });
+     }}});
+    </script>
+    
+</head>
+
+
+
+    <body>
+        <header class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="sidebar-about">
+            <img class="sidebar-about-photo" src="../public/images/me.png" alt="It's me!" />
+            <h1><a href="https://wenkokke.github.io">All The Language</a></h1>
+            <p class="lead">
+                Hiya!
+                I'm <span class="tooltip" title="/wɛn/">Wen</span>.
+                I study natural language, programming languages and logical languages.
+                Basically, all the language&hellip;
+            </p>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="sidebar-nav-item" href="../">
+                Blog
+            </a>
+            <a class="sidebar-nav-item" href="../pages/pubs.html">
+                Pubs
+            </a>
+        </nav>
+        <nav class="sidebar-nav">
+            <a class="sidebar-nav-item sidebar-nav-icon" href="mailto:me@wen.works">
+                <i class="far fa-envelope"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://github.com/wenkokke">
+                <i class="fab fa-github"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://twitter.com/wenkokke">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://www.paypal.me/wenkokke">
+                <i class="fab fa-paypal"></i>
+            </a>
+        </nav>
+        <div class="sidebar-about">
+            &copy; 2020. All rights reserved.
+        </div>
+    </div>
+</header>
+
+        <main class="content container">
+            <article class="post">
+    <header>
+        <h1 class="post-title">An Introduction to Session Types</h1>
+    </header>
+    <footer class="post-date">
+        September 24, 2020
+    </footer>
+    <p>Session types. Ostensibly, I’ve studied them for the past few years, so I should know something about them, right? I am gonna try and explain the <em>foundations</em> of session types, and along the way, there will be programs which crash, Victorian ladies having milk puddings, and tin can telephones.</p>
+<!--more-->
+<p>Let’s start out with a <em>dramatis personæ</em>.</p>
+<h2 id="dramatis-personæ">Dramatis Personæ</h2>
+<p>Session types are about <em>channels</em>, which are like <em>tin can telephones</em>, in that you can use your tin to whisper sweet little nothings to every friend who has a tin connected to yours. I know, my love for tin can telephones is betraying my age a little—I’m an old Victorian lady.</p>
+<figure>
+<a href="https://books.google.com/books?id=IB8_AAAAYAAJ&amp;dq=Ebenezer+Cobham+Brewer,+Fran%C3%A7ois+Napol%C3%A9on+Marie+Moigno,+Henri+de+Parville&amp;pg=PA227&amp;redir_esc=y#v=onepage&amp;q&amp;f=false"><img src="../public/images/tin-can-telephone.png" alt="Two victorian ladies hold a tin can telephone pulled taut between them." /></a>
+<figcaption>
+“You simply must try my milk puddings, Ada”, Briar whispers into the telephone.
+</figcaption>
+</figure>
+<dl>
+<dt><em>Ada</em></dt>
+<dd>A Victorian Lady.
+</dd>
+<dt><em>Briar</em></dt>
+<dd>Ada’s Lady Friend.
+</dd>
+<dt><em>The Tin Labelled A</em></dt>
+<dd>A Tin Held by Ada.
+</dd>
+<dt><em>The Tin Labelled B</em></dt>
+<dd>A Tin Held by Briar.
+</dd>
+<dt><em>The Piece of Twine</em></dt>
+<dd>A Piece of Twine Connecting Tin A and B.
+</dd>
+</dl>
+<p>In the vernacular of session types, the tin cans are referred to as <em>channel-endpoints</em> or simply <em>endpoints</em>, and the collection of all tin cans held together by the twine is referred to as a <em>channel</em>. A series of messages whispered back and forth over a single channel is referred to as a <em>session</em>.</p>
+<p>Most of the literature on session types considers only the classic scenario, in which we connect exactly two tin cans to form a channel—this is referred to as <em>binary session types</em>. Yet if we wanted to, we could make a telephone with any number of tin cans—this is referred to as <em>multiparty session types</em>.</p>
+<p>In this blog post, we I’ll focus on <em>binary session types</em></p>
+<h2 id="session-types-at-a-glance">Session Types <em>at a Glance</em></h2>
+<p>Let’s imagine for a moment that Ada were to take Briar up on her offer, and ask her to sample her famous milk puddings. Briar, a proper lady, only offers her milk puddings to those who make a <em>sufficiently polite</em> request—Ada must be polite and say “please”, but she must not overuse it, lest she comes off as begging!</p>
+<p>We encode the interaction between Ada and Briar using <em>session types</em> in Haskell:</p>
+<ul>
+<li>Ada’s requests are represented using the <code>Request</code> datatype, which allows us to prefix a request for pudding with any number of uses of <code>Please</code>.</li>
+<li>Briar’s response is represented using the <code>Response</code> datatype, in which she can either grant permission, in which case Briar sends an <code>Allow</code> with a sample of pudding attached, or refuse Ada’s request, in which case she sends a <code>Deny</code> with a reason.</li>
+</ul>
+<p>The functions <code>ada</code> and <code>briar</code> represent Ada and Briar—these functions each receive an endpoint for the shared channel, and communicate along the lines of our story—Ada sends a request, Briar evaluates her politeness and responds with either pudding or a refusal, and finally Ada evaluates Briars response, and expresses her emotions accordingly:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">Request</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>  <span class="ot">=</span> <span class="dt">Please</span> <span class="dt">Request</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>  <span class="op">|</span> <span class="dt">MayIHaveSomePudding</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>    </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">Response</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>  <span class="ot">=</span> <span class="dt">Allow</span> <span class="dt">Pudding</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>  <span class="op">|</span> <span class="dt">Deny</span> <span class="dt">String</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>    </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="ot">ada ::</span> <span class="dt">Send</span> <span class="dt">Request</span> (<span class="dt">Recv</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>ada chan <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>  chan' <span class="ot">&lt;-</span> send (<span class="dt">Please</span> <span class="dt">MayIHaveSomePudding</span>) chan</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>  (resp, chan'') <span class="ot">&lt;-</span> recv chan'</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>  close chan''</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>  <span class="kw">case</span> resp <span class="kw">of</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>    <span class="dt">Allow</span> pudding <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;I’m so happy!&quot;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>    <span class="dt">Deny</span> reason <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;Woe is me!&quot;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a><span class="ot">briar ::</span> <span class="dt">Recv</span> <span class="dt">Request</span> (<span class="dt">Send</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a>briar chan <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a>  (req, chan') <span class="ot">&lt;-</span> recv chan</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a>  <span class="kw">let</span> resp <span class="ot">=</span> <span class="kw">case</span> req <span class="kw">of</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a>    <span class="dt">MayIHaveSomePudding</span> <span class="ot">-&gt;</span> <span class="dt">Deny</span> <span class="st">&quot;Such rudeness!&quot;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a>    <span class="dt">Please</span> <span class="dt">MayIHaveSomePudding</span> <span class="ot">-&gt;</span> <span class="dt">Allow</span> myPudding</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a>    <span class="dt">Please</span> (<span class="dt">Please</span> _) <span class="ot">-&gt;</span> <span class="dt">Deny</span> <span class="st">&quot;Such beggary!&quot;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true"></a>  chan'' <span class="ot">&lt;-</span> send resp chan'</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true"></a>  close chan''</span></code></pre></div>
+<p>The example illustrates a crucial notions for session types:</p>
+<p>Firstly, session types are <em>communication protocols.</em> If you glance at the types of the endpoints, you see that they represent the communication protocol from each participants perspective. For instance, Ada’s endpoint says she must send a request, receive a response, and then end the session.</p>
+<p>Secondly, the types of the endpoints of a binary channel must be <em>dual</em>. When Ada’s endpoint says she must send, Briar’s endpoint says she must receive. For multiparty session types, the equivalent notion is called <em>coherence</em>, but the principle remains the same.</p>
+<p>Finally, each endpoint must be used <em>exactly once</em> if we want to be sure to stick to the protocol. For instance, in the code above, each channel-endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ot">ada ::</span> <span class="dt">Send</span> <span class="dt">Request</span> (<span class="dt">Recv</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>ada chan <span class="ot">=</span> tryAll <span class="dt">MayIHaveSomePudding</span> chan</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  <span class="kw">where</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>    tryAll req chan <span class="ot">=</span> <span class="kw">do</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>      chan' <span class="ot">&lt;-</span> send req chan</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>      (resp, chan'') <span class="ot">&lt;-</span> recv chan'</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>      close chan''</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>      <span class="kw">case</span> resp <span class="kw">of</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>        <span class="dt">Allow</span> pudding <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;I’m so happy!&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>        <span class="dt">Deny</span> reason <span class="ot">-&gt;</span> tryAll (<span class="dt">Please</span> req) chan</span></code></pre></div>
+<p>But that’s not what the protocol says! Briar doesn’t have time for more than one request, so after the first one has run its course, Ada whispers her second request into the tin can, then waits forever, pining for a response from Briar which will never come!</p>
+<h2 id="a-bit-of-a-roadmap">A Bit of a Roadmap</h2>
+<p>Only a few short years after Ada and Briar enjoyed sweet milk puddings, a man by the name of <em>Alonzo Church</em> was born in Washington, D.C., in the United States. Three decades later, in the 1930s, Alonzo developed <a href="https://www.jstor.org/stable/1968337">the λ-calculus</a>, a foundational calculus which studies computation using <em>functions</em>. To this day, the λ-calculus underpins most theories of functional programming languages. Talk about influential!</p>
+<p>Only a few short years after Alonzo developed the λ-calculus, a man by the name of <em>Robin Milner</em> was born near Yealmpton, in England. Alonzo lived a long live, over nine decades! A few years before Alonzo’s death in the mid 1990s, Robin, together with Joachim Parrow and David Walker, developed the <a href="http://www.lfcs.inf.ed.ac.uk/reports/89/ECS-LFCS-89-85/">π-calculus</a>, a foundational calculus which studies concurrent computation by processes using <em>message-passing communication</em>. It wasn’t the first process calculus—it itself was heavily influenced by ideas dating back to the early 1980s—but it’s certainly one of the most influential!</p>
+<p>We’ll start out by discussing the untyped λ-calculus. It’s a wonderful little language, and it’s <em>really</em> powerful. Unfortunately, it has all sorts of programs that do all sorts of bad things, like loop forever, so with all that power, it’s <em>really scary</em> too! We’ll then discuss the idea of taming all that scary power using types, to try and get only well-behaved programs, and the challenges of taming it without taking all the <em>oomph</em> out.</p>
+<p>Then, we’ll switch to discussing the π-calculus. It’s a wonderful little language, even if it’s twice as big as the λ-calculus—with <em>six</em> constructs instead of <em>three</em>! It’s even more powerful than the λ-calculus—it can express all sorts of concurrent behaviours that the λ-calculus has no hope of expressing. Unfortunately, it’s scarier as well—there’s way more things that can go wrong! Again, we’ll turn our attention to taming all that scary power using types, and the problems of <em>oomph</em>’lessness that comes with it.</p>
+<h2 id="the-λ-calculus-so-powerful-so-scary">The λ-calculus! <em>(So powerful, so scary…)</em></h2>
+<p>The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function applications to get rid of ’em:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{Term} \; L, M, N
+\\
+\quad
+  \begin{array}{rl}
+  ::= &amp; x
+  \;\mid\;    \lambda x.M
+  \;\mid\;    M \; N
+  \end{array}
+\end{array}
+</span></p>
+<p>There’s only one computation rule—if a function <span class="math inline">\lambda x.M</span> meets its argument <span class="math inline">N</span> we replace all occurrences of <span class="math inline">x</span> in the function body <span class="math inline">M</span> with the argument <span class="math inline">N</span>. The other two reduction rules are really just there to let us reduce under function applications:</p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{c} (\lambda x.M)\;N \longrightarrow M\{N/x\} \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} M \longrightarrow M^\prime \\ \hline M \; N \longrightarrow M^\prime \; N \end{array}</span> <span class="math inline">\begin{array}{c} N \longrightarrow N^\prime \\ \hline M \; N \longrightarrow M \; N^\prime \end{array}</span></p>
+</div>
+<p>The λ-calculus is <em>very</em> powerful—<em>some stuff about it being a “universal model of computation”</em>—but that power comes at the cost of also being able to express quite a lot of scary programs that do bad stuff.</p>
+<p>For instance, the λ-calculus comes with general recursion out of the box, via the <span class="math inline">Y</span> combinator! We’ll see an example of using the <span class="math inline">Y</span> combinator below, but essentially, <span class="math inline">Y\;f</span> represents an infinite series of applications of <span class="math inline">f</span>:</p>
+<p><span class="math display">
+\begin{array}{lrl}
+Y
+&amp; =               &amp; \lambda f. (\lambda x. x \; x) (\lambda x. f \; (x \; x)) \\
+\\
+Y \; f
+&amp; \longrightarrow &amp; f \; (Y \; f)
+\\
+&amp; \longrightarrow &amp; f \; (f \; (Y \; f))
+\\
+&amp; \longrightarrow &amp; f \; (f \; (f \; (Y \; f)))
+\\
+&amp; \longrightarrow &amp; \dots
+\end{array}
+</span></p>
+<p>That’s good—as programmers, we like recursion! Really simplifies your programs, not having to write out the case for every possible input!</p>
+<p>However, if you pass <span class="math inline">Y</span> the identity function, you’ll get <span class="math inline">Ω</span>—the program which runs forever, but never gets anything done! Watch it reduce to right back to itself in a single step:</p>
+<p><span class="math display">
+\begin{array}{lrl}
+\Omega
+&amp; =               &amp; (\lambda x. x \; x) (\lambda x. x \; x)
+\\
+&amp; \longrightarrow &amp; (x \; x)\{\lambda x. x \; x/x\}
+\\
+&amp; =               &amp; (\lambda x. x \; x) (\lambda x. x \; x)
+\end{array}
+</span></p>
+<p>That’s scary, I’d prefer not to have that! Programs which run forever, but never do a single thing—or worse, programs which are doing things the whole time, but never produce any outputs!</p>
+<p>Most functional languages don’t just implement the core λ-calculus, but rather extend the λ-calculus with various constructs—numbers, addition, multiplication, pairs, sums, <em>etc.</em> <em>Technically speaking</em>, these can all be encoded using just function—see, <em>e.g.</em>, Church encodings—but it tends to be <em>a lot</em> more practical and faster to use, <em>e.g.</em>, machine numbers.</p>
+<p>For example, we can extend the untyped λ-calculus with Peano numbers. First, we extend the term language with the number <em>zero</em>, written <span class="math inline">\text{zero}</span>, the successor function, written <span class="math inline">\text{suc}</span>, and a pattern matching construct for numbers, written <span class="math inline">\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}</span>:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{Term} \; L, M, N
+\\
+\quad
+  \begin{array}{rl}
+  ::= &amp; \dots
+  \\\mid &amp;    \text{zero}
+  \;\mid\;    \text{suc}
+  \\\mid &amp;    \text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
+  \end{array}
+\end{array}
+</span></p>
+<p>Then, we extend the reduction rules with two reduction rules for pattern matches on numbers—depending on whether the number is zero or a successor—and a rule to let us reduce under pattern matches:</p>
+<div class="mathpar">
+<p><span class="math inline">\text{case}\;\text{zero}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\} \longrightarrow M</span></p>
+<p><span class="math inline">\text{case}\;\text{suc}\;{L}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\} \longrightarrow N\{L/x\}</span></p>
+<p><span class="math inline">\begin{array}{c} L \longrightarrow L^\prime \\ \hline \text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\} \\ \downarrow \\ \text{case}\;L^\prime\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\} \end{array}</span></p>
+</div>
+<p>We can now define addition on Peano numbers in our calculus! Ideally, we’d write something like the following, familiar definition for addition:</p>
+<p><span class="math display">
+\begin{array}{lllcl}
+\text{plus} &amp; \text{zero} &amp; {N} &amp; = &amp; \text{zero}
+\\
+\text{plus} &amp; (\text{suc}\;{M}) &amp; {N} &amp; = &amp; \text{suc}\;(\text{plus}\;{M}\;{N})
+\end{array}
+</span></p>
+<p>Our core language doesn’t support recursive or pattern matching definitions, so we’ll have to elaborate the above definition into something less familiar, which uses the <span class="math inline">Y</span> combinator and the pattern matching construct. It’s a bit more verbose, but it’s addition nonetheless:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{plus} \triangleq \lambda{x}.\lambda{y}.(Y\;(\text{plus}^\prime\;{y}))\;{x}
+\\
+\quad\textbf{where}
+\\
+\quad\quad
+\text{plus}^\prime \triangleq \lambda{y}.\lambda{\text{rec}}.\lambda{x}.
+\\
+\quad\quad\quad\text{case}\;{x}\;\text{of}\;\left\{
+\begin{array}{lcl}
+\text{zero} &amp; \mapsto &amp; \text{zero};
+\\
+\text{suc}\;{x^\prime} &amp; \mapsto &amp; \text{suc}\;(\text{rec}\;{x^\prime}\;{y})
+\end{array}
+\right\}
+\end{array}
+</span></p>
+<p>Woe is us! We have <em>another</em> kind of problem! We now have to worry about programs like <span class="math inline">\text{plus}\;(\lambda x.x)\;\text{zero}</span>. What does that even mean?! According to our semantics, it means exactly that, since it doesn’t reduce any further… It’s stuck on the pattern match on <span class="math inline">\lambda x.x</span>, since there’s no case for functions.</p>
+<p>Problems like these are less obvious when using, <em>e.g.</em>, Church encodings, since everything is just functions. For instance, if we use Church-encoded Peano numbers to compute <span class="math inline">\text{plus}_{ch} \; (\lambda x.x) \; \text{zero}_{ch}</span>, and convert the result to our builtin Peano numbers, we find that adding the identity function to the number <em>zero</em> gives us <em>one</em>:</p>
+<p><span class="math display">
+\begin{array}{lcl}
+\text{zero}_{ch} &amp; \triangleq &amp; \lambda s. \lambda z. z
+\\
+\text{suc}_{ch}  &amp; \triangleq &amp; \lambda n. \lambda s. \lambda z. s \; (n \; s \; z)
+\\
+\text{plus}_{ch} &amp; \triangleq &amp; \lambda m. \lambda n. \lambda s. \lambda z. m \; s \; (n \; s \; z)
+\end{array}
+</span></p>
+<p><span class="math display">
+\begin{array}{l}
+\text{plus}_{ch} \; (\lambda x.x) \; \text{zero}_{ch} \; \text{suc} \; \text{zero}
+\\
+\quad
+  \begin{array}{rl}
+  \longrightarrow &amp; (\lambda x.x) \; \text{suc} \; (\text{zero}_{ch} \; \text{suc} \; \text{zero})
+  \\
+  \longrightarrow &amp; (\lambda x.x) \; \text{suc} \; \text{zero}
+  \\
+  \longrightarrow &amp; \text{suc} \; \text{zero}
+  \end{array}
+\end{array}
+</span></p>
+<p>All in all, we’ve identified <em>two</em> main problems with using the untyped λ-calculus as a foundation for programming languages:</p>
+<ol type="1">
+<li>it has programs which loop forever but produce nothing; and</li>
+<li>it has no way of making sure that data is used as intended.</li>
+</ol>
+<p>Specifically, for the second problem, we have the choice between programs which get stuck and programs which compute nonsense. For the first option, we tag our data—by using, <em>e.g.</em>, a syntactically distinct <span class="math inline">\text{zero}</span> constructor—and check the types of our data at runtime. For the second option, we encode everything as functions, and accept whatever results fall out of our encoding.</p>
+<h2 id="taming-the-λ-calculus-with-types">Taming the λ-calculus with types…</h2>
+<p>So, we’ve got a lot of scary stuff going on, stuff we really rather wouldn’t have, like programs which uselessly loop forever, and programs which try to add numbers to functions. What can we do?</p>
+<p>One of the <em>simplest</em> solutions—horrible pun <em>absolutely</em> intended—is to use simple types. You see, in 1940, in an attempt to get rid of these unhelpful loops, Alonzo developed <a href="https://www.jstor.org/stable/2266170">the simply-typed λ-calculus</a>. I’m guessing you’ve probably seen this before, but if you haven’t…</p>
+<p>We start by formalising what we mean by <em>type</em>. Since all we’ve got is functions, all we need is a function type <span class="math inline">A \to B</span> and <em>some</em> base type—it doesn’t really matter what, so we’re gonna call it <span class="math inline">\star</span>:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{Type} \; A, B, C
+\\
+\quad
+  \begin{array}{rl}
+  ::= &amp; \star
+  \;\mid\; A \to B
+  \end{array}
+\end{array}
+</span></p>
+<p>With types in hand, we write down some <em>typing rules</em>. The goal is that <em>if</em> we can construct a typing derivation for a term, that term will be well-behaved. Terms are checked in some context <span class="math inline">\Gamma</span>, which is a bag of typing assignments <span class="math inline">x : A</span>. There are three rules, corresponding to the three term constructs:</p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{c} \Gamma \ni x : A \\ \hline \Gamma \vdash x : A \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma, x : A \vdash M : B \\ \hline \Gamma \vdash \lambda x.M : A \to B \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma \vdash M : A \to B \quad \Gamma \vdash N : A \\ \hline \Gamma \vdash M \; N : B \end{array}</span></p>
+</div>
+<p>In order of appearance:</p>
+<ul>
+<li>A variable <span class="math inline">x</span> has type <span class="math inline">A</span> if there’s an assignment in the bag that says so.</li>
+<li>If we’ve got something of type <span class="math inline">B</span> which uses something of type <span class="math inline">A</span> from the bag, we can abstract over that something to create a function of type <span class="math inline">A \to B</span>.</li>
+<li>If we’ve got something of type <span class="math inline">A \to B</span> and something of type <span class="math inline">A</span>, then we can apply the former to the latter to get something of type <span class="math inline">B</span>.</li>
+</ul>
+<p>Guess what?! It works! All the programs you can type with these rules are super well-behaved and nice! Buuuut… there’s kinda a lot of programs that are really nice and good, that you can’t type with these rules… Very, <em>very</em>, notably, you can’t type the <span class="math inline">Y</span> combinator. Oh no! We lost recursion!</p>
+<p>Queue the history of type theory, trying to wrangle with this, trying to make this system more permissive while still keeping lots of the scary stuff out!</p>
+<p>It’s, <em>uh</em>, pretty hard to get <em>extactly</em> the bad looping stuff out, so some folks are like “eh, we’ll keep the looping stuff, but still use types to get rid of all that ‘adding functions to numbers’ nonsense”, whereas other folks are all hardcore and decide that “no it has to be terminating all the way even if it becomes pretty hard to use!”</p>
+<p>Let’s briefly talk about another type system for the λ-calculus—but only because it’ll turn out to be highly relevant to session types, I haven’t forgotten what I promised to write about! Let’s talk about <a href="https://homepages.inf.ed.ac.uk/wadler/papers/lineartaste/lineartaste-revised.pdf">the linear λ-calculus</a>.</p>
+<p>In its most minimal form, the linear λ-calculus demands that every variable is used <em>exactly once</em>. When you check a function application, you have to decide which parts of the bag are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the bag is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.</p>
+<p>Also, we now use this cute little lollipop instead of the function arrow:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{Type} \; A, B, C
+\\
+\quad
+  \begin{array}{rl}
+  ::= &amp; \star
+  \;\mid\; A \multimap B
+  \end{array}
+\end{array}
+</span></p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{c} \\ \hline x : A \vdash x : A \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma, x : A \vdash M : B \\ \hline \Gamma \vdash \lambda x.M : A \multimap B \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma \vdash M : A \multimap B \quad \Delta \vdash N : A \\ \hline \Gamma, \Delta \vdash M \; N : B \end{array}</span></p>
+</div>
+<p>As a type system, this is <em>highly restrictive</em>. Essentially, what we’re left with is a calculus of permutations. Think of lists… if you’re writing a function from lists to lists, but you <em>have to</em> use every element in the list exactly once, what kinds of programs can you write? Permutations. That’s it.</p>
+<p>Oof, that was a bit of a detour, wasn’t it? Wanna talk about <em>session types</em>, the thing that I promised I’d talk about?</p>
+<h2 id="the-π-calculus-is-even-scarier">The π-calculus! <em>(Is even scarier…)</em></h2>
+<p>Okay, let’s talk π-calculus. The π-calculus is pretty young—it didn’t show up until 1992, though it’s heavily influenced by ideas dating back to the 1980s.</p>
+<p>It’s also pretty big! It’s got twice as many <em>things</em> in it as the λ-calculus. Instead of functions, we’re talking about processes, which are built using <em>six</em> different constructors:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{Process}\;{P},{Q},{R}
+\\
+\quad
+  \begin{array}{rll}
+     ::=    &amp; (\nu {x}){P}           &amp;\text{— create new channel}
+  \\\mid    &amp; ({P}\parallel{Q})      &amp;\text{— put }P\text{ and }Q\text{ in parallel}
+  \\\mid    &amp; 0                      &amp;\text{— done}
+  \\\mid    &amp; x\langle{y}\rangle.{P} &amp;\text{— send }y\text{ on }x
+  \\\mid    &amp; x(y).{P}               &amp;\text{— receive }y\text{ on }x
+  \\\mid    &amp; !{P}                   &amp;\text{— replicate }P
+  \end{array}
+\end{array}
+</span></p>
+<p>In order of appearance:</p>
+<ul>
+<li>We’ve got ν-binders, written <span class="math inline">(\nu x)P</span>, which create a new channel <span class="math inline">x</span>, which can be used in <span class="math inline">P</span>.</li>
+<li>We’ve got parallel composition, written <span class="math inline">\parallel</span>, to let you know that two processes are running in parallel.</li>
+<li>We’ve got nil, written <span class="math inline">0</span>, the process which is done.</li>
+<li>We’ve got <em>send</em>, written <span class="math inline">x \langle y \rangle.P</span>, which sends some value <span class="math inline">y</span> on <span class="math inline">x</span>, and then continues as <span class="math inline">P</span>.</li>
+<li>We’ve got <em>receive</em>, written <span class="math inline">x ( y ).P</span>, which receives some value on <span class="math inline">x</span>, names it <span class="math inline">y</span>, and then continues as <span class="math inline">P</span>.</li>
+<li>We’ve got replication, written <span class="math inline">! P</span>, which represents a process <span class="math inline">P</span> which is replicated an arbitrary number of times.</li>
+</ul>
+<p>Replication isn’t truly <em>essential</em> to the π-calculus, it’s just that we can’t do any sort of <em>infinite</em> behaviour with just sending and receiving, so we have to add it explicitly. Other solutions, like adding recursive definitions, work as well.</p>
+<p>There’s only one computation rule—if we’ve got a send and a receive in parallel, we perform the communication, and replace all instances of the name bound by the receive instruction by the actual value sent. The other three reduction rules are just there to let us reduce under parallel compositions and ν-binders:</p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{c} x\langle{y}\rangle.{P}\parallel x(z).{Q} \longrightarrow {P}\parallel{Q}\{y/z\} \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} {P} \longrightarrow {P}^\prime \\ \hline (\nu x){P} \longrightarrow (\nu x){P}^\prime \end{array}</span> <span class="math inline">\begin{array}{c} {P} \longrightarrow {P}^\prime \\ \hline {P}\parallel{Q} \longrightarrow {P}^\prime\parallel{Q} \end{array}</span> <span class="math inline">\begin{array}{c} {Q} \longrightarrow {Q}^\prime \\ \hline {P}\parallel{Q} \longrightarrow {P}\parallel{Q}^\prime \end{array}</span></p>
+</div>
+<p>However, these rules in and of themselves are not enough. You see, a parallel composition <span class="math inline">P \parallel Q</span> isn’t intended to be <em>ordered</em>—I mean, if you’ve got two processes in parallel, does it make sense to say that one of them is “to the left of” the other?—but we haven’t told the reduction semantics about that. That means that with the rules we’ve given so far, we cannot reduce the following:</p>
+<p><span class="math display">
+(\nu x)(x(z).{Q}\parallel x\langle{y}\rangle.{P})
+</span></p>
+<p>Why not? The send and the receive are in the wrong order—our computation rule requires that the send is <em>to the left of</em> the receive, so we can’t apply it:</p>
+<p><span class="math display">
+x\langle{y}\rangle.{P}\parallel x(z).{Q}
+\longrightarrow
+{P}\parallel{Q}\{y/z\}
+</span></p>
+<p>One solution is to tell the reduction semantics that the order of processes doesn’t matter—along with a few other things:</p>
+<p><span class="math display">
+\begin{array}{lrll}
+  P \parallel Q
+  &amp; \equiv
+  &amp; Q \parallel P
+  \\
+  P \parallel (Q \parallel R)
+  &amp; \equiv
+  &amp; (P \parallel Q) \parallel R
+  \\
+  P \parallel 0
+  &amp; \equiv
+  &amp; P
+  \\
+  (\nu x)0
+  &amp; \equiv
+  &amp; 0
+  \\
+  (\nu x)(\nu y)P
+  &amp; \equiv
+  &amp; (\nu y)(\nu x)P
+  \\
+  (\nu x)(P \parallel Q)
+  &amp; \equiv
+  &amp; (\nu x)P \parallel Q,
+  &amp; \text{if}\;x\not\in{Q}
+  \\
+  !{P}
+  &amp; \equiv
+  &amp; !{P}\parallel{P}
+\end{array}
+</span></p>
+<p>In order of appearance:</p>
+<ul>
+<li>Parallel composition is <em>commutative</em> and <em>associative</em>, <em>i.e.</em> the order of parallel processes doesn’t matter.</li>
+<li>We can remove (and add) processes which are done.</li>
+<li>We can remove (and add) ν-binders which aren’t used.</li>
+<li>The order of ν-binders doesn’t matter.</li>
+<li>We can swap ν-binders and parallel compositions as long as we don’t accidentally move an endpoint out of the scope of its binder.</li>
+<li>Replicated processes can be, <em>well</em>, replicated. We kinda forgot to add this at first, so we didn’t have any infinite behaviour… but now we do!</li>
+</ul>
+<p>Now that we have this equivalence of processes—usually called <em>structural congruence</em>—we can embed it in the reduction relation:</p>
+<p><span class="math display">
+\begin{array}{c}
+  P \equiv P^\prime \quad P^\prime \longrightarrow Q^\prime \quad Q^\prime \equiv Q
+  \\ \hline
+  P \longrightarrow Q
+\end{array}
+</span></p>
+<p>The reason we’re embedding it this way, with a reduction step sandwiched between two equivalence, is because the equivalence relation isn’t super well-behaved—there’s plenty of infinite chains of rewrite rules, <em>e.g.</em>, imagine swapping <span class="math inline">P \parallel Q</span> back and forth forever, or duplicating <span class="math inline">! P</span> forever—and we’d prefer not to have any infinite chains of reductions. Embedding it this way forces there to be at least one <em>real</em> computation step in each reduction step, because the only way to construct a reduction is to start with a computation.</p>
+<p>If you thought the λ-calculus had problems, have I got news for you. There’s all the old problems we had with the lambda calculus. We’ve got processes that reduce forever without doing anything:</p>
+<p><span class="math display">
+\begin{array}{l}
+(\nu x)(!{x}\langle{y}\rangle.0 \parallel !{x}({z}).0)
+\\
+\quad
+  \begin{array}{rl}
+  \equiv
+  &amp; (\nu x)( !{x}\langle{y}\rangle.0 
+    \parallel {x}\langle{y}\rangle.0 
+    \parallel !{x}({z}).0 
+    \parallel {x}({z}).0)
+  \\
+  \longrightarrow
+  &amp; (\nu x)( !{x}\langle{y}\rangle.0 \parallel !{x}({z}).0)
+  \end{array}
+\end{array}
+</span></p>
+<p>Ah! One process which just <em>keeps</em> sending the value <span class="math inline">y</span> to another process, which throws it away immediately, just sending and throwing away, <em>forever</em>. Isn’t that the kind of programs we all like to write?</p>
+<p>Plus, if we add numbers, we could try to send over the number 5, foolishly assuming it’s a channel.</p>
+<p>But <em>what fun</em>! There’s new problems as well! If we’ve got two <em>pairs</em> of processes, both of which are trying to communicate over <span class="math inline">x</span> at the same time, then reduction is not longer <em>deterministic</em>—it’s anyone’s guess which message will end up where! Yaaay, it’s <em>race conditions</em>:</p>
+<p><span class="math display">
+\begin{array}{l}
+  (\nu x)%
+  \left(
+  \begin{array}{l}
+  x\langle{y_1}\rangle.{P_1}\parallel x(z_1).{Q_1}\parallel
+  \\
+  x\langle{y_2}\rangle.{P_2}\parallel x(z_2).{Q_2}
+  \end{array}
+  \right)
+  \\
+  \\
+  \quad
+  \begin{array}{rl}
+  \longrightarrow
+  &amp; (\nu x)%
+    \left(
+    \begin{array}{l}
+    {P_1}\parallel {Q_1}\{y_1/z_1\}\parallel
+    \\
+    {P_2}\parallel {Q_2}\{y_2/z_2\}
+    \end{array}
+    \right)
+  \\
+  \mathit{or}
+  \\
+  \longrightarrow
+  &amp; (\nu x)%
+    \left(
+    \begin{array}{l}
+    {P_1}\parallel {Q_1}\{y_2/z_1\}\parallel
+    \\
+    {P_2}\parallel {Q_2}\{y_1/z_2\}
+    \end{array}
+    \right)
+  \end{array}
+\end{array}
+</span></p>
+<p>Another <em>fun</em> thing we can do is write two processes which echo a message on <span class="math inline">x</span>—they receive something and send it back… but the twist is, they’re both wanting to <em>receive</em> first! Ack, it’s a <em>deadlock</em>:</p>
+<p><span class="math display">
+\begin{array}{c}
+  (\nu x)%
+  \left(
+  x(y).x\langle{y}\rangle.0 \parallel x(z).x\langle{z}\rangle.0
+  \right)
+  \not\longrightarrow
+\end{array}
+</span></p>
+<p>To be fair, it’s not surprising that race conditions and deadlocks show up in a foundational calculus for <em>concurrency</em>—it’d be weird if they didn’t. But that does mean that as programming languages people, we now have two new problems to worry about! To summarise, we’ve identifier <em>four</em> main problems with the untyped π-calculus as a foundation for programming languages:</p>
+<ol type="1">
+<li>it has programs which loop forever but produce nothing;</li>
+<li>it has no way of making sure that data is used as intended;</li>
+<li>it has <em>race conditions</em>; and</li>
+<li>it has <em>deadlocks</em>.</li>
+</ol>
+<h2 id="taming-the-π-calculus-with-types">Taming the π-calculus with types…</h2>
+<p>Oh dear, so many problems to solve. Where do we begin?</p>
+<p>It may help to think a little deeper about the latter three problems. In a sense, we could see a deadlock as the consequence of us not using a channel as intended. After all, we probably intended for one party to be sending while the other was receiving. We could see a race condition in a similar light. We intended for the two pairs of processes to communicate in a <em>predictable</em> pattern, in pairs of two.</p>
+<p>These are overly simplistic descriptions—sometimes we truly don’t care about the order of messages, and a bit of a race is fine. However, much like with the λ-calculus, we’re gonna try and cut all the bad stuff out first, no matter what cost, and then get to the business recovering what we lost.</p>
+<p>Let’s have a look at <em>session types</em>, invented in the early 1990s by <a href="http://www.kurims.kyoto-u.ac.jp/~kyodo/kokyuroku/contents/pdf/0851-05.pdf">Kohei Honda</a>, and let’s focus first and foremost on one important property—<em>session fidelity</em>. Essentially, it means that we communicate over a channel as intended by its protocol—or <em>session type</em>.</p>
+<p>Let’s start with the simplest system, where there’s only two things we can do with a channel—send and receive. That’ll be our language of session types—either we send on a channel, we receive from a channel, or we’re done:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{Session type}\;{S}\quad
+\\
+\quad
+  \begin{array}{rll}
+     ::= &amp; !S.S'        &amp;\text{— send}
+  \\\mid &amp; ?S.S'        &amp;\text{— receive}
+  \\\mid &amp; \mathbf{end} &amp;\text{— done}
+  \end{array}
+\\
+\end{array}
+</span></p>
+<p>A crucial notion in session types—as mentioned in the introduction—is <em>duality</em>, the idea that while I’m sending a message, you should be expecting to receive one, and vice versa. Duality is a function on session types:</p>
+<p><span class="math display">
+\begin{array}{lrl}
+\overline{!S.S'}        &amp; = &amp; ?S.\overline{S'}
+\\
+\overline{?S.S'}        &amp; = &amp; !S.\overline{S'}
+\\
+\overline{\mathbf{end}} &amp; = &amp; \mathbf{end}
+\end{array}
+</span></p>
+<p>Finally, before we get to the typing rules, we’re gonna make one tiny tweak to the syntax for processes. Before, our ν-binders introduced a <em>channel name</em>, which any process could then use to communicate on. Now, ν-binders introduce a channel by its two <em>channel-endpoint names</em>. It’s gonna make the typing rules a <em>bunch</em> easier to write down:</p>
+<p><span class="math display">
+\begin{array}{l}
+\text{Process}\;{P},{Q},{R}
+\\
+\quad
+  \begin{array}{rll}
+     ::=    &amp; (\nu xx'){P} &amp;\text{— create new channel }{x}{\leftrightarrow}{x'}
+  \\\mid    &amp; \dots
+  \end{array}
+\end{array}
+</span></p>
+<p>We’ve also gotta propagate this changes through the structural congruence and the reduction rules. It’s pretty straightforward for most of the changes—just replace <span class="math inline">(\nu x)</span> with <span class="math inline">(\nu x x')</span>—but there’s one extra change we have to make to the computation rule, which is a bit of a shift in perspective. See, in our first iteration of the π-calculus, processes were connected by virtue of having access to the same <em>channel name</em>, and ν-binders were merely a convenience to let us hide channel names from the outside world. However, in our current version, processes use <em>unrelated</em> endpoint names, and it’s the ν-binder who connects them to form a channel. Or—if you will—each participant is just holding a tin can, and they can’t be used to communicate until they’re bound together with twine. That means that we’ll have to <em>require</em> that reduction takes place under a ν-binder:</p>
+<p><span class="math display">
+(\nu x x')(x\langle{y}\rangle.{P}\parallel x'(z).{Q})
+\longrightarrow
+(\nu x x')({P}\parallel{Q}\{y/z\})
+</span></p>
+<p>Okay, typing rules! One thing that’s very different from the λ-calculus is that the typing rules only check whether processes use channels correctly—the processes themselves don’t have types. There are six rules, corresponding to the six term constructs:</p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{c} \Gamma, x : S, x' : \overline{S} \vdash P \\ \hline \Gamma \vdash (\nu xx') P \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma \vdash P \quad \Delta \vdash Q \\ \hline \Gamma, \Delta \vdash P \parallel Q \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} \\ \hline \varnothing \vdash 0 \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma \vdash P \\ \hline \Gamma, x : \mathbf{end} \vdash P \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} \Gamma, x : B \vdash P \\ \hline \Gamma, x : {!}A.B, y : A \vdash x\langle{y}\rangle.P \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma, y : A, x : B \vdash P \\ \hline \Gamma, x : {?}A.B \vdash x(y).P \end{array}</span></p>
+</div>
+<p>In order of appearance:</p>
+<ul>
+<li>If we’ve got a process <span class="math inline">P</span> which uses two endpoints <span class="math inline">x</span> and <span class="math inline">x'</span> at dual session types, then we can connect them to form a channel, written <span class="math inline">(\nu x x')P</span>.</li>
+<li>If we’ve got two processes <span class="math inline">P</span> and <span class="math inline">Q</span>, which use channels according to the session types in <span class="math inline">\Gamma</span> and <span class="math inline">\Delta</span>, then we can put those processes in parallel, written <span class="math inline">P \parallel Q</span>, and the resulting process will use channels according to the session types in <span class="math inline">\Gamma, \Delta</span>, where <span class="math inline">\Gamma</span> and <span class="math inline">\Delta</span> <em>must be disjoint</em>.</li>
+<li>The terminated process is done—it doesn’t use any channels.</li>
+<li>If we’ve got a channel <span class="math inline">x</span> of type <span class="math inline">!A.B</span> and some <span class="math inline">y</span> of type <span class="math inline">A</span>, then we can send <span class="math inline">y</span> over <span class="math inline">x</span>. We lose access to <span class="math inline">y</span>—we’ve sent it away, after all—and the channel <span class="math inline">x</span> continues as a channel of type <span class="math inline">B</span>.</li>
+<li>If we’ve got a channel <span class="math inline">x</span> of type <span class="math inline">?A.B</span>, then we can receive something of type <span class="math inline">A</span> over <span class="math inline">x</span>—call it <span class="math inline">y</span>—after which the channel <span class="math inline">x</span> continues as a channel of type <span class="math inline">B</span>.</li>
+<li>Finally, if we’ve got a channel which is done, we can forget about it.</li>
+</ul>
+<p>This type system is <em>linear</em>, much like the linear λ-calculus we saw earlier. Told you it’d be relevant! Anyway, it’s not linear in quite the same way, since channels can be used <em>multiple times</em>. However, each step in the protocol has to be executed <em>exactly once</em>!</p>
+<p>So, did it work? Are we safe from the bad programs? Yes and no. Which, <em>uh</em>, kinda just means no? But there’s <em>some</em> bad programs we got rid of! There are no longer programs which misuse data, since everything strictly follows protocols. Since every channel has <em>exactly two</em> processes communicating over it, we no longer have any race conditions. Furthermore, because those two processes must act <em>dually</em> on the channel, we no longer have any deadlocks <em>within a single session</em>—that is to say, as long as each two processes only share <em>one</em> means of communication, we don’t have any deadlocks. Unfortunately, it’s quite easy to write a program which interleaves <em>two</em> sessions and deadlocks:</p>
+<p><span class="math display">
+\begin{array}{c}
+  (\nu x x')(\nu y y')%
+  \left(
+  x(z).y\langle{z}\rangle.0 \parallel y'(w).x'\langle{w}\rangle.0
+  \right)
+  \not\longrightarrow
+\end{array}
+</span></p>
+<p>We also don’t have looping programs anymore, but, <em>uh</em>, that’s mostly because we removed replication, so… win?</p>
+<p>How do we get rid of those last few deadlocks? The ones caused by having multiple open lines of communication? There’s several different ways to do this, and they all have their advantages and disadvantages:</p>
+<p>The first option, used in, <em>e.g.</em>, the logic-inspired session type systems by <a href="https://widgets.figshare.com/articles/6606974/embed">Luís Caires and Frank Pfenning</a> and <a href="https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-sessions/propositions-as-sessions-jfp.pdf">Philip Wadler</a>, is to just say “The problem happens when you’ve got multiple sessions open? Well, have you considered just not doing that?” Essentially, these type systems require that the <em>communication graph is acyclic</em>—what that means is that, if you drew all the participants, and then drew lines between each two participants who share a channel, you wouldn’t draw any cycles. This works! Can’t share multiple channels if you don’t share multiple channels, am I right? But it’s a <em>wee bit</em> restrictive… Got some homework about <a href="https://en.wikipedia.org/wiki/Dining_philosophers_problem">forks and hungry, hungry philosophers</a> you need to do? Nope. Wanna write a neat cyclic scheduler? Not for you. However, it has some <em>nice</em> aspects too—it composes! Got two deadlock-free programs? Well, you can put ’em together, and it’s gonna be a deadlock-free program! If we updated our typing rules, they’d look a little like this:</p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{c} \Gamma, x : S \vdash P \quad \Delta, x' : \overline{S} \vdash Q \\ \hline \Gamma \vdash (\nu x x')(P \parallel Q) \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} \\ \hline \varnothing \vdash 0 \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma \vdash P \\ \hline \Gamma, x : \mathbf{end} \vdash P \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} \Gamma, x : B \vdash P \\ \hline \Gamma, x : {!}A.B, y : A \vdash x\langle{y}\rangle.P \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma, y : A, x : B \vdash P \\ \hline \Gamma, x : {?}A.B \vdash x(y).P \end{array}</span></p>
+</div>
+<p>We’ve glued the ν-binder and the parallel composition together in a single operation which makes sure that one endpoint goes one way and the other the other.</p>
+<p>The second option, developed by <a href="https://doi.org/10.1016/S0890-5401(02)93171-8">Naoki Kobayashi</a>, is to just do a whole-program check for deadlocks. Take out a piece of paper, and draw a blob for every dual pair of send and receive actions in your program. For every action, if it <em>has to</em> happen before another action, draw an arrow between their blobs. Finally, check to see if there’s any <em>directed</em> cycles—for each blob, see if you can follow the arrows and end up back at the same blob. We can do this <em>formally</em> by adding some little blobs to our session types—since each session type connective corresponds to an action—and requiring a particular order on the little blobs. For reference, little blobs are more commonly known as <em>priorities</em>. If we updated our typing rules, they’d look a little like this… first, we add little blobs to our session types. Duality <em>preserves</em> session types.</p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{l} \text{Session type}\;{S}\quad \\ \quad  \begin{array}{rll}  ::= &amp; !^oS.S' &amp;\text{— send}  \\\mid &amp; ?^oS.S' &amp;\text{— receive}  \\\mid &amp; \mathbf{end}^o &amp;\text{— done}  \end{array} \\ \end{array}</span> <span class="math inline">\begin{array}{lrl} \overline{!^oS.S'} &amp; = &amp; ?^oS.\overline{S'} \\ \overline{?^oS.S'} &amp; = &amp; !^oS.\overline{S'} \\ \overline{\mathbf{end}^o} &amp; = &amp; \mathbf{end}^o \end{array}</span></p>
+</div>
+<p>We also define a function, <span class="math inline">\text{Pr}</span>, to nab the topmost priority from a session type. If we apply <span class="math inline">\text{Pr}</span> to a <span class="math inline">\Gamma</span> we mean to get the <em>smallest</em> priority of all types in <span class="math inline">\Gamma</span>—actions with smaller priorities happen earlier, so we essentially wanna know when the <em>first</em> action in <span class="math inline">\Gamma</span> is gonna happen.</p>
+<p><span class="math display">
+\begin{array}{lrl}
+\text{Pr}{(!^oS.S')}        &amp; = &amp; o
+\\
+\text{Pr}{(?^oS.S')}        &amp; = &amp; o
+\\
+\text{Pr}{(\mathbf{end}^o)} &amp; = &amp; o
+\end{array}
+</span></p>
+<p>Then we change the typing rules:</p>
+<div class="mathpar">
+<p><span class="math inline">\begin{array}{c} \Gamma, x : S, x' : \overline{S} \vdash P \\ \hline \Gamma \vdash (\nu xx') P \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma \vdash P \quad \Delta \vdash Q \\ \hline \Gamma, \Delta \vdash P \parallel Q \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} \\ \hline \varnothing \vdash 0 \end{array}</span> <span class="math inline">\begin{array}{c} \Gamma \vdash P \\ \hline \Gamma, x : \mathbf{end} \vdash P \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} \Gamma, x : B \vdash P \quad o &lt; \text{Pr}{(\Gamma, x : B)} \\ \hline \Gamma, x : {!^o}A.B, y : A \vdash x\langle{y}\rangle.P \end{array}</span></p>
+<p><span class="math inline">\begin{array}{c} \Gamma, y : A, x : B \vdash P \quad o &lt; \text{Pr}{(\Gamma, y : A, x : B)} \\ \hline \Gamma, x : {?^o}A.B \vdash x(y).P \end{array}</span></p>
+</div>
+<p>We’re enforcing two things here:</p>
+<ol type="1">
+<li>If we write <span class="math inline">x(y).P</span>, then the action <span class="math inline">x(y)</span> must happen before <em>everything else in</em> <span class="math inline">P</span>. Similarly for <span class="math inline">x\langle{y}\rangle.P</span>.</li>
+<li>If we connect two endpoints, <span class="math inline">(\nu x x')</span>, then the dual actions on those endpoints must each happen <em>at the same time</em>.</li>
+</ol>
+<p>There’s a really nice recent example of a session type system which uses this technique by <a href="http://www.dcs.gla.ac.uk/~ornela/publications/DG18-Extended.pdf">Ornela Dardha and Simon Gay</a>. The upside of this technique is that you can have all sorts of neat cyclic communication graphs, and still rest assured knowing that they don’t do anything scary. The downside is that it’s a <em>whole-program</em> check, meaning that if you’ve got two deadlock-free programs, and you put ’em together, you have to check again, to see that you didn’t introduce any deadlocks.</p>
+<p>Anyway, we’ve now got a <em>mostly</em> safe foundation for session types. However, you don’t see type systems <em>this</em> simple touted in papers much—or <em>at all</em>, as far as I’m aware—and the reason is probably that they’re kinda <em>too simple</em>. Just like with the <em>purely</em> linear λ-calculus, there’s not much you can actually compute with these programs, and you have to put in a little bit of work before you can actually get to a point where you get back enough expressivity to be taken seriously as a programming language. However, I thought it would be illustrative to discuss the <em>simplest possible</em> type systems.</p>
+<p>There’s still <em>lots</em> of ground to cover. For instance, while the π-calculus is a universal model of computation, and in some sense is more expressive than the λ-calculus, it’s actually really annoying to program in. It lacks the capacity for abstraction that <em>functions</em> offer, for one. There’s been <a href="https://en.wikipedia.org/wiki/%CE%A0-calculus#Implementations">a few programming languages</a> based on the π-calculus—notably, <a href="https://web.archive.org/web/20190214193147/http://pop-users.org:80/occam-pi/">occam-π</a> and <a href="https://www.cis.upenn.edu/~bcpierce/papers/pict/Html/Pict.html">Pict</a>—but none of these have really taken off. So one thing I’d love to cover in the future is how to <em>combine</em> the λ- and π-calculus to form <em>concurrent λ-calculus</em>. The thing that you’d get if you’d crash both calculi together at high speeds, if you will.</p>
+<p>However, I’m coming up on, <em>like</em>, seven-and-a-half thousand words. Yeah, if you’ve read until here, you’ve read a lot of words, congrats. Anyway, I might continue this post in the future, but for now, thanks for listening—<em>uh</em>, reading, I mean!</p>
+<hr />
+<p><strong>Disclaimer</strong>: I haven’t proven any safety properties for any of the calculi presented here. The simply-typed λ-calculus is pretty well established, so you can trust that’s good, but the other systems are potentially destructive simplifications of existent systems, so all bets are off! I guess you could do the proofs yourself—or if you wanna be really safe, refer to the papers I’ve linked. However, I’ve opted to make these simplifications because the smallest typed π-calculi which are <em>actually</em> expressive tend to be pretty big already</p>
+</article>
+
+
+
+        </main>
+    </body>
+</html>
