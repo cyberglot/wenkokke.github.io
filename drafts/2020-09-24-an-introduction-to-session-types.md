@@ -521,7 +521,7 @@ $$
   \\
   (\nu x)0
   & \equiv
-  & 0
+  & \text{if}\;{x}\not\in{P}
   \\
   (\nu x)(\nu y)P
   & \equiv
@@ -901,6 +901,14 @@ Once we’ve got this foundation, we can get to work extending it! With a little
 
 ## Concurrent λ-calculus *(λ and π, together forever)*
 
+Okay, this will be the *final* computational model I’m introducing in this by now rather long blog post, I promise! The point of concurrent λ-calculus, in short, is this: the π-calculus is great for modelling concurrency, but it’s a rather, *uh*, unpleasant language to actually write programs in, and instead of figuring out how to make it a nice language, why not just smash it together with a thing that we already know and love!
+
+So, here’s the plan: we’re gonna start with the λ-calculus as a model of *sequential* computation, and then we’re gonna add a smattering of π-calculus processes on top as a model of sequential computations running *concurrently*. 
+
+First off, we’re going to take our λ-calculus terms, and extend then with some constants $K$, which will be our concurrency primitives. We’re also going to add *units*—the unit value, written $()$, and unit elimination, written $\mathbf{let} \; x = M \; \mathbf{in} \; N$.
+
+Second, we’re going to wrap those terms up in π-calculus processes—we’ll have ν-binders and parallel compositions, and threads which run terms. There’s two kinds of threads—*main* threads, written $\bullet M$, and *child* threads, written $\circ M$. Why? Well, we expect functional programs to produce a value, but processes just send and receive things, and then stop. Programs in our concurrent λ-calculus are going to have *exactly one* main thread, which is going to compute a value. Child threads will send and receive, but eventually compute the unit value:
+
 ::: mathpar
 $\begin{array}{l}
   \begin{array}{l}
@@ -908,9 +916,9 @@ $\begin{array}{l}
   \\
   \quad
     \begin{array}{rl}
-    ::=    & x 
-    \\\mid & \lambda x.M
-    \\\mid & M \; N
+    ::=    & x \mid \lambda x.M \mid M \; N
+    \\\mid & () 
+    \\\mid & \mathbf{let} \; x = M \; \mathbf{in} \; N
     \\\mid & K
     \end{array}
   \end{array}
@@ -919,19 +927,153 @@ $\begin{array}{l}
 \text{Process}\;{P},{Q},{R}
 \\
 \quad
-  \begin{array}{rll}
-     ::=    & (\nu xx'){P}
-  \\\mid    & ({P}\parallel{Q})
-  \\\mid    & \circ M
-  \\\mid    & \bullet M
+  \begin{array}{rl}
+     ::= & (\nu xx'){P}
+  \\\mid & ({P}\parallel{Q})
+  \\\mid & \phi M
   \end{array}
+\end{array}$
+
+$\begin{array}{l}
+\text{Const} \; K
 \\
+\quad
+  \begin{array}{rlcl}
+     ::= & \mathbf{send} & \mid & \mathbf{recv} 
+  \\\mid & \mathbf{new}  & \mid & \mathbf{spawn}
+  \end{array}
+\end{array}$
+$\text{Flag} \; \phi ::= \bullet \mid \circ$
+:::
+
+So what are the semantics of our calculus going to be?
+
+First off, we just keep the reduction rules for our λ-calculus—and we’re just gonna sneak those rules for units on in there while you’re distracted. We’re gonna call this reduction arrow $\longrightarrow_M$, to distinguish it from the reduction on processes:
+
+::: mathpar
+$\begin{array}{c}
+(\lambda x.M)\;N
+\longrightarrow_M
+M\{N/x\}
+\end{array}$
+
+$\begin{array}{c}
+\mathbf{let} \; x = () \; \mathbf{in} \; N
+\longrightarrow_M
+N
+\end{array}$
+
+$\begin{array}{c}
+M
+\longrightarrow_M
+M^\prime
+\\ \hline
+M \; N
+\longrightarrow_M
+M^\prime \; N
+\end{array}$
+$\begin{array}{c}
+N
+\longrightarrow_M
+N^\prime
+\\ \hline
+M \; N
+\longrightarrow_M
+M \; N^\prime
+\end{array}$
+
+$\begin{array}{c}
+M
+\longrightarrow_M
+M^\prime
+\\ \hline
+\mathbf{let} \; x = M \; \mathbf{in} \; N
+\longrightarrow_M
+\mathbf{let} \; x = M^\prime \; \mathbf{in} \; N
 \end{array}$
 :::
 
+We’re also going to just copy over the structural congruence from the π-calculus, best as we can—not that the terminated process has disappeared, and in it’s place we’ve now got child threads which are done, *i.e.*, $\circ()$:
+
 $$
-\text{Const} \; K ::= \mathbf{send} \mid \mathbf{recv} \mid \mathbf{new} \mid \mathbf{spawn}
+\begin{array}{lrll}
+  P \parallel Q
+  & \equiv
+  & Q \parallel P
+  \\
+  P \parallel (Q \parallel R)
+  & \equiv
+  & (P \parallel Q) \parallel R
+  \\
+  P \parallel \circ()
+  & \equiv
+  & P
+  \\
+  (\nu x x')P
+  & \equiv
+  & P
+  & \text{if}\;{x},{x'}\not\in{P}
+  \\
+  (\nu x x')(\nu y y')P
+  & \equiv
+  & (\nu y y')(\nu x x')P
+  \\
+  (\nu x x')(P \parallel Q)
+  & \equiv
+  & (\nu x x')P \parallel Q,
+  & \text{if}\;{x},{x'}\not\in{Q}
+\end{array}
 $$
+
+::: mathpar
+$\begin{array}{c}
+x\langle{y}\rangle.{P}\parallel x(z).{Q}
+\longrightarrow
+{P}\parallel{Q}\{y/z\}
+\end{array}$
+
+$\begin{array}{c}
+{P}
+\longrightarrow
+{P}^\prime
+\\ \hline
+(\nu x){P}
+\longrightarrow
+(\nu x){P}^\prime
+\end{array}$
+$\begin{array}{c}
+{P}
+\longrightarrow
+{P}^\prime
+\\ \hline
+{P}\parallel{Q}
+\longrightarrow
+{P}^\prime\parallel{Q}
+\end{array}$
+$\begin{array}{c}
+{Q}
+\longrightarrow
+{Q}^\prime
+\\ \hline
+{P}\parallel{Q}
+\longrightarrow
+{P}\parallel{Q}^\prime
+\end{array}$
+
+$\begin{array}{c}
+  P \equiv P^\prime \quad P^\prime \longrightarrow Q^\prime \quad Q^\prime \equiv Q
+  \\ \hline
+  P \longrightarrow Q
+\end{array}$
+:::
+
+
+
+
+
+You might’ve noticed that we’ve now got $\mathbf{new}$ and $\mathbf{spawn}$ in our term language *as well as* ν-binders and parallel compositions in our process language. That’s seems kinda redundant, doesn’t it? We’d like to think of the *terms* as the programs that we actually write, and we’d like to think of the *processes* as modelling the configuration of threads and shared channels created while *running those programs*. So the $\mathbf{new}$ and $\mathbf{spawn}$ functions really just mean “create a ν-binder” and “create a parallel composition” on the process level!
+
+
 
 We keep the reduction rules from both the lambda and pi calculus.
 We keep the structural congruence from the pi calculus.

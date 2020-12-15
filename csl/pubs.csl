@@ -56,7 +56,8 @@
   <macro name="title">
     <choose>
       <if variable="URL">
-        <text prefix="{{html}}&lt;a href=&quot;{{/html}}" suffix="{{html}}&quot;&gt;{{/html}}" variable="URL"/>
+        <text prefix="{{html}}&lt;a name=&quot;{{/html}}" suffix="{{html}}&quot;{{/html}}" variable="ref-id"/>
+        <text prefix="{{html}}href=&quot;{{/html}}" suffix="{{html}}&quot;&gt;{{/html}}" variable="URL"/>
         <text variable="title" font-style="italic" suffix="{{html}}&lt;/a&gt;{{/html}}"/>
       </if>
       <else>

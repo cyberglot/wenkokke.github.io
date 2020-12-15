@@ -15,6 +15,19 @@
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
 
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const citations = document.querySelectorAll('.citation');
+         for (let citationSpan of citations) {
+             const firstRefId = citationSpan.getAttribute('DATA-CITES').split(' ');
+             const citationLink = document.createElement('A');
+             citationLink.innerHTML = citationSpan.innerHTML;
+             citationLink.setAttribute('href', '#'+firstRefId);
+             citationSpan.replaceWith(citationLink);
+         }
+     });
+    </script>
+
     $if(katex)$
     <!-- KaTeX -->
     <link
@@ -30,10 +43,10 @@
     </script>
     <script>
      document.addEventListener("DOMContentLoaded", function () {
-         var mathElements = document.getElementsByClassName("math");
-         var macros = [];
+         const mathElements = document.getElementsByClassName("math");
+         const macros = [];
          for (var i = 0; i < mathElements.length; i++) {
-             var texText = mathElements[i].firstChild;
+             const texText = mathElements[i].firstChild;
              if (mathElements[i].tagName == "SPAN") {
                  katex.render(texText.data, mathElements[i], {
                      displayMode: mathElements[i].classList.contains('display'),
