@@ -17,6 +17,19 @@
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
 
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const citations = document.querySelectorAll('.citation');
+         for (let citationSpan of citations) {
+             const firstRefId = citationSpan.getAttribute('DATA-CITES').split(' ');
+             const citationLink = document.createElement('A');
+             citationLink.innerHTML = citationSpan.innerHTML;
+             citationLink.setAttribute('href', '#'+firstRefId);
+             citationSpan.replaceWith(citationLink);
+         }
+     });
+    </script>
+
     
 </head>
 
