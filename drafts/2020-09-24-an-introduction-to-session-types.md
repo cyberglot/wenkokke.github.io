@@ -44,7 +44,7 @@ In this blog post, we I’ll focus on *binary session types*
 
 Let’s imagine for a moment that Ada were to take Briar up on her offer, and ask her to sample her famous milk puddings. Briar, a proper lady, only offers her milk puddings to those who make a *sufficiently polite* request—Ada must be polite and say “please”, but she must not overuse it, lest she comes off as begging! 
 
-We encode the interaction between Ada and Briar using *session types* in Haskell:
+We <a name="Ada-and-Briar"></a>encode the interaction between Ada and Briar using *session types* in Haskell:
 
 - Ada’s requests are represented using the `Request` datatype, which allows us to prefix a request for pudding with any number of uses of `Please`.
 - Briar’s response is represented using the `Response` datatype, in which she can either grant permission, in which case Briar sends an `Allow` with a sample of pudding attached, or refuse Ada’s request, in which case she sends a `Deny` with a reason.
@@ -84,7 +84,7 @@ Firstly, session types are *communication protocols.* If you glance at the types
 
 Secondly, the types of the endpoints of a binary channel must be *dual*. When Ada’s endpoint says she must send, Briar’s endpoint says she must receive. For classical multiparty session types, the equivalent notion is called *coherence*, but the principle remains the same.
 
-Finally, each endpoint must be used *exactly once* if we want to be sure to stick to the protocol. For instance, in the code above, each channel endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding:
+Finally, each endpoint must be used *exactly once* if we want to be sure to stick to the protocol. For instance, in the code above, each channel endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a <a name="cheeky-Ada"></a>cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding:
 
 ```haskell
 ada :: Send Request (Recv Response End) -> IO ()
@@ -93,7 +93,6 @@ ada chan = tryAll MayIHaveSomePudding chan
     tryAll req chan = do 
       chan' <- send req chan
       (resp, chan'') <- recv chan'
-      close chan''
       case resp of
         Allow pudding -> putStrLn "I’m so happy!"
         Deny reason -> tryAll (Please req) chan
@@ -1159,39 +1158,10 @@ Oof, we’ve done it! We’ve got the whole reduction system!
 
 ## Two Victorian Ladies *(More Formal, Somehow?)*
 
-Our formal concurrent λ-calculus is getting pretty close to being able to encode the interaction between Ada and Briar! Remember that, like a billion words ago?
+Our formal concurrent λ-calculus is getting pretty close to being able to encode the interaction between [Ada and Briar](#Ada-and-Briar)! Remember that, like a billion words ago? There’s two problems left, if we want to encode our example: 
 
-```haskell
-data Request
-  = Please Request
-  | MayIHaveSomePudding
-    
-data Response
-  = Allow Pudding
-  | Deny String
-    
-ada :: Send Request (Recv Response End) -> IO ()
-ada chan = do
-  chan' <- send (Please MayIHaveSomePudding) chan
-  (resp, chan'') <- recv chan'
-  case resp of
-    Allow pudding -> putStrLn "I’m so happy!"
-    Deny reason -> putStrLn "Woe is me!"
-
-briar :: Recv Request (Send Response End) -> IO ()
-briar chan = do
-  (req, chan') <- recv chan
-  let resp = case req of
-    MayIHaveSomePudding -> Deny "Such rudeness!"
-    Please MayIHaveSomePudding -> Allow myPudding
-    Please (Please _) -> Deny "Such beggary!"
-  chan'' <- send resp chan'
-```
-
-There’s two problems we’ve got here: 
-
-1. We don’t really have strings or, *uh*, the ability to print strings.
-2. We don’t have *data types*. 
+1. Ada prints a string, but we don’t really have strings or, *uh*, the ability to print strings.
+2. Ada and Briar send values of data types back and forth, but we don’t have *data types*. 
 
 For the first one, we’re just gonna take $\mathbf{putStrLn}$ and strings as primitives in our calculus, with no associated behaviour, and if our programs reduce to, *e.g.*, $\mathbf{putStrLn}\;\text{``Hello, Ada!''}$ we’ll say that’s fine.
 
@@ -1237,13 +1207,13 @@ Great! Now we can encode our example!
 
 $$
 \begin{array}{l}
-\text{ada} \triangleq \lambda c.
+\text{ada} \triangleq \lambda a.
 \\
 \quad
   \begin{array}{l}
-  \mathbf{let}\;c^\prime = \mathbf{send}\;(\mathbf{suc}\;\mathbf{zero})\;c\;\mathbf{in}
+  \mathbf{let}\;a^\prime = \mathbf{send}\;(\mathbf{suc}\;\mathbf{zero})\;a\;\mathbf{in}
   \\
-  \mathbf{let}\;(x,c^{\prime\prime}) = \mathbf{recv}\;c^\prime\;\mathbf{in}
+  \mathbf{let}\;(x,a^{\prime\prime}) = \mathbf{recv}\;a^\prime\;\mathbf{in}
   \\
   \!\!\!
   \begin{array}{lll}
@@ -1257,11 +1227,11 @@ $$
 
 $$
 \begin{array}{l}
-\text{briar} \triangleq \lambda c.
+\text{briar} \triangleq \lambda b.
 \\
 \quad
   \begin{array}{l}
-  \mathbf{let}\;(x,c^\prime) = \mathbf{recv}\;c\;\mathbf{in}
+  \mathbf{let}\;(x,b^\prime) = \mathbf{recv}\;b\;\mathbf{in}
   \\
   \mathbf{let}\;y = \mathbf{case}\;x\;\mathbf{of}
   \\
@@ -1283,14 +1253,14 @@ $$
     \}
     \end{array}
   \\
-  \mathbf{let} \; c^{\prime\prime} = \mathbf{send}\;{y}\;{c^\prime} \; \mathbf{in}
+  \mathbf{let} \; b^{\prime\prime} = \mathbf{send}\;{y}\;{b^\prime} \; \mathbf{in}
   \\
   ()
   \end{array}
 \end{array}
 $$
 
-And let’s put it all together in a single $\text{main}$ process. We’ve not done this so far, since it was *hopefully* pretty clear how Ada and Briar were meant to share a channel, but if we want to actually evaluate our processes, we’ll have to create a channel, and actually use it to connect Ada and Briar:
+And let’s put it all together in a single $\text{main}$ process. We’ve not done this so far, since it was *hopefully* pretty clear how Ada and Briar were meant to share a channel, but if we want to actually evaluate our processes, we’ll have to create a channel to connect Ada and Briar:
 
 $$
 \begin{array}{l}
@@ -1316,7 +1286,7 @@ $$
   \\
   \mathbf{let} \; () = \mathbf{spawn} \; (\text{briar} \; b) \; \mathbf{in}
   \\
-  \text{ada} \; 
+  \text{ada} \; a
   \end{array}
 \\ \\
 \downarrow
@@ -1378,7 +1348,7 @@ $$
 \end{array}
 $$
 
-Whew, so far so good! The $\mathbf{new}$ and $\mathbf{spawn}$ have done their jobs, and created a channel and a parallel composition! We’re right down to Ada and Briar now! Things are about to get messy!
+Whew, so far so good! The $\mathbf{new}$ and $\mathbf{spawn}$ have done their jobs, and created a channel and a parallel composition! We’re right down to Ada and Briar now! Things are about to get messy! (We’ll sometimes write $\downarrow_n$ when we’re doing multiple steps at a time, either because Ada and Briar are computing things in parallel, or because I didn’t feel like writing the whole thing out.)
 
 $$
 \begin{array}{c}
@@ -1648,6 +1618,40 @@ $$
 $$
 
 *Yes*, we’ve shown that our program is correct! It makes Ada happy! What more could you want?
+
+
+## Taming the concurrent λ-calculus with types…
+
+Types? Is it types? It *should be!* Just because our happy example works out, doesn’t mean the calculus as a whole is well-behaved. See, we can still encode [cheeky Ada](#cheeky-Ada), who’ll do anything for that sweet, sweet pudding:
+
+$$
+\begin{array}{l}
+\text{ada} \triangleq \lambda{a}.(Y \; (\text{tryAll}\;a))\;\mathbf{zero}
+\\
+\quad\mathbf{where}
+\\
+\qquad
+  \begin{array}{l}
+  \text{tryAll} \triangleq \lambda{a}.\lambda\text{rec}.\lambda{x}.
+  \\
+  \quad
+    \begin{array}{l}
+    \mathbf{let}\;a^\prime = \mathbf{send}\;x\;a\;\mathbf{in}
+    \\
+    \mathbf{let}\;(y,a^{\prime\prime}) = \mathbf{recv}\;a^\prime\;\mathbf{in}
+    \\
+    \!\!\!
+    \begin{array}{lll}
+    \mathbf{if}\;\mathbf{true}
+       & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+    \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \text{rec}\;(\mathbf{suc}\;x)
+    \end{array}
+    \end{array}
+  \end{array} 
+\end{array}
+$$
+
+I’m not gonna write out the whole evaluation, like I did with the previous example, but you can verify for yourself that evaluation gets stuck after a single back-and-forth, with Briar being done with Ada’s cheek and reducing to $\circ\;()$, while Ada still wants to talk.
 
 
 ---
