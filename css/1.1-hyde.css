@@ -17,12 +17,42 @@
 /*
  * Contents
  *
+ * Fonts
  * Global resets
  * Sidebar
  * Container
  * Reverse layout
  * Themes
  */
+
+/* Fonts
+ */
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: italic;
+    font-weight: 400;
+    src: url('../webfonts/Raleway-Italic.woff') format('woff');
+}
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../webfonts/Raleway-Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../webfonts/Raleway-Bold.woff') format('woff');
+}
+@font-face {
+    font-family: 'Roboto Slab';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../webfonts/RobotoSlab-Regular.woff') format('woff');
+}
+
 
 
 /*
