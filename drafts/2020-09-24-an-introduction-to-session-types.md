@@ -64,7 +64,6 @@ ada :: Send Request (Recv Response End) -> IO ()
 ada chan = do
   chan' <- send (Please MayIHaveSomePudding) chan
   (resp, chan'') <- recv chan'
-  close chan''
   case resp of
     Allow pudding -> putStrLn "I’m so happy!"
     Deny reason -> putStrLn "Woe is me!"
@@ -77,7 +76,6 @@ briar chan = do
     Please MayIHaveSomePudding -> Allow myPudding
     Please (Please _) -> Deny "Such beggary!"
   chan'' <- send resp chan'
-  close chan''
 ```
 
 The example illustrates a crucial notions for session types:
@@ -134,7 +132,7 @@ $$
 \end{array}
 $$
 
-There’s only one computation rule—if a function $\lambda x.M$ meets its argument $N$ we replace all occurrences of $x$ in the function body $M$ with the argument $N$. The other two reduction rules are really just there to let us reduce under function applications:
+There’s only one computation rule—if a function $\lambda x.M$ meets its argument $N$ we replace all occurrences of $x$ in the function body $M$ with the argument $N$.
 
 ::: mathpar
 $\begin{array}{c}
@@ -142,7 +140,11 @@ $\begin{array}{c}
 \longrightarrow
 M\{N/x\}
 \end{array}$
+:::
 
+That’s not all, though, since we also need to let our calculus know that it’s okay to reduce under a function application. For this, we *could* just write out the following rules:
+
+::: mathpar
 $\begin{array}{c}
 M
 \longrightarrow
@@ -163,7 +165,33 @@ M \; N^\prime
 \end{array}$
 :::
 
-The λ-calculus is *very* powerful—*some stuff about it being a “universal model of computation”*—but that power comes at the cost of also being able to express quite a lot of scary programs that do bad stuff.
+However, things tends to compose a little better if you use a little trick called *evaluation contexts*[^call-by-name]. We’ll see an example of *how* evaluation contexts compose better later. Anyway, you write down all the partial terms under which it’s okay to normalise, and then write a single rule… Read $E[M]$ as “replace the single $\square$ in $E$ with $M$”:
+
+::: mathpar
+$\begin{array}{l}
+\text{Evaluation Context} \; E
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \square
+  \;\mid\;    E \; N
+  \;\mid\;    M \; E
+  \end{array}
+\end{array}$
+$\begin{array}{c}
+M
+\longrightarrow
+M^\prime
+\\ \hline
+E[ M ]
+\longrightarrow
+E[ M^\prime ]
+\end{array}$
+:::
+
+When we choose what to put in our evaluation contexts, we determined where to allow and disallow reduction. For instance, here we’re saying “You’re allowed to reduce function calls and their arguments… but don’t you dare touch the function body before we’re actually calling it!” This is called an *evaluation strategy*, and the one we’re using here is called *call-by-name*. Usually, call-by-name is pretty terrible in terms of efficiency. Imagine you have a pretty expensive computation, and the result of that computation is used twenty times… call-by-name is likely to do the whole computation twenty times! In practice, you’ll want to use call-by-value or call-by-need, but those complicate things, so we’re not using them here!
+
+Where were we? Oh, yes, λ-calculus, powerful, scary… Right! The λ-calculus is *very* powerful—*some stuff about it being a “universal model of computation”*—but that power comes at the cost of also being able to express quite a lot of scary programs that do bad stuff.
 
 For instance, the λ-calculus comes with general recursion out of the box, via the $Y$ combinator! We’ll see an example of using the $Y$ combinator below, but essentially, $Y\;f$ represents an infinite series of applications of $f$:
 
@@ -202,7 +230,7 @@ That’s scary, I’d prefer not to have that! Programs which run forever, but 
 
 Most functional languages don’t just implement the core λ-calculus, but rather extend the λ-calculus with various constructs—numbers, addition, multiplication, pairs, sums, *etc.* *Technically speaking*, these can all be encoded using just functions—see, *e.g.*, Church encodings—but it tends to be *a lot* more practical and faster to use, *e.g.*, machine numbers.
 
-For example, we can extend the untyped λ-calculus with Peano numbers. First, we extend the term language with the number *zero*, written $\text{zero}$, the successor function, written $\text{suc}$, and a pattern matching construct for numbers, written $\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}$:
+For example, we can extend the untyped λ-calculus with <a name="peano"></a>Peano numbers. First, we extend the term language with the number *zero*, written $\text{zero}$, the successor, written $\text{suc}$, and a pattern matching construct for numbers, written $\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}$:
 
 $$
 \begin{array}{l}
@@ -212,13 +240,13 @@ $$
   \begin{array}{rl}
   ::= & \dots
   \\\mid &    \text{zero}
-  \;\mid\;    \text{suc}
+  \;\mid\;    \text{suc}\;M
   \\\mid &    \text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
   \end{array}
 \end{array}
 $$
 
-Then, we extend the reduction rules with two reduction rules for pattern matches on numbers—depending on whether the number is zero or a successor—and a rule to let us reduce under pattern matches:
+Then, we extend the reduction rules with two reduction rules for pattern matches on numbers—depending on whether the number is zero or a successor:
 
 ::: mathpar
 $\text{case}\;\text{zero}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
@@ -228,19 +256,22 @@ M$
 $\text{case}\;\text{suc}\;{L}\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
 \longrightarrow
 N\{L/x\}$
-
-$\begin{array}{c}
-L
-\longrightarrow
-L^\prime
-\\ \hline
-\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
-\\
-\downarrow
-\\
-\text{case}\;L^\prime\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
-\end{array}$
 :::
+
+And we shouldn’t forget to extend our evaluation contexts:
+
+$$
+\begin{array}{l}
+\text{Evaluation Context} \; E
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \dots
+  \\\mid &    \text{suc}\;E
+  \\\mid &    \text{case}\;E\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}
+  \end{array}
+\end{array}
+$$
 
 We can now define addition on Peano numbers in our calculus! Ideally, we’d write something like the following, familiar definition for addition:
 
@@ -330,21 +361,33 @@ $$
 \end{array}
 $$
 
-<!--!>
-I'd do three things here:
+With types in hand, we write down some *typing rules*. The goal is that *if* we can construct a typing derivation for a term, that term will be well-behaved. 
 
-1) Motivate why you need typing contexts: say a variable might 'stand for' a base value, or another function, and you need to differentiate between them statically
+Terms are checked in the context of some typing environment, which we’ll refer to with the variable $\Gamma$ or $\Delta$. Typing environments are just a bunch of typing assignments $x : A$. Why do we need typing environments? A variable in a program might stand for some base value, like an int, or it might stand for a function, and it’s kinda important to know ahead of time which one it is—you can’t apply an int, and you can’t add one to a function! We write $x : A \in \Gamma$ to mean that “somewhere in $\Gamma$ there’s the typing assignment $x : A$”.
 
-2)  Spell out the general form of the judgement: state that if you've got \Gamma \vdash M : A, then it means that 'under typing environment \Gamma, term M has type A'
+We write $\Gamma \vdash M : A$ to mean that “using the variables from the typing environment $\Gamma$, the term $M$ has type $A$”—statements like these are called *typing judgements*. But we can’t just *claim* a some term has some time, we need to back it up with some actual proof! For that, we use *inference rules*, which is how most type systems are presented.
 
-3) Describe how to read the inference rules (e.g., 'if M has a function type A -> B, and N has type A, then the application M N has type B')
-<---->
+Inference rules are like a puzzle. They’re written as…
 
-With types in hand, we write down some *typing rules*. The goal is that *if* we can construct a typing derivation for a term, that term will be well-behaved. Terms are checked in the context of some typing environment, which we’ll refer to with the variable $\Gamma$ or $\Delta$. Typing environments are just a bunch of typing assignments $x : A$. There are three rules, corresponding to the three term constructs:
+$$
+\begin{array}{c}
+\mathit{Premise}_1 \dots \mathit{Premise}_n
+\\ \hline
+\mathit{Conclusion}
+\end{array}
+$$
+
+The puzzle you’re trying to solve is:
+
+- Find a piece whose conclusion matches the thing you’re trying to prove;
+- Oh no! All those things had premises! You gotta find puzzle pieces whose conclusions match those as well now!
+- Keep going until there’s no more open premises! You got this!
+
+For the simply-typed λ-calculus, there are three inference rules, one for each term construct:
 
 ::: mathpar
 $\begin{array}{c}
-x : A \in \Gamma
+{x : A \in \Gamma}
 \\ \hline
 \Gamma \vdash x : A
 \end{array}$
@@ -360,7 +403,25 @@ $\begin{array}{c}
 \end{array}$
 :::
 
-In order of appearance:
+Oh no! All of these rules have some premises! Does that mean we’re gonna have to puzzle forever? Nope, all it means is that we are *immediately* complicating the puzzle analogy.
+
+If you look at the first rule, the premise isn’t actually a typing judgement… It’s one of those thingies which checks whether or not $x$ has type $A$ in $\Gamma$! There’s a whole separate kind of puzzle for those! One that’s usually left implied, because it’s relatively simple:
+
+::: mathpar
+$\begin{array}{c}
+\\ \hline
+x : A \in x : A, \Gamma
+\end{array}$
+$\begin{array}{c}
+x : A \in \Gamma
+\\ \hline
+x : A \in y : B, \Gamma
+\end{array}$
+:::
+
+All those puzzle pieces say is “if you wanna know if $x : A$ is in $\Gamma$… go through all the thing in $\Gamma$ and check if one of ’em is $x : A$.” With those pieces made explicit, our puzzle will have a satisfying “no premise left unproven!” kind of feel to it… Though, mostly, folks just leave the proofs for $x : A \in \Gamma$ implicit, since once you write out $\Gamma$, they’re pretty obvious.
+
+Anyway, back to our typing rules for the λ-calculus! In order of appearance:
 
 - A variable $x$ has type $A$ if there’s an assignment in $\Gamma$ that says so.
 - If we’ve got something of type $B$ which uses something of type $A$ from the bag, we can abstract over that something to create a function of type $A \to B$.
@@ -372,17 +433,14 @@ Queue the history of type theory, trying to wrangle with this, trying to make th
 
 It’s, *uh*, pretty hard to get *extactly* the bad looping stuff out, so some folks are like “eh, we’ll keep the looping stuff, but still use types to get rid of all that ‘adding functions to numbers’ nonsense”, whereas other folks are all hardcore and decide that “no it has to be terminating all the way even if it becomes pretty hard to use!”
 
-<!--!>
-Two minor points:
 
-1) I'd put in a subheading here
-
-2) I think you need to motivate why the "only once" restriction is important before going into the formalism, even if it's just referring back to Ada's channel endpoint back in the previous section
-<---->
+## A detour into linearity!
 
 Let’s briefly talk about another type system for the λ-calculus—but only because it’ll turn out to be highly relevant to session types, I haven’t forgotten what I promised to write about! Let’s talk about [the linear λ-calculus][wadler1993].
 
-In its most minimal form, the linear λ-calculus demands that every variable is used *exactly once*. When you check a function application, you have to decide which parts of the typing environment are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the bag is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.
+In its most minimal form, the linear λ-calculus demands that every variable is used *exactly once*. This’ll end up being a *very important* restriction for our session-typed calculus. Remember that cheeky implementation for Ada, which kept sending new and new requests for milk pudding, even though the protocol *clearly* stated she could only send one request? That’s where the *used exactly once* restriction comes in.
+
+Okay, so how are we going to enforce this in the type system? When you check a function application, you have to decide which parts of the typing environment are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the bag is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.
 
 Also, we now use this cute little lollipop instead of the function arrow:
 
@@ -408,6 +466,7 @@ $\begin{array}{c}
 \\ \hline
 \Gamma \vdash \lambda x.M : A \multimap B
 \end{array}$
+
 $\begin{array}{c}
 \Gamma \vdash M : A \multimap B \quad \Delta \vdash N : A
 \\ \hline
@@ -451,7 +510,7 @@ In order of appearance:
 
 Replication isn’t truly *essential* to the π-calculus, it’s just that we can’t do any sort of *infinite* behaviour with just sending and receiving, so we have to add it explicitly. Other solutions, like adding recursive definitions, work as well.
 
-There’s only one computation rule—if we’ve got a send and a receive in parallel, we perform the communication, and replace all instances of the name bound by the receive instruction by the actual value sent. The other three reduction rules are just there to let us reduce under parallel compositions and ν-binders:
+There’s only one computation rule—if we’ve got a send and a receive in parallel, we perform the communication, and replace all instances of the name bound by the receive instruction by the actual value sent:
 
 ::: mathpar
 $\begin{array}{c}
@@ -459,33 +518,30 @@ x\langle{y}\rangle.{P}\parallel x(z).{Q}
 \longrightarrow
 {P}\parallel{Q}\{y/z\}
 \end{array}$
+:::
 
-$\begin{array}{c}
-{P}
-\longrightarrow
-{P}^\prime
-\\ \hline
-(\nu x){P}
-\longrightarrow
-(\nu x){P}^\prime
+Plus our usual trick to let us reduce under parallel compositions and ν-binders:
+
+::: mathpar
+$\begin{array}{l}
+\text{Evaluation Context} \; G
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \square
+  \;\mid\;    (\nu{x}){G}
+  \;\mid\;    ({G}\parallel{Q})
+  \;\mid\;    ({P}\parallel{G})
+  \end{array}
 \end{array}$
 $\begin{array}{c}
 {P}
 \longrightarrow
 {P}^\prime
 \\ \hline
-{P}\parallel{Q}
+G[ P ]
 \longrightarrow
-{P}^\prime\parallel{Q}
-\end{array}$
-$\begin{array}{c}
-{Q}
-\longrightarrow
-{Q}^\prime
-\\ \hline
-{P}\parallel{Q}
-\longrightarrow
-{P}\parallel{Q}^\prime
+G[ P^\prime ]
 \end{array}$
 :::
 
@@ -558,10 +614,6 @@ $$
 $$
 
 The reason we’re embedding it this way, with a reduction step sandwiched between two equivalence, is because the equivalence relation isn’t super well-behaved—there’s plenty of infinite chains of rewrite rules, *e.g.*, imagine swapping $P \parallel Q$ back and forth forever, or duplicating $! P$ forever—and we’d prefer not to have any infinite chains of reductions. Embedding it this way forces there to be at least one *real* computation step in each reduction step, because the only way to construct a reduction is to start with a computation.
-
-<!--!>
-I think it may be worth stating explicitly  upfront that this isn't surprising, because as well as all the sequential problems, you've also got the way these sequential programs can interact
-<---->
 
 If you thought the λ-calculus had problems, have I got news for you. There’s all the old problems we had with the lambda calculus. We’ve got processes that reduce forever without doing anything:
 
@@ -754,10 +806,6 @@ In order of appearance:
 - If we’ve got a channel $x$ of type $?A.B$, then we can receive something of type $A$ over $x$—call it $y$—after which the channel $x$ continues as a channel of type $B$.
 - Finally, if we’ve got a channel which is done, we can forget about it.
 
-<!--!>
-It is a bit jarring to contrast the two 'flavours' of linearity here. I can't see a better way of doing it, though. I guess it's worth reiterating that the process calculus formulation automatically does the rebinding in the continuation, much like if you did 'let' in the lambda calculus
-<---->
-
 This type system is *linear*, much like the linear λ-calculus we saw earlier. Told you it’d be relevant! Anyway, it’s not linear in quite the same way, since channels can be used *multiple times*. However, each step in the protocol has to be executed *exactly once*!
 
 So, did it work? Are we safe from the bad programs? Yes and no. Which, *uh*, kinda just means no? But there’s *some* bad programs we got rid of! There are no longer programs which misuse data, since everything strictly follows protocols. Since every channel has *exactly two* processes communicating over it, we no longer have any race conditions. Furthermore, because those two processes must act *dually* on the channel, we no longer have any deadlocks *within a single session*—that is to say, as long as each two processes only share *one* means of communication, we don’t have any deadlocks. Unfortunately, it’s quite easy to write a program which interleaves *two* sessions and deadlocks:
@@ -905,7 +953,7 @@ Okay, this will be the *final* computational model I’m introducing in this by 
 
 So, here’s the plan: we’re gonna start with the λ-calculus as a model of *sequential* computation, and then we’re gonna add a smattering of π-calculus processes on top as a model of sequential computations running *concurrently*. 
 
-First off, we’re going to take our λ-calculus terms, and extend then with some constants $K$, which will be our concurrency primitives. We’re also going to add *units*—the unit value, written $()$, and unit elimination, written $\mathbf{let} \; x = M \; \mathbf{in} \; N$.
+First off, we’re going to take our λ-calculus terms, and extend then with some constants $K$, which will be our concurrency primitives. We’re also going to add *units* and *pairs*—we’ll need them in a bit! We write $()$ for the unit value and $\mathbf{let} \; () = M \; \mathbf{in} \; N$ for pattern matching on units. We write $(M, N)$ for the pair of $M$ and $N$ and $\mathbf{let} \; (x, y) = M \; \mathbf{in} \; N$ for pattern matching on pairs.
 
 Second, we’re going to wrap those terms up in π-calculus processes—we’ll have ν-binders and parallel compositions, and threads which run terms. There’s two kinds of threads—*main* threads, written $\bullet M$, and *child* threads, written $\circ M$. Why? Well, we expect functional programs to produce a value, but processes just send and receive things, and then stop. Programs in our concurrent λ-calculus are going to have *exactly one* main thread, which is going to compute a value. Child threads will send and receive, but eventually compute the unit value:
 
@@ -948,7 +996,7 @@ $\text{Flag} \; \phi ::= \bullet \mid \circ$
 
 So what are the semantics of our calculus going to be?
 
-First off, we just keep the reduction rules for our λ-calculus—and we’re just gonna sneak those rules for units on in there while you’re distracted. We’re gonna call this reduction arrow $\longrightarrow_M$, to distinguish it from the reduction on processes:
+First off, we just keep the reduction rules for our λ-calculus—and we’re just gonna sneak those rules for units and pairs on in there while you’re distracted. We’re gonna call this reduction arrow $\longrightarrow_M$, to distinguish it from the reduction on processes:
 
 ::: mathpar
 $\begin{array}{c}
@@ -958,42 +1006,48 @@ M\{N/x\}
 \end{array}$
 
 $\begin{array}{c}
-\mathbf{let} \; x = () \; \mathbf{in} \; N
+\mathbf{let} \; () = () \; \mathbf{in} \; N
 \longrightarrow_M
 N
 \end{array}$
 
 $\begin{array}{c}
-M
+\mathbf{let} \; (x, y) = (L, M) \; \mathbf{in} \; N
 \longrightarrow_M
-M^\prime
-\\ \hline
-M \; N
-\longrightarrow_M
-M^\prime \; N
-\end{array}$
-$\begin{array}{c}
-N
-\longrightarrow_M
-N^\prime
-\\ \hline
-M \; N
-\longrightarrow_M
-M \; N^\prime
-\end{array}$
-
-$\begin{array}{c}
-M
-\longrightarrow_M
-M^\prime
-\\ \hline
-\mathbf{let} \; x = M \; \mathbf{in} \; N
-\longrightarrow_M
-\mathbf{let} \; x = M^\prime \; \mathbf{in} \; N
+N\{L/x\}\{M/y\}
 \end{array}$
 :::
 
-We’re also going to just copy over the structural congruence from the π-calculus, best as we can—not that the terminated process has disappeared, and in it’s place we’ve now got child threads which are done, *i.e.*, $\circ()$:
+Let’s not forget our usual “evaluation context” shenanigans:
+
+::: mathpar
+$\begin{array}{l}
+\text{Evaluation Context} \; E
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \square
+  \\\mid &    E \; N
+  \;\mid\;    M \; E
+  \\\mid &    \mathbf{let} \; () = E \; \mathbf{in} \; N
+  \\\mid &    (E, N)
+  \;\mid\;    (M, E)
+  \\\mid &    \mathbf{let} \; (x, y) = E \; \mathbf{in} \; N
+  \end{array}
+\end{array}$
+
+$\begin{array}{c}
+M
+\longrightarrow_M
+M^\prime
+\\ \hline
+E[ M ]
+\longrightarrow_M
+E[ M^\prime ]
+\end{array}$
+:::
+
+We’re also going to just copy over the structural congruence from the π-calculus, best as we can—the, *uh*, terminated process has disappeared, and in it’s place we’ve now got child threads which are done, *i.e.*, $\circ()$, so it’s a *little* different, but otherwise, pretty much the same:
 
 $$
 \begin{array}{lrll}
@@ -1025,11 +1079,43 @@ $$
 \end{array}
 $$
 
+Then we copy over our rules from the π-calculus… but what’s this! We don’t have send and receive in the process language anymore? They’re all awkwardly wedged into the term language now… So terms reduce, and at some point, they get stuck on a $\mathbf{send}$ or $\mathbf{recv}$ that they don’t know how to deal with, and then the π-calculus rules have to take over. Our first instinct might be to write something like…
+
 ::: mathpar
 $\begin{array}{c}
-x\langle{y}\rangle.{P}\parallel x(z).{Q}
-\longrightarrow
-{P}\parallel{Q}\{y/z\}
+(\nu x x^\prime)(\phi\;\mathbf{send}\;{M}\;{x} \parallel \phi^\prime\;\mathbf{recv}\;{x^\prime})
+\\ \\
+\downarrow
+\\ \\
+(\nu x x^\prime)(\phi\;() \parallel \phi^\prime\;{M})
+\end{array}$
+:::
+
+…which sure looks a lot like our π-calculus rule. Unfortunately, it only captures top-level $\mathbf{send}$ or $\mathbf{recv}$ operations… and usually, we’ll want to bind and actually use the value we receive! Plus, we actually lose access to the channel this way… our intention is that each endpoint can only be used once, and that $\mathbf{send}$ and $\mathbf{recv}$ return the endpoint for the next step in the session along with any potential result… Now, we *could* discard the old channel, create a new one, and return it… and in an implementation, this may well be what you do… but here? Why would we? We’ve got a perfectly good channel, with two endpoints we know aren’t going to be used anyway… so why not just return the same channel?
+
+::: mathpar
+$\begin{array}{c}
+(\nu x x^\prime)(\phi\;E[ \mathbf{send}\;{M}\;{x} ] \parallel \phi^\prime\;E^\prime[ \mathbf{recv}\;{x^\prime} ])
+\\ \\
+\downarrow
+\\ \\
+(\nu x x^\prime)(\phi\;E[ x ] \parallel \phi^\prime\;E^\prime[ (M, x^\prime) ])
+\end{array}$
+:::
+
+This is a great example of why evaluation contexts compose better! Try and write this rule without them! Oh, yeah, almost forgot! We’ve still gotta add evaluation contexts for the process language, plus that thing where we tell reduction that it’s okay to rewrite using our structural congruence, and a new rule where we tell π-calculus reduction that it’s okay for them to use the λ-calculus rules as well:
+
+::: mathpar
+$\begin{array}{l}
+\text{Evaluation Context} \; G
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \square
+  \;\mid\;    (\nu{x x'}){G}
+  \;\mid\;    ({G}\parallel{Q})
+  \;\mid\;    ({P}\parallel{G})
+  \end{array}
 \end{array}$
 
 $\begin{array}{c}
@@ -1037,52 +1123,531 @@ $\begin{array}{c}
 \longrightarrow
 {P}^\prime
 \\ \hline
-(\nu x){P}
+G[ P ]
 \longrightarrow
-(\nu x){P}^\prime
+G[ P^\prime ]
 \end{array}$
-$\begin{array}{c}
-{P}
-\longrightarrow
-{P}^\prime
-\\ \hline
-{P}\parallel{Q}
-\longrightarrow
-{P}^\prime\parallel{Q}
-\end{array}$
-$\begin{array}{c}
-{Q}
-\longrightarrow
-{Q}^\prime
-\\ \hline
-{P}\parallel{Q}
-\longrightarrow
-{P}\parallel{Q}^\prime
-\end{array}$
-
 $\begin{array}{c}
   P \equiv P^\prime \quad P^\prime \longrightarrow Q^\prime \quad Q^\prime \equiv Q
   \\ \hline
   P \longrightarrow Q
 \end{array}$
+$\begin{array}{c}
+  M \longrightarrow_{M} M^\prime
+  \\ \hline
+  \phi\;M \longrightarrow \phi\;M^\prime
+\end{array}$
 :::
 
+We’re *almost done!* You might’ve noticed that we’ve got $\mathbf{new}$ and $\mathbf{spawn}$ in our term language *as well as* ν-binders and parallel compositions in our process language. That’s seems kinda redundant, doesn’t it? We’d like to think of the *terms* as the programs that we actually write, and of the *processes* as modelling the configuration of threads and shared channels created while *running those programs*. So the $\mathbf{new}$ and $\mathbf{spawn}$ functions really just mean “create a ν-binder” and “create a parallel composition” on the process level! So we’ve got to add two more rules:
+
+::: mathpar
+$\begin{array}{l}
+  \phi\;E[ \mathbf{new} ]
+  \longrightarrow
+  (\nu x x')(\phi\;E[ (x, x') ])
+\end{array}$
+$\begin{array}{l}
+  \phi\;E[ \mathbf{spawn}\;{M} ]
+  \longrightarrow
+  \phi\;E[ () ] \parallel \circ\;{M}
+\end{array}$
+:::
+
+Oof, we’ve done it! We’ve got the whole reduction system!
 
 
+## Two Victorian Ladies *(More Formal, Somehow?)*
 
+Our formal concurrent λ-calculus is getting pretty close to being able to encode the interaction between Ada and Briar! Remember that, like a billion words ago?
 
-You might’ve noticed that we’ve now got $\mathbf{new}$ and $\mathbf{spawn}$ in our term language *as well as* ν-binders and parallel compositions in our process language. That’s seems kinda redundant, doesn’t it? We’d like to think of the *terms* as the programs that we actually write, and we’d like to think of the *processes* as modelling the configuration of threads and shared channels created while *running those programs*. So the $\mathbf{new}$ and $\mathbf{spawn}$ functions really just mean “create a ν-binder” and “create a parallel composition” on the process level!
+```haskell
+data Request
+  = Please Request
+  | MayIHaveSomePudding
+    
+data Response
+  = Allow Pudding
+  | Deny String
+    
+ada :: Send Request (Recv Response End) -> IO ()
+ada chan = do
+  chan' <- send (Please MayIHaveSomePudding) chan
+  (resp, chan'') <- recv chan'
+  case resp of
+    Allow pudding -> putStrLn "I’m so happy!"
+    Deny reason -> putStrLn "Woe is me!"
 
+briar :: Recv Request (Send Response End) -> IO ()
+briar chan = do
+  (req, chan') <- recv chan
+  let resp = case req of
+    MayIHaveSomePudding -> Deny "Such rudeness!"
+    Please MayIHaveSomePudding -> Allow myPudding
+    Please (Please _) -> Deny "Such beggary!"
+  chan'' <- send resp chan'
+```
 
+There’s two problems we’ve got here: 
 
-We keep the reduction rules from both the lambda and pi calculus.
-We keep the structural congruence from the pi calculus.
-We add two new reduction rules for new and spawn.
-Basically:
-- if you’ve got a new term, you turn it into a nu-binder and return the channels.
-- if you’ve got a spawn term, you spawn off its argument as a new thread.
+1. We don’t really have strings or, *uh*, the ability to print strings.
+2. We don’t have *data types*. 
 
-We keep the typing rules from both the lambda and pi calculus.
+For the first one, we’re just gonna take $\mathbf{putStrLn}$ and strings as primitives in our calculus, with no associated behaviour, and if our programs reduce to, *e.g.*, $\mathbf{putStrLn}\;\text{``Hello, Ada!''}$ we’ll say that’s fine.
+
+For the second one, *well*, we can make this work without having to add full-fledged data types to our language. See, the request data type… it essentially encodes the number of *pleases*, right? It’s kinda like [Peano numbers](#peano), where `MayIHaveSomePudding` is $\mathbf{zero}$ and `Please` is the successor $\mathbf{suc}$. Remember that from the first section? And the `Response`? Well, Ada doesn’t actually use the pudding *or* the reason, so that’s pretty much just a Boolean… and those should be relatively easy to add! First, we extend our terms:
+
+$$
+\begin{array}{l}
+\text{Term} \; L, M, N
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \dots
+  \\\mid &    \mathbf{true}
+  \;\mid\;    \mathbf{false}
+  \;\mid\;    \mathbf{if}\;L\;\mathbf{then}\;M\;\mathbf{else}\;N
+  \end{array}
+\end{array}
+$$
+
+Then, we extend the reduction rules with two reduction rules for if-statements—one for when it’s true, and one for when it’s false:
+
+::: mathpar
+$\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;M\;\mathbf{else}\;N \longrightarrow M$
+
+$\mathbf{if}\;\mathbf{false}\;\mathbf{then}\;M\;\mathbf{else}\;N \longrightarrow N$
+:::
+
+And we extend our evaluation contexts:
+
+$$
+\begin{array}{l}
+\text{Evaluation Context} \; E
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \dots
+  \\\mid &    \text{if}\;E\;\text{then}\;M\;\text{else}\;N
+  \end{array}
+\end{array}
+$$
+
+Great! Now we can encode our example!
+
+$$
+\begin{array}{l}
+\text{ada} \triangleq \lambda c.
+\\
+\quad
+  \begin{array}{l}
+  \mathbf{let}\;c^\prime = \mathbf{send}\;(\mathbf{suc}\;\mathbf{zero})\;c\;\mathbf{in}
+  \\
+  \mathbf{let}\;(x,c^{\prime\prime}) = \mathbf{recv}\;c^\prime\;\mathbf{in}
+  \\
+  \!\!\!
+  \begin{array}{lll}
+    \mathbf{if}\;x
+       & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+    \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+  \end{array}
+  \end{array}
+\end{array}
+$$
+
+$$
+\begin{array}{l}
+\text{briar} \triangleq \lambda c.
+\\
+\quad
+  \begin{array}{l}
+  \mathbf{let}\;(x,c^\prime) = \mathbf{recv}\;c\;\mathbf{in}
+  \\
+  \mathbf{let}\;y = \mathbf{case}\;x\;\mathbf{of}
+  \\
+  \quad
+    \begin{array}{l}
+    \{ \; \text{zero} \mapsto \mathbf{false}
+    \\
+    ;  \; \text{suc}\;{x^\prime} \mapsto \mathbf{case}\;{x^\prime}\;\mathbf{of}
+    \\
+    \quad
+      \begin{array}{l}
+      \{ \; \text{zero} \mapsto \mathbf{true}
+      \\
+      ;  \; \text{suc}\;{x^{\prime\prime}} \mapsto \mathbf{false}
+      \\
+      \}
+      \end{array}
+    \\
+    \}
+    \end{array}
+  \\
+  \mathbf{let} \; c^{\prime\prime} = \mathbf{send}\;{y}\;{c^\prime} \; \mathbf{in}
+  \\
+  ()
+  \end{array}
+\end{array}
+$$
+
+And let’s put it all together in a single $\text{main}$ process. We’ve not done this so far, since it was *hopefully* pretty clear how Ada and Briar were meant to share a channel, but if we want to actually evaluate our processes, we’ll have to create a channel, and actually use it to connect Ada and Briar:
+
+$$
+\begin{array}{l}
+\text{main} \triangleq
+\\
+\quad
+  \begin{array}{l}
+  \mathbf{let} \; (a,b) = \mathbf{new} \; \mathbf{in}
+  \\
+  \mathbf{let} \; () = \mathbf{spawn} \; (\text{briar} \; b) \; \mathbf{in}
+  \\
+  \text{ada} \; a
+  \end{array}
+\end{array}
+$$
+
+Right, let’s see if our encoding does what we think it should do! I’m gonna spare no detail, so, *uh*, very long series of evaluation steps coming up.
+
+$$
+\begin{array}{c}
+  \begin{array}{l}
+  \mathbf{let} \; (a,b) = \mathbf{new} \; \mathbf{in}
+  \\
+  \mathbf{let} \; () = \mathbf{spawn} \; (\text{briar} \; b) \; \mathbf{in}
+  \\
+  \text{ada} \; 
+  \end{array}
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)
+  \left(
+  \bullet\;
+  \begin{array}{l}
+  \mathbf{let} \; (a,b) = (a,b) \; \mathbf{in}
+  \\
+  \mathbf{let} \; () = \mathbf{spawn} \; (\text{briar} \; b) \; \mathbf{in}
+  \\
+  \text{ada} \; a
+  \end{array}
+  \right)
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)
+  \left(
+  \bullet\;
+  \begin{array}{l}
+  \mathbf{let} \; () = \mathbf{spawn} \; (\text{briar} \; b) \; \mathbf{in}
+  \\
+  \text{ada} \; a
+  \end{array}
+  \right)
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{l}
+    \mathbf{let} \; () = \mathbf{spawn} \; () \; \mathbf{in}
+    \\
+    \text{ada} \; a
+    \end{array}
+    \parallel
+  \\
+  \circ\;
+    \begin{array}{l}
+    \text{briar} \; b
+    \end{array}
+  \end{array}
+  \right)
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)
+  \left(
+  \bullet\;
+    \text{ada} \; a
+    \parallel
+  \circ\;
+    \text{briar} \; b
+  \right)
+\end{array}
+$$
+
+Whew, so far so good! The $\mathbf{new}$ and $\mathbf{spawn}$ have done their jobs, and created a channel and a parallel composition! We’re right down to Ada and Briar now! Things are about to get messy!
+
+$$
+\begin{array}{c}
+  (\nu c c^\prime)
+  \left(
+  \bullet\;
+    \text{ada} \; c
+    \parallel
+  \circ\;
+    \text{briar} \; c^\prime
+  \right)
+\\ \\
+\downarrow_2
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{l}
+    \mathbf{let}\;a^\prime = \mathbf{send}\;(\mathbf{suc}\;\mathbf{zero})\;a\;\mathbf{in}
+    \\
+    \mathbf{let}\;(x,a^{\prime\prime}) = \mathbf{recv}\;a^\prime\;\mathbf{in}
+    \\
+    \!\!\!
+    \begin{array}{lll}
+      \mathbf{if}\;x
+         & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+      \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+    \end{array}
+    \end{array}
+    \parallel
+  \\ \\
+  \circ\;
+    \begin{array}{l}
+    \mathbf{let}\;(x,b^\prime) = \mathbf{recv}\;b\;\mathbf{in}
+    \\
+    \mathbf{let}\;y = \mathbf{case}\;x\;\mathbf{of}
+    \\
+    \quad
+      \begin{array}{l}
+      \{ \; \text{zero} \mapsto \mathbf{false}
+      \\
+      ;  \; \text{suc}\;{x^\prime} \mapsto \mathbf{case}\;{x^\prime}\;\mathbf{of}
+      \\
+      \quad
+        \begin{array}{l}
+        \{ \; \text{zero} \mapsto \mathbf{true}
+        \\
+        ;  \; \text{suc}\;{x^{\prime\prime}} \mapsto \mathbf{false}
+        \\
+        \}
+        \end{array}
+      \\
+      \}
+      \end{array}
+    \\
+    \mathbf{let} \; b^{\prime\prime} = \mathbf{send}\;{y}\;{b^\prime} \; \mathbf{in}
+    \\
+    ()
+    \end{array}
+  \end{array}
+  \right)
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{l}
+    \mathbf{let}\;a^\prime = a \;\mathbf{in}
+    \\
+    \mathbf{let}\;(x,a^{\prime\prime}) = \mathbf{recv}\;a^\prime\;\mathbf{in}
+    \\
+    \!\!\!
+    \begin{array}{lll}
+      \mathbf{if}\;x
+         & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+      \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+    \end{array}
+    \end{array}
+    \parallel
+  \\ \\
+  \circ\;
+    \begin{array}{l}
+    \mathbf{let}\;(x,b^\prime) = (\mathbf{suc}\;\mathbf{zero},b)\;\mathbf{in}
+    \\
+    \mathbf{let}\;y = \mathbf{case}\;x\;\mathbf{of}
+    \\
+    \quad
+      \begin{array}{l}
+      \{ \; \text{zero} \mapsto \mathbf{false}
+      \\
+      ;  \; \text{suc}\;{x^\prime} \mapsto \mathbf{case}\;{x^\prime}\;\mathbf{of}
+      \\
+      \quad
+        \begin{array}{l}
+        \{ \; \text{zero} \mapsto \mathbf{true}
+        \\
+        ;  \; \text{suc}\;{x^{\prime\prime}} \mapsto \mathbf{false}
+        \\
+        \}
+        \end{array}
+      \\
+      \}
+      \end{array}
+    \\
+    \mathbf{let} \; b^{\prime\prime} = \mathbf{send}\;{y}\;{b^\prime}\;\mathbf{in}
+    \\
+    ()
+    \end{array}
+  \end{array}
+  \right)
+\\ \\
+\downarrow_2
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{l}
+    \mathbf{let}\;(x,a^{\prime\prime}) = \mathbf{recv}\;a\;\mathbf{in}
+    \\
+    \!\!\!
+    \begin{array}{lll}
+      \mathbf{if}\;x
+         & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+      \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+    \end{array}
+    \end{array}
+    \parallel
+  \\ \\
+  \circ\;
+    \begin{array}{l}
+    \mathbf{let}\;y = \mathbf{case}\;\mathbf{suc}\;\mathbf{zero}\;\mathbf{of}
+    \\
+    \quad
+      \begin{array}{l}
+      \{ \; \text{zero} \mapsto \mathbf{false}
+      \\
+      ;  \; \text{suc}\;{x^\prime} \mapsto \mathbf{case}\;{x^\prime}\;\mathbf{of}
+      \\
+      \quad
+        \begin{array}{l}
+        \{ \; \text{zero} \mapsto \mathbf{true}
+        \\
+        ;  \; \text{suc}\;{x^{\prime\prime}} \mapsto \mathbf{false}
+        \\
+        \}
+        \end{array}
+      \\
+      \}
+      \end{array}
+    \\
+    \mathbf{let} \; b^{\prime\prime} = \mathbf{send}\;{y}\;b\;\mathbf{in}
+    \\
+    ()
+    \end{array}
+  \end{array}
+  \right)
+\\ \\
+\downarrow_2
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{l}
+    \mathbf{let}\;(x,a^{\prime\prime}) = \mathbf{recv}\;a\;\mathbf{in}
+    \\
+    \!\!\!
+    \begin{array}{lll}
+      \mathbf{if}\;x
+         & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+      \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+    \end{array}
+    \end{array}
+    \parallel
+  \\ \\
+  \circ\;
+    \begin{array}{l}
+    \mathbf{let}\;y = \mathbf{true}
+    \\
+    \mathbf{let} \; b^{\prime\prime} = \mathbf{send}\;{y}\;b\;\mathbf{in}
+    \\
+    ()
+    \end{array}
+  \end{array}
+  \right)
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{l}
+    \mathbf{let}\;(x,a^{\prime\prime}) = \mathbf{recv}\;a\;\mathbf{in}
+    \\
+    \!\!\!
+    \begin{array}{lll}
+      \mathbf{if}\;x
+         & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+      \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+    \end{array}
+    \end{array}
+    \parallel
+  \\ \\
+  \circ\;
+    \begin{array}{l}
+    \mathbf{let} \; b^{\prime\prime} = \mathbf{send}\;\mathbf{true}\;b\;\mathbf{in}
+    \\
+    ()
+    \end{array}
+  \end{array}
+  \right)
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{l}
+    \mathbf{let}\;(x,a^{\prime\prime}) = (\mathbf{true},a)\;\mathbf{in}
+    \\
+    \!\!\!
+    \begin{array}{lll}
+      \mathbf{if}\;x
+         & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+      \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+    \end{array}
+    \end{array}
+    \parallel
+  \\ \\
+  \circ\;
+    \begin{array}{l}
+    \mathbf{let} \; b^{\prime\prime} = b\;\mathbf{in}
+    \\
+    ()
+    \end{array}
+  \end{array}
+  \right)
+\\ \\
+\downarrow_2
+\\ \\
+  (\nu a b)
+  \left(
+  \begin{array}{l}
+  \bullet\;
+    \begin{array}{lll}
+      \mathbf{if}\;\mathbf{true}
+         & \!\!\!\!\mathbf{then}\!\!\!\! & \mathbf{putStrLn}\;\text{``I'm so happy!''}
+      \\ & \!\!\!\!\mathbf{else}\!\!\!\! & \mathbf{putStrLn}\;\text{``Woe is me!''}
+    \end{array}
+    \parallel
+  \\ \\
+  \circ\;
+    ()
+  \end{array}
+  \right)
+\\ \\
+\downarrow
+\\ \\
+  (\nu a b)(\bullet\;\mathbf{putStrLn}\;\text{``I'm so happy!''})
+\end{array}
+$$
+
+*Yes*, we’ve shown that our program is correct! It makes Ada happy! What more could you want?
 
 
 ---
