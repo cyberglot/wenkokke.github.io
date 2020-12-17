@@ -1157,7 +1157,7 @@ $\begin{array}{l}
 $\begin{array}{l}
   \phi\;E[ \mathbf{spawn}\;{M} ]
   \longrightarrow
-  \phi\;E[ () ] \parallel \circ\;{M}
+  \phi\;E[ () ] \parallel \circ\;{M}\;()
 \end{array}$
 :::
 
@@ -1722,7 +1722,7 @@ $\begin{array}{c}
 
 First come the rules for variables and functions, which we’ve seen before:
 
-- A variable $x$ has type $A$ if the typing environment *only* contains $x : A$.
+- A variable $x$ has type $A$ if the typing environment *only* contains $x : A$. *(If we’d allow other variables to appear, those would be discarded, since the variable $x$ doesn’t use them, and hence wouldn’t be linear!)*
 - If we’ve got something of type $B$ which uses something of type $A$ from the typing environment, we can abstract over that something to create a function of type $A \multimap B$.
 - If we’ve got something of type $A \multimap B$ which uses some chunk of the typing environment called $\Gamma$, and something of type $A$ which uses the rest of the typing environment called $\Delta$, then we can apply the former to the latter to get something of type $B$ which uses both $\Gamma$ and $\Delta$.
 
@@ -1795,7 +1795,12 @@ $\begin{array}{c}
 \end{array}$
 :::
 
+In order of appearance:
 
+- $\mathbf{new}$ creates a new session-typed channel, and returns a pair of two endpoints with dual types.
+- $\mathbf{spawn}$ takes a *thunk*, a function of type $\mathbf{1}\multimap\mathbf{1}$, and spawns it off as a thread. This has to be a function, since otherwise we’d be able to start evaluating the thunk before it’s spawned off.
+- $\mathbf{send}$ takes a value, and an endpoint to a session-typed channel over which such a value can be send, and returns the continuation of the session.
+- $\mathbf{recv}$ takes an endpoint to a session-typed channel over which a value can be received, and returns a pair of the received value and the continuation of the session.
 
 ---
 
