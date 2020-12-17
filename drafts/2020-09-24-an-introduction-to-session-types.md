@@ -1736,7 +1736,7 @@ And finally, the rules for pairs:
 - If we’ve got something of type $A$ which uses some chunk of the typing environment called $\Gamma$, and something of type $B$ which uses the rest of the typing environment $\Delta$, then we can put them together as a pair of type $A \otimes B$ which uses both $\Gamma$ and $\Delta$.
 - If we’ve got something of type $A \otimes B$ which uses some chunk of the typing environment called $\Gamma$, and something of type $C$ which uses the rest of the typing environment $\Delta$ *plus* something of type $A$ and something of type $B$, we can put them together to get something of type $C$ which uses both $\Gamma$ and $\Delta$.
 
-Oh, right, we’re gonna have to give types to $\mathbf{new}$, $\mathbf{spawn}$, $\mathbf{send}$ and $\mathbf{recv}$ as well! And for that, we’ll need session types! We’re gonna import those from the π-calculus, but we’re making one change—instead of only sending and receiving values of *session types* we’re gonna allow ourselves to send and receive values of *any type*:
+Great, that settles it for our term language, doesn’t it? Oh, right! We’re gonna have to give types to $\mathbf{new}$, $\mathbf{spawn}$, $\mathbf{send}$ and $\mathbf{recv}$ as well! And for that, we’ll need session types! We’re gonna import those from the π-calculus, but we’re making one change—instead of only sending and receiving values of *session types* we’re gonna allow ourselves to send and receive values of *any type*:
 
 ::: mathpar
 $\begin{array}{l}
