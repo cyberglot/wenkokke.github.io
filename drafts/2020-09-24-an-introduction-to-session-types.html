@@ -205,7 +205,7 @@
 <div class="mathpar">
 <p><span class="math inline">\begin{array}{c} M \longrightarrow M^\prime \\ \hline M \; N \longrightarrow M^\prime \; N \end{array}</span> <span class="math inline">\begin{array}{c} N \longrightarrow N^\prime \\ \hline M \; N \longrightarrow M \; N^\prime \end{array}</span></p>
 </div>
-<p>However, things tends to compose a little better if you use a little trick called <em>evaluation contexts</em>[^call-by-name]. We’ll see an example of <em>how</em> evaluation contexts compose better later. Anyway, you write down all the partial terms under which it’s okay to normalise, and then write a single rule… Read <span class="math inline">E[M]</span> as “replace the single <span class="math inline">\square</span> in <span class="math inline">E</span> with <span class="math inline">M</span>”:</p>
+<p>However, things tends to compose a little better if you use a little trick called <em>evaluation contexts</em>. We’ll see an example of <em>how</em> evaluation contexts compose better later. Anyway, you write down all the partial terms under which it’s okay to normalise, and then write a single rule… Read <span class="math inline">E[M]</span> as “replace the single <span class="math inline">\square</span> in <span class="math inline">E</span> with <span class="math inline">M</span>”:</p>
 <div class="mathpar">
 <p><span class="math inline">\begin{array}{l} \text{Evaluation Context} \; E \\ \quad  \begin{array}{rl}  ::= &amp; \square  \;\mid\; E \; N  \;\mid\; M \; E  \end{array} \end{array}</span> <span class="math inline">\begin{array}{c} M \longrightarrow M^\prime \\ \hline E[ M ] \longrightarrow E[ M^\prime ] \end{array}</span></p>
 </div>
