@@ -12,7 +12,6 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/public/css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:wght@400;700|Raleway:ital,wght@0,400;0,700;1,400" rel="stylesheet"> 
 
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
@@ -30,7 +29,24 @@
      });
     </script>
 
-    
+    <!-- KaTeX -->
+    <!-- <link rel="stylesheet" href="/public/css/katex.min.css"> -->
+    <script defer src="/public/js/katex.min.js"></script>
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const mathElements = document.getElementsByClassName("math");
+         const macros = [];
+         for (var i = 0; i < mathElements.length; i++) {
+             const texText = mathElements[i].firstChild;
+             if (mathElements[i].tagName == "SPAN") {
+                 katex.render(texText.data, mathElements[i], {
+                     displayMode: mathElements[i].classList.contains('display'),
+                     throwOnError: false,
+                     macros: macros,
+                     fleqn: true
+                 });
+     }}});
+    </script>
 </head>
 
 
