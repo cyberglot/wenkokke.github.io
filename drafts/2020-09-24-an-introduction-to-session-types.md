@@ -164,7 +164,7 @@ M \; N^\prime
 \end{array}$
 :::
 
-However, things tends to compose a little better if you use a little trick called *evaluation contexts*[^call-by-name]. We’ll see an example of *how* evaluation contexts compose better later. Anyway, you write down all the partial terms under which it’s okay to normalise, and then write a single rule… Read $E[M]$ as “replace the single $\square$ in $E$ with $M$”:
+However, things tends to compose a little better if you use a little trick called *evaluation contexts*. We’ll see an example of *how* evaluation contexts compose better later. Anyway, you write down all the partial terms under which it’s okay to normalise, and then write a single rule… Read $E[M]$ as “replace the single $\square$ in $E$ with $M$”:
 
 ::: mathpar
 $\begin{array}{l}
