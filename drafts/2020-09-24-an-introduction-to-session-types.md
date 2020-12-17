@@ -767,7 +767,7 @@ $$
 (\nu x x')({P}\parallel{Q}\{y/z\})
 $$
 
-Okay, typing rules! One thing that’s very different from the λ-calculus is that the typing rules only check whether processes use channels correctly—the processes themselves don’t have types. There are six rules, corresponding to the six term constructs:
+Okay, typing rules! One thing that’s very different from the λ-calculus is that the typing rules only check whether processes use channels correctly—the processes themselves don’t have types. There are six rules, corresponding to the six process constructs:
 
 ::: mathpar
 $\begin{array}{c}
@@ -1211,7 +1211,7 @@ $$
 \end{array}
 $$
 
-Great! Now we can encode our example!
+Great! <a name="formal-Ada-and-Briar"></a> Now we can encode our example!
 
 $$
 \begin{array}{l}
@@ -1630,7 +1630,7 @@ $$
 
 ## Taming the concurrent λ-calculus with types…
 
-Types? Is it types? It *should be!* Just because our happy example works out, doesn’t mean the calculus as a whole is well-behaved. See, we can still encode [cheeky Ada](#cheeky-Ada), who’ll do anything for that sweet, sweet pudding:
+Types? Is it types? It *should be!* Just because our happy example works out, doesn’t mean the calculus as a whole is well-behaved. See, we can still encode <a name="formal-cheeky-Ada"></a> [cheeky Ada](#cheeky-Ada), who’ll do anything for that sweet, sweet pudding:
 
 $$
 \begin{array}{l}
@@ -1665,7 +1665,7 @@ We’d like to rule out this sort of failing interaction *a priori*. Briar was *
 
 Developing the type system for the concurrent λ-calculus will be a very similar experience to developing its reduction semantics… we’re mostly just smashing stuff from the λ-calculus and the π-calculus together, and seeing what falls out.
 
-First off, we’re copying over the whole type system for the linear λ-calculus, adding the rules for units and pairs as needed. Similar to how we write $A \multimap B$ in place of $A \to B$ for *linear* functions, we write $A \otimes B$ in place of $A \times B$ for *linear* pairs:
+To start off with, we’re gonna copy over the whole type system for the linear λ-calculus, adding the rules for units and pairs as needed. Similar to how we write $A \multimap B$ in place of $A \to B$ for *linear* functions, we write $A \otimes B$ in place of $A \times B$ for *linear* pairs:
 
 $$
 \begin{array}{l}
@@ -1802,6 +1802,79 @@ In order of appearance:
 - $\mathbf{send}$ takes a value, and an endpoint to a session-typed channel over which such a value can be send, and returns the continuation of the session.
 - $\mathbf{recv}$ takes an endpoint to a session-typed channel over which a value can be received, and returns a pair of the received value and the continuation of the session.
 
+Right, so that’s terms properly taken care of. What about processes? To the surprise of, I hope, absolutely nobody, we’re pretty much gonna copy over the typing rules from the π-calculus, best we can. There’s one small difference. Remember how we were marking threads as either *main* or *child* threads, and only the main thread could return a value? That’s gonna show in our typing rules. First off, we’ll have two ways of embedding terms as processes—either as a main thread or as a child thread—which will show up in the typing judgement:
+
+::: mathpar
+$\begin{array}{c}
+\Gamma \vdash M : A
+\\ \hline
+\Gamma \vdash^\bullet \bullet\;M
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash M : \mathbf{1}
+\\ \hline
+\Delta \vdash^\circ \circ\;M
+\end{array}$
+:::
+
+The *premises* here refer back to our term typing rules, but the conclusions uses our process typing rules. In our process typing judgements, we’re marking which kind of thread we’re dealing with on top of the $\vdash$, *e.g.*, as $\vdash^\bullet$ or $\vdash^\circ$. When we compose multiple processes in parallel, we’re going to want to keep track of whether the composition as a whole contains the main thread or not—we’ll do this by combining the markings of the two processes, written $\phi+\phi^\prime$:
+
+::: mathpar
+$\begin{array}{lclcl}
+\bullet & + & \circ & = & \circ
+\\
+\circ & + & \bullet & = & \circ
+\\
+\circ & + & \circ & = & \circ
+\end{array}$
+:::
+
+We’re not listing what $\bullet+\bullet$ equals—it’s not allowed! If you try to add two main threads, that’s a big no-no, as it violates our *only one main thread* restriction! Okay, so we’re now in a place where we can copy over the remaining rules—the ones for ν-binders and parallel composition:
+
+::: mathpar
+$\begin{array}{c}
+\Gamma, x : S, x' : \overline{S} \vdash^\phi P
+\\ \hline
+\Gamma \vdash^\phi (\nu xx') P
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash^\phi P
+\quad
+\Delta \vdash^{\phi^\prime} Q
+\\ \hline
+\Gamma, \Delta \vdash^{\phi+\phi^\prime} P \parallel Q
+\end{array}$
+:::
+
+Phew, I think that’s it! We’ve got typing rules! Specifically, we’ve now got typing rules which ensure that the session protocol is followed… so we should be able to show that [the interaction between Ada and Briar](#formal-Ada-and-Briar) is well-typed. I’ll leave it up to you to verify this, as the proof is quite big and I’m pretty tired of typesetting things by now. And, great news, [cheeky Ada](#formal-cheeky-Ada) is *not* well-typed! There’s two reasons—one is a bit cheeky, but the other one is a bit more satisfactory:
+
+1. We cannot type cheeky Ada because we have no recursion *(cheeky)*.
+2. We cannot type cheeky Ada because she uses the communication channel repeatedly, which violates linearity *(satisfactory)*.
+
+Unfortunately, this type system for the concurrent λ-calculus has similar problems to the type system we showed for the π-calculus… it’s really very restrictive, and yet it still has deadlocks if you start mixing multiple sessions. Fortunately, the same solutions we gave for the π-calculus can be used here. [Philip Wadler][wadler2014] has an example of the first solution, where you glue together ν-binders and parallel composition, in a calculus he calls *Good Variation*. [Luca Padovani and Luca Novara][padovani2015] have an example of the second solution, where you do a global check to see if you have any cyclic dependencies.
+
+
+## Session End
+
+Whew, that sure was quite a number of words! Let’s look back on what we learned:
+
+#### The λ-calculus
+
+- The untyped λ-calculus is a really neat model of computation, but it’s got some problems, namely programs which do nothing forever, and programs which do silly things like adding numbers to functions.
+- There’s several approaches to mitigate these problems via type systems, but it’s always a struggle between how many bad programs you rule out versus how many good programs you rule out with them—and how unwieldy your type system gets.
+
+#### The π-calculus
+
+- The untyped π-calculus is, like the λ-calculus, a really neat model of computation, and it’s even more expressive, in that it can model concurrency. However, this comes with all the problems of concurrency. Suddenly, we find ourselves facing deadlocks and race conditions!
+- There’s several approaches to mitigate these problems via type systems, but again, it’s always a struggle between how many bad programs you rule out versus how many good programs you rule out with them—and how unwieldy your type system gets.
+
+#### The concurrent λ-calculus
+
+- We can smash together the λ-calculus and the π-calculus to get the concurrent λ-calculus, with the best of both worlds—it has higher-order functions *and* can model concurrency—and the worst of both worlds—now you’ve got to reason about higher-order functions *and* concurrency!
+- Unsurprisingly, the semantics and type systems for the concurrent λ-calculus look a lot like what you’d get if you smashed the semantics and type systems for the λ-calculus and the π-calculus together, but there’s some tiny tweaks we need to make to get them to behave like we want to.
+
+If you made it this far, thanks for reading altogether too many words! If you didn’t—*how are you reading this?!*—thanks for reading whatever number of words you thought was appropriate.
+
 ---
 
 **Disclaimer**: I haven’t proven any safety properties for any of the calculi presented here. The simply-typed λ-calculus is pretty well established, so you can trust that’s good, but the other systems are potentially destructive simplifications of existent systems, so all bets are off! I guess you could do the proofs yourself—or if you wanna be really safe, refer to the papers I’ve linked. However, I’ve opted to make these simplifications because the smallest typed π-calculi which are *actually* expressive tend to be pretty big already
@@ -1810,6 +1883,7 @@ In order of appearance:
 [church1940]: https://www.jstor.org/stable/2266170
 [milner1992]: http://www.lfcs.inf.ed.ac.uk/reports/89/ECS-LFCS-89-85/
 [wadler1993]: https://homepages.inf.ed.ac.uk/wadler/papers/lineartaste/lineartaste-revised.pdf
+[padovani2015]: http://dx.doi.org/10.1007/978-3-319-19195-9_1
 [honda1993]: http://www.kurims.kyoto-u.ac.jp/~kyodo/kokyuroku/contents/pdf/0851-05.pdf
 [kobayashi2002]: https://doi.org/10.1016/S0890-5401(02)93171-8
 [wadler2014]: https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-sessions/propositions-as-sessions-jfp.pdf
