@@ -733,7 +733,7 @@ $$
 \end{array}
 $$
 
-A crucial notion in session types—as mentioned in the introduction—is *duality*, the idea that while I’m sending a message, you should be expecting to receive one, and vice versa. Duality is a function on session types:
+A crucial notion in session types—as mentioned in the introduction—is *duality*, the idea that while I’m sending a message, you should be expecting to receive one, and vice versa. Duality is a function on session types. We write duality using an *overline*, so the dual of $S$ is $\overline{S}$:
 
 $$
 \begin{array}{lrl}
@@ -865,7 +865,7 @@ $\begin{array}{c}
 
 We’ve glued the ν-binder and the parallel composition together in a single operation which makes sure that one endpoint goes one way and the other the other.
 
-The second option, developed by [Naoki Kobayashi][kobayashi2002], is to just do a whole-program check for deadlocks. Take out a piece of paper, and draw a blob for every dual pair of send and receive actions in your program. For every action, if it *has to* happen before another action, draw an arrow between their blobs. Finally, check to see if there’s any *directed* cycles—for each blob, see if you can follow the arrows and end up back at the same blob. We can do this *formally* by adding some little blobs to our session types—since each session type connective corresponds to an action—and requiring a particular order on the little blobs. For reference, little blobs are more commonly known as *priorities*. If we updated our typing rules, they’d look a little like this… first, we add little blobs to our session types. Duality *preserves* priorities.
+The second option, developed by [Naoki Kobayashi][kobayashi2002], is to just do a whole-program check for deadlocks. Take out a piece of paper, and draw a blob for every dual pair of send and receive actions in your program. For every action, if it *has to* happen before another action, draw an arrow between their blobs. Finally, check to see if there’s any *directed* cycles—for each blob, see if you can follow the arrows and end up back at the same blob. We can do this *formally* by adding some little blobs to our session types—since each session type connective corresponds to an action—and requiring a particular order on the little blobs. For reference, little blobs are more commonly known as *priorities*. If we updated our typing rules, they’d look a little like this… first, we add little blobs to our session types. Duality *preserves* priorities:
 
 ::: mathpar
 $\begin{array}{l}
