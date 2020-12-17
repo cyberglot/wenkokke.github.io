@@ -423,7 +423,7 @@ All those puzzle pieces say is “if you wanna know if $x : A$ is in $\Gamma$…
 Anyway, back to our typing rules for the λ-calculus! In order of appearance:
 
 - A variable $x$ has type $A$ if there’s an assignment in $\Gamma$ that says so.
-- If we’ve got something of type $B$ which uses something of type $A$ from the bag, we can abstract over that something to create a function of type $A \to B$.
+- If we’ve got something of type $B$ which uses something of type $A$ from the typing environment, we can abstract over that something to create a function of type $A \to B$.
 - If we’ve got something of type $A \to B$ and something of type $A$, then we can apply the former to the latter to get something of type $B$.
 
 Guess what?! It works! All the programs you can type with these rules are super well-behaved and nice! Buuuut… there’s kinda a lot of programs that are really nice and good, that you can’t type with these rules… Very, *very*, notably, you can’t type the $Y$ combinator. Oh no! We lost recursion!
@@ -433,13 +433,13 @@ Queue the history of type theory, trying to wrangle with this, trying to make th
 It’s, *uh*, pretty hard to get *extactly* the bad looping stuff out, so some folks are like “eh, we’ll keep the looping stuff, but still use types to get rid of all that ‘adding functions to numbers’ nonsense”, whereas other folks are all hardcore and decide that “no it has to be terminating all the way even if it becomes pretty hard to use!”
 
 
-## A detour into linearity!
+## A detour into linearity!
 
 Let’s briefly talk about another type system for the λ-calculus—but only because it’ll turn out to be highly relevant to session types, I haven’t forgotten what I promised to write about! Let’s talk about [the linear λ-calculus][wadler1993].
 
 In its most minimal form, the linear λ-calculus demands that every variable is used *exactly once*. This’ll end up being a *very important* restriction for our session-typed calculus. Remember that cheeky implementation for Ada, which kept sending new and new requests for milk pudding, even though the protocol *clearly* stated she could only send one request? That’s where the *used exactly once* restriction comes in.
 
-Okay, so how are we going to enforce this in the type system? When you check a function application, you have to decide which parts of the typing environment are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the bag is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.
+Okay, so how are we going to enforce this in the type system? When you check a function application, you have to decide which parts of the typing environment are gonna be used in the function, and which parts in the argument. By the time you’ve made it all the way down to a variable, the typing environment is supposed to be empty save for the variable you’re checking. Everything else must’ve already been split off for usage elsewhere.
 
 Also, we now use this cute little lollipop instead of the function arrow:
 
@@ -472,6 +472,14 @@ $\begin{array}{c}
 \Gamma, \Delta \vdash M \; N : B
 \end{array}$
 :::
+
+In order of appearance:
+
+- A variable $x$ has type $A$ if the typing environment *only* contains $x : A$.
+- If we’ve got something of type $B$ which uses something of type $A$ from the typing environment, we can abstract over that something to create a function of type $A \multimap B$. *(It’s the same as before!)*
+- If we’ve got something of type $A \multimap B$ which uses some chunk of the typing environment called $\Gamma$, and something of type $A$ which uses the rest of the typing environment called $\Delta$, then we can apply the former to the latter to get something of type $B$ which uses both $\Gamma$ and $\Delta$.
+
+Notice that $A \multimap B$ being a linear function isn’t something that follows from the rules for abstraction and application… it’s something to do with the structure of *all rules*.
 
 As a type system, this is *highly restrictive*. Essentially, what we’re left with is a calculus of permutations. Think of lists… if you’re writing a function from lists to lists, but you *have to* use every element in the list exactly once, what kinds of programs can you write? Permutations. That’s it.
 
@@ -1652,6 +1660,141 @@ $$
 $$
 
 I’m not gonna write out the whole evaluation, like I did with the previous example, but you can verify for yourself that evaluation gets stuck after a single back-and-forth, with Briar being done with Ada’s cheek and reducing to $\circ\;()$, while Ada still wants to talk.
+
+We’d like to rule out this sort of failing interaction *a priori*. Briar was *very clear* about her boundaries of only taking a *single* request for cake, so we should’ve never set her up with *cheeky* Ada. How are we gonna do this? *With types!*
+
+Developing the type system for the concurrent λ-calculus will be a very similar experience to developing its reduction semantics… we’re mostly just smashing stuff from the λ-calculus and the π-calculus together, and seeing what falls out.
+
+First off, we’re copying over the whole type system for the linear λ-calculus, adding the rules for units and pairs as needed. Similar to how we write $A \multimap B$ in place of $A \to B$ for *linear* functions, we write $A \otimes B$ in place of $A \times B$ for *linear* pairs:
+
+$$
+\begin{array}{l}
+\text{Type} \; A, B, C
+\\
+\quad
+  \begin{array}{rl}
+  ::= & \star
+  \;\mid\; A \multimap B
+  \;\mid\; \mathbf{1}
+  \;\mid\; A \otimes B
+  \end{array}
+\end{array}
+$$
+
+::: mathpar
+$\begin{array}{c}
+\\ \hline
+x : A \vdash x : A
+\end{array}$
+
+$\begin{array}{c}
+\Gamma, x : A \vdash M : B
+\\ \hline
+\Gamma \vdash \lambda x.M : A \multimap B
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash M : A \multimap B \quad \Delta \vdash N : A
+\\ \hline
+\Gamma, \Delta \vdash M \; N : B
+\end{array}$
+
+$\begin{array}{c}
+\\ \hline
+\varnothing \vdash () : \mathbf{1}
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash M : \mathbf{1} \quad \Delta \vdash N : A
+\\ \hline
+\Gamma, \Delta \vdash \mathbf{let}\;() = M\;\mathbf{in}\;N : A
+\end{array}$
+
+$\begin{array}{c}
+\Gamma \vdash M : A \quad \Delta \vdash N : B
+\\ \hline
+\Gamma, \Delta \vdash (M, N) : A \otimes B
+\end{array}$
+$\begin{array}{c}
+\Gamma \vdash M : A \otimes B \quad \Delta, x : A, y : B \vdash N : C
+\\ \hline
+\Gamma, \Delta \vdash \mathbf{let}\;(x,y) = M\;\mathbf{in}\;N : C
+\end{array}$
+:::
+
+First come the rules for variables and functions, which we’ve seen before:
+
+- A variable $x$ has type $A$ if the typing environment *only* contains $x : A$.
+- If we’ve got something of type $B$ which uses something of type $A$ from the typing environment, we can abstract over that something to create a function of type $A \multimap B$.
+- If we’ve got something of type $A \multimap B$ which uses some chunk of the typing environment called $\Gamma$, and something of type $A$ which uses the rest of the typing environment called $\Delta$, then we can apply the former to the latter to get something of type $B$ which uses both $\Gamma$ and $\Delta$.
+
+Then, the rules for units:
+
+- We can always construct the unit value, and doing so uses no resources.
+- If we’ve got something of the unit type $\mathbf{1}$ which uses some chunk of the typing environment called $\Gamma$, and something of type $A$ which uses the rest of the typing environment called $\Delta$, then we can put them together to get something of type $A$ which uses both $\Gamma$ and $\Delta$.
+
+And finally, the rules for pairs:
+
+- If we’ve got something of type $A$ which uses some chunk of the typing environment called $\Gamma$, and something of type $B$ which uses the rest of the typing environment $\Delta$, then we can put them together as a pair of type $A \otimes B$ which uses both $\Gamma$ and $\Delta$.
+- If we’ve got something of type $A \otimes B$ which uses some chunk of the typing environment called $\Gamma$, and something of type $C$ which uses the rest of the typing environment $\Delta$ *plus* something of type $A$ and something of type $B$, we can put them together to get something of type $C$ which uses both $\Gamma$ and $\Delta$.
+
+Oh, right, we’re gonna have to give types to $\mathbf{new}$, $\mathbf{spawn}$, $\mathbf{send}$ and $\mathbf{recv}$ as well! And for that, we’ll need session types! We’re gonna import those from the π-calculus, but we’re making one change—instead of only sending and receiving values of *session types* we’re gonna allow ourselves to send and receive values of *any type*:
+
+::: mathpar
+$\begin{array}{l}
+\text{Type} \; A, B, C
+\\
+\quad
+  \begin{array}{rl}
+     ::= & \dots
+  \;\mid\; S
+  \end{array}
+\end{array}$
+$\begin{array}{l}
+\text{Session type}\;{S}\quad
+\\
+\quad
+  \begin{array}{rl}
+     ::= & !A.S
+  \;\mid\; ?A.S
+  \;\mid\; \mathbf{end}
+  \end{array}
+\\
+\end{array}$
+:::
+
+Remember *duality* on session types? Yeah, we’re also gonna need that:
+
+$$
+\begin{array}{lrl}
+\overline{!A.S}        & = & ?A.\overline{S}
+\\
+\overline{?A.S}        & = & !A.\overline{S}
+\\
+\overline{\mathbf{end}} & = & \mathbf{end}
+\end{array}
+$$
+
+Okay, and we’re finally ready to give types to our concurrency primitives:
+
+::: mathpar
+$\begin{array}{c}
+\\ \hline
+\varnothing\vdash\mathbf{new} : {S\otimes\overline{S}}
+\end{array}$
+$\begin{array}{c}
+\\ \hline
+\varnothing\vdash\mathbf{spawn} : (\mathbf{1}\multimap\mathbf{1})\multimap\mathbf{1}
+\end{array}$
+
+$\begin{array}{c}
+\\ \hline
+\varnothing\vdash\mathbf{send} : {A\multimap{!A.S}\multimap{S}}
+\end{array}$
+$\begin{array}{c}
+\\ \hline
+\varnothing\vdash\mathbf{recv} : {{?A.S}\multimap{A\otimes{S}}}
+\end{array}$
+:::
+
 
 
 ---
