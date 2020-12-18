@@ -508,7 +508,7 @@ $$
 
 In order of appearance:
 
-- We’ve got ν-binders, written $(\nu x)P$, which create a new channel $x$, which can be used in $P$.
+- We’ve got ν-binders, written $(\nu x)P$, which creates a new channel $x$, which can be used in $P$. (That ν is the Greek letter nu, which sure sounds a lot like “new”. It’s, *like*, the only well-chosen Greek letter we use in programming language theory.)
 - We’ve got parallel composition, written $\parallel$, to let you know that two processes are running in parallel.
 - We’ve got nil, written $0$, the process which is done.
 - We’ve got *send*, written $x \langle y \rangle.P$, which sends some $y$ on $x$, and then continues as $P$.
