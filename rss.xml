@@ -341,7 +341,7 @@ Y \; f
 </span></p>
 <p>In order of appearance:</p>
 <ul>
-<li>We’ve got ν-binders, written <span class="math inline">(\nu x)P</span>, which create a new channel <span class="math inline">x</span>, which can be used in <span class="math inline">P</span>.</li>
+<li>We’ve got ν-binders, written <span class="math inline">(\nu x)P</span>, which creates a new channel <span class="math inline">x</span>, which can be used in <span class="math inline">P</span>. (That ν is the Greek letter nu, which sure sounds a lot like “new”. It’s, <em>like</em>, the only well-chosen Greek letter we use in programming language theory.)</li>
 <li>We’ve got parallel composition, written <span class="math inline">\parallel</span>, to let you know that two processes are running in parallel.</li>
 <li>We’ve got nil, written <span class="math inline">0</span>, the process which is done.</li>
 <li>We’ve got <em>send</em>, written <span class="math inline">x \langle y \rangle.P</span>, which sends some <span class="math inline">y</span> on <span class="math inline">x</span>, and then continues as <span class="math inline">P</span>.</li>
