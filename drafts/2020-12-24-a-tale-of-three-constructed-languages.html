@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+    <link href="http://gmpg.org/xfn/11" rel="profile">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <title>A Tale of Three Constructed Languages</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../public/css/style.css">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const citations = document.querySelectorAll('.citation');
+         for (let citationSpan of citations) {
+             const firstRefId = citationSpan.getAttribute('DATA-CITES').split(' ');
+             const citationLink = document.createElement('A');
+             citationLink.innerHTML = citationSpan.innerHTML;
+             citationLink.setAttribute('href', '#'+firstRefId);
+             citationSpan.replaceWith(citationLink);
+         }
+     });
+    </script>
+
+    <!-- KaTeX -->
+    <script defer src="../public/js/katex.min.js"></script>
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+         const mathElements = document.getElementsByClassName("math");
+         const macros = [];
+         for (var i = 0; i < mathElements.length; i++) {
+             const texText = mathElements[i].firstChild;
+             if (mathElements[i].tagName == "SPAN") {
+                 katex.render(texText.data, mathElements[i], {
+                     displayMode: mathElements[i].classList.contains('display'),
+                     throwOnError: false,
+                     macros: macros,
+                     fleqn: true
+                 });
+     }}});
+    </script>
+</head>
+
+
+
+    <body>
+        <header class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="sidebar-about">
+            <img class="sidebar-about-photo" src="../public/images/me.png" alt="It's me!" />
+            <h1><a href="https://wenkokke.github.io">All The Language</a></h1>
+            <p class="lead">
+                Hiya!
+                I'm <span class="tooltip" title="/wɛn/">Wen</span>.
+                I study natural language, programming languages and logical languages.
+                Basically, all the language&hellip;
+            </p>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="sidebar-nav-item" href="../">
+                Blog
+            </a>
+            <a class="sidebar-nav-item" href="../pages/pubs.html">
+                Pubs
+            </a>
+        </nav>
+        <nav class="sidebar-nav">
+            <a class="sidebar-nav-item sidebar-nav-icon" href="mailto:me@wen.works">
+                <i class="far fa-envelope"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://github.com/wenkokke">
+                <i class="fab fa-github"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://twitter.com/wenkokke">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://www.paypal.me/wenkokke">
+                <i class="fab fa-paypal"></i>
+            </a>
+        </nav>
+        <div class="sidebar-about">
+            &copy; 2020. All rights reserved.
+        </div>
+    </div>
+</header>
+
+        <main class="content container">
+            <article class="post">
+    <header>
+        <h1 class="post-title">A Tale of Three Constructed Languages</h1>
+    </header>
+    <footer class="post-date">
+        December 24, 2020
+    </footer>
+    <p>Today, we’re gonna talk about <em>conlangs</em>! Conlang is short for <em>constructed language</em>. I’m a sucker for a good conlang—and a good <em>natlang</em>, to be honest, there’s a reason a big chunk of my degree was in linguistics!</p>
+<p>There’s a bunch of famous conlangs. <a href="https://en.wikipedia.org/wiki/Esperanto" title="Esperanto">Esperanto</a> is probably the most famous of the old-ass conlangs, going back to 1887. A good half century later, Jerry Tolkien published a whole series of fantasy novels just to popularise <a href="https://en.wikipedia.org/wiki/Quenya" title="Quenya"><span class="font-tengwar">z$5h#</span></a> and his other conlangs—his efforts were at least passably successful. More recently, we got <a href="https://en.wikipedia.org/wiki/Klingon_language" title="Klingon">tlhIngan Hol</a>, <a href="https://en.wikipedia.org/wiki/Dothraki_language" title="Dothraki">lekh dothraki</a> and <a href="https://en.wikipedia.org/wiki/Valyrian_languages" title="High Valyrian">Valyrio udrir</a>, which were all rather successful, and have communities formed around them! Heck, that last one got it’s own <a href="https://www.duolingo.com/course/hv/en/Learn-High%20Valyrian">DuoLingo course</a>! Unfortunately, one thing all these languages share is that they were created by dudes.</p>
+<p>Historically, conlanging has been <em>a wee bit</em> dominated by clueless wealthy white dudes trying to find <em>the perfect language</em>. My favourite example of this is <a href="https://en.wikipedia.org/wiki/Solresol" title="Solrésol">Solrésol</a>, designed by François Sudre in 1827. François tried to create a language using only the symbols <span class="solresol-red">do</span>, <span class="solresol-orange">re</span>, <span class="solresol-yellow">mi</span>, <span class="solresol-green">fa</span>, <span class="solresol-cyan">sol</span>, <span class="solresol-blue">la</span>, and <span class="solresol-magenta">si</span> or <span class="solresol-magenta">ti</span>, in hopes that it could be spoken, painted, played, or whistled—it’s possible he, <em>uh</em>, “took a little inspiration from” one of the many natural <a href="https://en.wikipedia.org/wiki/Whistled_language#List_of_whistled_languages">whistled languages</a>, which are predominantly from Africa and the Americas. Anyway, he’s got this <em>seven sounds</em> premise, and immediately sets out to create a “taxonomy of all meaning” using only these seven sounds—<em>e.g.</em>, all words starting with <span class="solresol-cyan">sol</span> pertain to the arts or sciences, famously one of the seven core categories of meaning. He follows that up with the <em>totally compatible</em> constraint that reversing a word should invert its meaning—<em>e.g.</em>, <span class="solresol-green">fa</span><span class="solresol-blue">la</span> means <em>good</em>, and <span class="solresol-blue">la</span><span class="solresol-green">fa</span> means <em>bad</em>. Presumably, <em>good</em> relates to country and war, and <em>bad</em> is primarily used in industry and commerce? Entirely in character, he tries to sell his language to the army, recommending they use Solrésol to transmit messages using, <em>like</em>, a trumpet, and when that turns out not to work, he tries to sell them some <em>musical canons</em>.</p>
+<p>Much as I <em>love</em> roasting Solrésol, that’s not what this blog post is about! Today, I figured I’d talk about some conlangs which were made by women!<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<h1 id="lingua-ignota-by-st.-hildegaard-von-bingen">Lingua Ignota<br /><em>by St. Hildegaard von Bingen</em></h1>
+<ul>
+<li>Lingua Ignota <em>per simplicem hominem Hildegardem prolata</em></li>
+<li><em>Created by</em> St. Hildegaard von Bingen <em>in</em> 12th century</li>
+<li><em>Script called</em> Litteræ Ignotæ</li>
+<li><em>Glossary of</em> 1011 nouns <em>and adjectives</em></li>
+<li><em>Substitute words into</em> Latin phrases</li>
+<li><em>Meant as a</em> secret language <em>(citation needed)</em></li>
+<li><em>Meant to</em> clearly and unambiguously express oneself</li>
+<li>Hildegaard was a German abbess in Rupertsberg 12th century.</li>
+<li>An obvious choice for patron saint of conlangers.</li>
+<li>This is a trend we see in a lot of constructed languages:
+<ul>
+<li>Script maps 1-to-1 to Latin alphabet</li>
+<li>List a bunch of words, mostly nouns</li>
+<li>Grammar of a language you know</li>
+</ul></li>
+<li>Evidence in her letters indicates others knew of her language.</li>
+<li>First thought: I have to make a font for this. Fortunately, someone had already done that for me!</li>
+<li>Anyway: this is what it looks like.</li>
+<li>Wikipedia cites this as “the only extant text in the language”.</li>
+</ul>
+<div class="font-litterae-ignotae">
+<blockquote>
+<p>O <span class="lingua-ignota-highlight">orzchis</span> Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es <span class="lingua-ignota-highlight">caldemia</span> stigmatum <span class="lingua-ignota-highlight">loifolum</span> et urbs scienciarum. O, o tu es etiam <span class="lingua-ignota-highlight">crizanta</span> in alto sono, et es <span class="lingua-ignota-highlight">chorzta</span> gemma.</p>
+</blockquote>
+</div>
+<ul>
+<li>When you transliterate that, this is what you get.</li>
+</ul>
+<blockquote>
+<p>O <span class="lingua-ignota-highlight">orzchis</span> Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es <span class="lingua-ignota-highlight">caldemia</span> stigmatum <span class="lingua-ignota-highlight">loifolum</span> et urbs scienciarum. O, o tu es etiam <span class="lingua-ignota-highlight">crizanta</span> in alto sono, et es <span class="lingua-ignota-highlight">chorzta</span> gemma.</p>
+</blockquote>
+<ul>
+<li>Curiously, in the entire passage, there’s only five Lingua Ignota words.</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Lingua Ignota</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>O</em> orzchis <em>Ecclesia</em></td>
+<td><em>O</em> measureless <em>Church</em></td>
+</tr>
+<tr class="even">
+<td><em>tu es</em> caldemia <em>stigmatum</em></td>
+<td><em>you are the</em> fragrance</td>
+</tr>
+<tr class="odd">
+<td>loifulum <em>et urbs scienciarum</em></td>
+<td><em>of the wounds of</em> nations</td>
+</tr>
+<tr class="even">
+<td><em>O, o tu es etiam</em> crizanta</td>
+<td><em>O, o, and you are</em> anointed</td>
+</tr>
+<tr class="odd">
+<td><em>es</em> chorzta <em>gemma</em></td>
+<td><em>you are a</em> sparkling <em>gem</em></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>This all seems VERY religious.</li>
+<li>The glossary is not in any alphabetical order, but in order of hierarchy; of course, God and angels listed are first.</li>
+<li>An obsession with hierarchy is a common trend in early conlangs!</li>
+<li>We could easily find ourselves saying that this language had a religious purpose for Hildegaard, but don’t forget that she’s an 11th century abbess. A lot of things in her life were probably very religious!</li>
+</ul>
+<div class="font-litterae-ignotae xxx-large">
+<p>Lingae Ignotae bizimonza est.</p>
+</div>
+<h1 id="láadan-by-suzette-haden-elgin">Láadan<br /><em>by Suzette Haden Elgin</em></h1>
+<ul>
+<li><em>Created by</em> Suzette Haden Elign <em>ca.</em> 1985</li>
+<li><em>Rules for</em> phonology<em>,</em> morphology<em>,</em> grammar<em>, etc.</em></li>
+<li><em>Glossary of</em> 1000 words <em>with ways to</em> create new words</li>
+<li><em>Offered within a</em> work of fiction<em>: Native Tongue</em></li>
+<li><em>Meant to</em> test a socio-linguistic hypothesis</li>
+<li><em>Within the framework of the</em> Sapir-Whorf <em>hypothesis</em></li>
+<li>Suzette had a Ph.D. in Linguistics, writing two dissertations: one on English, one on Navajo.</li>
+<li>Here’s something infuriating: Suzette started writing Science Fiction to pay her tuition.</li>
+<li>Hypothesis: Existing human languages are inadequate to express the perceptions of women</li>
+<li>A Thought Experiment:
+<ol type="1">
+<li><em>the</em> Sapir-Whorf <em>hypothesis is true</em></li>
+<li><em>existing languages are</em> inadequate for women</li>
+<li><em>change in</em> language brings societal change</li>
+<li><em>when offered a women’s language:</em>
+<ul>
+<li><em>women will</em> adopt it <em>or;</em></li>
+<li><em>women will</em> create a better language</li>
+</ul></li>
+</ol></li>
+<li>Problems with English:
+<ul>
+<li>words obscure imperfection <em>their meaning does not conform to the reality perceived by women</em></li>
+<li>words are insufficiently nuanced <em>their meaning glosses over a vast range of distinct female experiences</em></li>
+<li><em>there is</em> too much potential for misunderstanding</li>
+</ul></li>
+<li>The problem is natural languages lack vocabulary for many things that are extremely important to women, making it cumbersome and inconvenient to talk about them.</li>
+<li>Furthermore, they lack ways to express emotional information conveniently. Much of that information had to be carried by body language and was almost entirely missing from written language. This leaves women vulnerable to hostile language followed by the “But all I said was….” excuse; and it restricted women to the largely useless “It wasn’t what you said, it was the way you said it!” defense against such hostility.</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Láadan</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>lowitheláad</em></td>
+<td>to feel another’s feelings as if directly</td>
+</tr>
+<tr class="even">
+<td><em>radíidin</em></td>
+<td>non-holiday, holiday more work that it’s worth<em>, a time allegedly a holiday but actually so much a burden because of work and preparations that it is a dreaded occasion; especially when there are too many guests and none of them help</em></td>
+</tr>
+<tr class="odd">
+<td><em>rathóo</em></td>
+<td>non-guest<em>, someone who comes to visit knowing perfectly well that</em> they are intruding and causing difficulty</td>
+</tr>
+<tr class="even">
+<td><em>doroledim</em></td>
+<td>overeating followed by guilt <em>(when food is the only part of your life you have control over)</em></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Illustrates English vocabulary being deceitful, and obscuring imperfection.</li>
+<li>Defined negatively, in terms of what they are supposed to be, but they are not, in an attempt to amend the way English does not match the way reality is perceived by Elgin and the women she interviewed.</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Láadan</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>osháana</em></td>
+<td>menstruate</td>
+</tr>
+<tr class="even">
+<td><em>elasháana</em></td>
+<td><em>menstruate</em> for the first time</td>
+</tr>
+<tr class="odd">
+<td><em>zhesháana</em></td>
+<td><em>menstruate</em> in sync with another woman</td>
+</tr>
+<tr class="even">
+<td><em>husháana</em></td>
+<td><em>menstruate</em> painfully</td>
+</tr>
+<tr class="odd">
+<td><em>desháana</em></td>
+<td><em>menstruate</em> early</td>
+</tr>
+<tr class="even">
+<td><em>wesháana</em></td>
+<td><em>menstruate</em> late</td>
+</tr>
+<tr class="odd">
+<td><em>ásháana</em></td>
+<td><em>menstruate</em> joyfully</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>Láadan</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>bara</td>
+<td><em>anger</em> with reason, with someone to blame, which is futile</td>
+</tr>
+<tr class="even">
+<td>bana</td>
+<td><em>anger</em> with reason, with no one to blame, which is futile</td>
+</tr>
+<tr class="odd">
+<td>bama</td>
+<td><em>anger</em> with reason, but with no one to blame, which is not futile</td>
+</tr>
+<tr class="even">
+<td>bina</td>
+<td><em>anger</em> with no reason, with no one to blame, which is not futile</td>
+</tr>
+<tr class="odd">
+<td>bala</td>
+<td><em>anger</em> with reason, with someone to blame, which is not futile</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Illustrates English vocabulary not being nuanced enough.</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Láadan</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>bíi</em></td>
+<td><em>I say to you</em> as a statement</td>
+</tr>
+<tr class="even">
+<td><em>báa</em></td>
+<td><em>I say to you</em> as a question</td>
+</tr>
+<tr class="odd">
+<td><em>bíid</em></td>
+<td><em>I say to you</em> in anger</td>
+</tr>
+<tr class="even">
+<td><em>bíida</em></td>
+<td><em>I say to you</em> in jest</td>
+</tr>
+<tr class="odd">
+<td><em>…</em></td>
+<td><em>…</em></td>
+</tr>
+<tr class="even">
+<td><em>wa</em></td>
+<td><em>what I’m saying is true because</em> I have perceived it</td>
+</tr>
+<tr class="odd">
+<td><em>wi</em></td>
+<td><em>what I’m saying is true because</em> it’s self-evident</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Illustrates English being too imprecise when it comes to emotional information.</li>
+<li>A Brief Feminist Critique of Láadan
+<ul>
+<li>based on the experiences of Suzette <em>and the women whom she consulted</em></li>
+<li>copies over societal taboos <em>e.g. has no more nuanced words for sex</em></li>
+<li>assumes traditional model of sex and gender:
+<ul>
+<li><em>assumes</em> sex is binary</li>
+<li><em>assumes</em> gender is binary, immutable, determined by sex</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="xxx-large">
+<p>bíilan ril le wéhená Láadanth wa</p>
+</div>
+<h1 id="toki-pona-by-sonja-lang">Toki Pona<br /><em>by Sonja Lang</em></h1>
+<ul>
+<li><em>Created by</em> Sonja Lang <em>ca.</em> 2001</li>
+<li><em>Rules for</em> phonology<em>,</em> morphology<em>,</em> grammar<em>, etc.</em></li>
+<li><em>Oligoisolating;</em> closed <em>list of</em> 120 words</li>
+<li><em>Meant as a</em> coping mechanism for depression</li>
+<li><em>Within the framework of the</em> Sapir-Whorf <em>hypothesis</em></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>toki pona</th>
+<th>literal English</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>telo</em></td>
+<td><em>“water”</em></td>
+<td><em>water</em></td>
+</tr>
+<tr class="even">
+<td><em>telo nasa</em></td>
+<td><em>“crazy water”</em></td>
+<td><em>alcohol</em></td>
+</tr>
+<tr class="odd">
+<td><em>tomo</em></td>
+<td><em>“house”</em></td>
+<td><em>house</em></td>
+</tr>
+<tr class="even">
+<td><em>tomo pi telo nasa</em></td>
+<td><em>"house of</em></td>
+<td><em>bar</em></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><em>crazy water"</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>toki pi jan Wen li pona!</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th>toki pona</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>toki</em></td>
+<td><em>language, speech, to say, to talk</em></td>
+</tr>
+<tr class="even">
+<td><em>jan</em></td>
+<td><em>person</em></td>
+</tr>
+<tr class="odd">
+<td><em>Wen</em></td>
+<td><em>(that’s my name!)</em></td>
+</tr>
+<tr class="even">
+<td><em>li</em></td>
+<td><em>(between subject and verb phrase)</em></td>
+</tr>
+<tr class="odd">
+<td><em>pona</em></td>
+<td><em>good</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>toki pi jan Wen li pini, la o kama jo e telo nasa!</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th>toki pona</th>
+<th>English</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>pini</em></td>
+<td><em>end, finished</em></td>
+</tr>
+<tr class="even">
+<td><em>la</em></td>
+<td><em>(between context phrase and main phrase)</em></td>
+</tr>
+<tr class="odd">
+<td><em>o</em></td>
+<td><em>(imperative)</em></td>
+</tr>
+<tr class="even">
+<td><em>kama</em></td>
+<td><em>come</em></td>
+</tr>
+<tr class="odd">
+<td><em>jo</em></td>
+<td><em>have</em></td>
+</tr>
+<tr class="even">
+<td><em>e</em></td>
+<td><em>(between verb and direct object)</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>toki pi jan Wen li pini, la o kama jo e telo nasa!</p>
+</blockquote>
+<blockquote>
+<p>言 ぴ 人 Wen り 終, ら お 来 有 え 水 狂！</p>
+</blockquote>
+<blockquote>
+<p>言 的 人 Wen 哩 末, 喇 令 到 有 把 水 怪！</p>
+</blockquote>
+<p><img src="../public/images/sitelen-sitelen-grey.png" /></p>
+<div class="xxx-large">
+<p>toki pona li pona</p>
+</div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>While the languages I’m discussing were made by women, they still incredibly white, and where applicable <em>very cishet</em>. If you’d like to learn about some conlangs made by nonwhite people, check out <a href="https://en.wikipedia.org/wiki/Balaibalan" title="Balaibalan">Bālaïbalan</a>, <a href="https://en.wikipedia.org/wiki/Damin" title="Damin">Damin</a> and <a href="https://en.wikipedia.org/wiki/Eskayan_language" title="Eskayan">Eskayan</a>—they fucking rule! For a slightly less cishet normative language, check out <a href="https://en.wikipedia.org/wiki/Polari" title="Polari">Polari</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</article>
+
+
+
+        </main>
+    </body>
+</html>
