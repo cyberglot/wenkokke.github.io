@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Tengwar';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/public/webfonts/Tengwar-Regular.ttf');
+}
+.font-tengwar {
+    font-family: 'Tengwar';
+}
