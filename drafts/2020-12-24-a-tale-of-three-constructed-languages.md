@@ -2,25 +2,29 @@
 title: A Tale of Three Constructed Languages
 ---
 
-Today, we’re gonna talk about *conlangs*! Conlang is short for *constructed language*. I’m a sucker for a good conlang—and a good *natlang*, to be honest, there’s a reason a big chunk of my degree was in linguistics!
+Today, we’re gonna talk about *conlangs*! Conlang is short for *constructed language*. There’s a bunch of famous conlangs. [Esperanto][esperanto] is probably the most famous of the idealistic “let’s unite the world” conlangs—it’s pretty old, going back to the late 1870s. In the 1930s, some dude named Jerry Tolkien published a whole series of fantasy novels just to popularise [[z$5h#]{.font-tengwar}][quenya][^quenya] and his other conlangs, an effort we can say was at least passably successful. In recent decades, we got [tlhIngan Hol][klingon], [lekh dothraki][dothraki] and [Valyrio udrir][valyrian], each of which now have communities of speakers formed around them. Heck, two of those even got their’s own [DuoLingo][klingon-duolingo] [course][valyrian-duolingo]![^ads] Unfortunately, one thing all these languages share is that they were created by dudes…
 
-There’s a bunch of famous conlangs. [Esperanto][esperanto] is probably the most famous of the old-ass conlangs, going back to 1887. A good half century later, Jerry Tolkien published a whole series of fantasy novels just to popularise [[z$5h#]{.font-tengwar}][quenya] and his other conlangs—his efforts were at least passably successful. More recently, we got [tlhIngan Hol][klingon], [lekh dothraki][dothraki] and [Valyrio udrir][valyrian], which were all rather successful, and have communities formed around them! Heck, that last one got it’s own [DuoLingo course][valyrian-duolingo]! Unfortunately, one thing all these languages share is that they were created by dudes.
+<!--more-->
 
-Historically, conlanging has been *a wee bit* dominated by clueless wealthy white dudes trying to find *the perfect language*. My favourite example of this is [Solrésol][solresol], designed by François Sudre in 1827. François tried to create a language using only the symbols [do]{.solresol-red}, [re]{.solresol-orange}, [mi]{.solresol-yellow}, [fa]{.solresol-green}, [sol]{.solresol-cyan}, [la]{.solresol-blue}, and [si]{.solresol-magenta} or [ti]{.solresol-magenta}, in hopes that it could be spoken, painted, played, or whistled—it’s possible he, *uh*, “took a little inspiration from” one of the many natural [whistled languages][whistled-languages], which are predominantly from Africa and the Americas. Anyway, he’s got this *seven sounds* premise, and immediately sets out to create a “taxonomy of all meaning” using only these seven sounds—*e.g.*, all words starting with [sol]{.solresol-cyan} pertain to the arts or sciences, famously one of the seven core categories of meaning. He follows that up with the *totally compatible* constraint that reversing a word should invert its meaning—*e.g.*, [fa]{.solresol-green}[la]{.solresol-blue} means *good*, and [la]{.solresol-blue}[fa]{.solresol-green} means *bad*. Presumably, *good* relates to country and war, and *bad* is primarily used in industry and commerce? Entirely in character, he tries to sell his language to the army, recommending they use Solrésol to transmit messages using, *like*, a trumpet, and when that turns out not to work, he tries to sell them some *musical canons*.
+Historically, conlanging has been *a wee bit* dominated by clueless wealthy white dudes trying to find *the perfect language*.[^white-dudes] My favourite example of this is [Solrésol][solresol], designed by François Sudre in 1827. François tried to create a language using only the symbols [do]{.solresol-red}, [re]{.solresol-orange}, [mi]{.solresol-yellow}, [fa]{.solresol-green}, [sol]{.solresol-cyan}, [la]{.solresol-blue}, and [si]{.solresol-magenta} or [ti]{.solresol-magenta}, in hopes that it could be spoken, painted, played, or whistled—it’s possible he, *uh*, “took a little inspiration from” one of the many natural [whistled languages][whistled-languages], which are predominantly from Africa and the Americas. Anyway, he’s got this *seven sounds* premise, and immediately sets out to create a “taxonomy of all meaning” using only these seven sounds—*e.g.*, all words starting with [sol]{.solresol-cyan} pertain to the arts or sciences, famously one of the seven core categories of meaning. He follows that up with the *totally compatible* constraint that reversing a word should invert its meaning—*e.g.*, [fa]{.solresol-green}[la]{.solresol-blue} means *good*, and [la]{.solresol-blue}[fa]{.solresol-green} means *bad*. Presumably, *good* relates to country and war, and *bad* is primarily used in industry and commerce? Entirely in character, he tries to sell his language to the army, recommending they use Solrésol to transmit messages using, *like*, a trumpet, and when that turns out not to work, he tries to sell them some *musical canons*.
 
 Much as I *love* roasting Solrésol, that’s not what this blog post is about! Today, I figured I’d talk about some conlangs which were made by women![^overwhelming-whiteness]
 
 
 # Lingua Ignota<br />*by St. Hildegaard von Bingen*
 
-- Lingua Ignota *per simplicem hominem Hildegardem prolata*
-- *Created by* St. Hildegaard von Bingen *in* 12th century
+Lingua Ignota is the earliest conlang that we know about! It was created by St. Hildegard von Bingen in the 12^th^ century. Hildegard was pretty impressive, to say the least. These days, she’s mostly known for her music—she’s blowing up [on Spotify!][hildegard-spotify]—but she also founded two monasteries, wrote poetry and plays, texts on theology, botany, medicine, *etc.*, and addition to *all this*, she constructed a language, *Lingua Ignota*. She did all this in a time where it wasn’t particularly common for women to write, let alone *create language*, an act which was either “demonized [or] divinized” [@Higley2007].
+
+Hildegard was canonised as a saint by the Catholic Church, which implies the pendulum swung closer to “divinized” in her case, and which makes her an obvious pick for patron saint of conlangs![^patron-saints] A golden reliquary [in Eibingen][eibingen-abbey] stores her relics: her heart and, fittingly, her tongue!
+
+!["A bronze statue of St. Hildegard von Bingen."](/public/images/hildegard-1.jpg)\
+
+Hildegard introduced Lingua Ignota in a manuscript titled *Ignota Lingua per simplicem hominem Hildegardem prolata*, or “An unknown language brought forward by the simple human being Hildegard.” Throughout her writing, Hildegard refers to herself as a “simple human” and a “poor little womanly shape”, that her achievements are those of God. Such repeated self-deprecatory remarks have led to an image of Hildegard as “simple, humble, stumbling, [and] requiring help from her male advisers.” Much more likely, however, is that it was her emphasis on her lowliness which allowed her to get away with such great achievements![^higley]
+
 - *Script called* Litteræ Ignotæ
 - *Glossary of* 1011 nouns *and adjectives*
 - *Substitute words into* Latin phrases
-- *Meant as a* secret language *(citation needed)*
 - *Meant to* clearly and unambiguously express oneself
-- Hildegaard was a German abbess in Rupertsberg 12th century.
 - An obvious choice for patron saint of conlangers.
 - This is a trend we see in a lot of constructed languages:
   + Script maps 1-to-1 to Latin alphabet
@@ -31,7 +35,7 @@ Much as I *love* roasting Solrésol, that’s not what this blog post is about
 - Anyway: this is what it looks like.
 - Wikipedia cites this as "the only extant text in the language".
 
-::: font-litterae-ignotae
+::: {.font-litterae-ignotae .x-large}
 > O [orzchis]{.lingua-ignota-highlight} Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es [caldemia]{.lingua-ignota-highlight} stigmatum [loifolum]{.lingua-ignota-highlight} et urbs scienciarum. O, o tu es etiam [crizanta]{.lingua-ignota-highlight} in alto sono, et es [chorzta]{.lingua-ignota-highlight} gemma.
 :::
 
@@ -68,7 +72,8 @@ Lingae Ignotae bizimonza est.
 - *Meant to* test a socio-linguistic hypothesis
 - *Within the framework of the* Sapir-Whorf *hypothesis*
 - Suzette had a Ph.D. in Linguistics, writing two dissertations: one on English, one on Navajo.
-- Here's something infuriating: Suzette started writing Science Fiction to pay her tuition.
+- Here's something infuriating to anyone *not* born in the 1930s:
+  Suzette started writing Science Fiction to pay her tuition.
 - Hypothesis: Existing human languages are inadequate to express the perceptions of women
 - A Thought Experiment:
   1. *the* Sapir-Whorf *hypothesis is true*
@@ -137,7 +142,7 @@ Lingae Ignotae bizimonza est.
     - *assumes* sex is binary
     - *assumes* gender is binary, immutable, determined by sex
 
-::: xxx-large
+::: xx-large
 bíilan ril le
 wéhená
 Láadanth wa
@@ -153,13 +158,12 @@ Láadanth wa
 - *Meant as a* coping mechanism for depression
 - *Within the framework of the* Sapir-Whorf *hypothesis*
 
-| toki pona           | literal English | English   |
-| ---                 | ---             | ---       |
-| *telo*              | *"water"*       | *water*   |
-| *telo nasa*         | *"crazy water"* | *alcohol* |
-| *tomo*              | *"house"*       | *house*   |
-| *tomo pi telo nasa* | *"house of*     | *bar*     |
-|                     | *crazy water"*  |           |
+| toki pona           | literal English          | English   |
+| ---                 | ---                      | ---       |
+| *telo*              | *"water"*                | *water*   |
+| *telo nasa*         | *"crazy water"*          | *alcohol* |
+| *tomo*              | *"house"*                | *house*   |
+| *tomo pi telo nasa* | *"house of crazy water"* | *bar*     |
 
 > toki pi jan Wen li pona!
 
@@ -190,13 +194,21 @@ Láadanth wa
 
 ![](/public/images/sitelen-sitelen-grey.png)
 
-::: xxx-large
+::: xx-large
 toki pona 
 li
 pona
 :::
 
-[^overwhelming-whiteness]: While the languages I’m discussing were made by women, they still incredibly white, and where applicable *very cishet*. If you’d like to learn about some conlangs made by nonwhite people, check out [Bālaïbalan][balaibalan], [Damin][damin] and [Eskayan][eskayan]—they fucking rule! For a slightly less cishet normative language, check out [Polari][polari].
+
+## References
+
+[^ads]: How much of HBO’s advertising budget went to pay for that second one, though, is another question.
+[^quenya]: Quenya peeps come at me for that spelling!
+[^white-dudes]: Honestly, what wasn’t?
+[^overwhelming-whiteness]: While the languages I’m discussing were made by women, they’re still incredibly white, and sometimes very cishet normative—*I’m looking at you, Suzette*! If you’d like to learn about some conlangs made by nonwhite people, check out [Bālaïbalan][balaibalan], [Damin][damin] and [Eskayan][eskayan]—they fucking rule!
+[^patron-saints]: Is that how patron saints work? I’m not christian, so I don’t know.
+[^higley]: @Higley2007 gives a much more nuanced and eloquent description, but I believe she holds the same opinion.
 
 [afrihili]: https://en.wikipedia.org/wiki/Afrihili "Afrihili"
 [babm]: https://en.wikipedia.org/wiki/Babm "Babm"
@@ -207,6 +219,7 @@ pona
 [esperanto]: https://en.wikipedia.org/wiki/Esperanto "Esperanto"
 [guosa]: https://en.wikipedia.org/wiki/Guosa "Guosa"
 [klingon]: https://en.wikipedia.org/wiki/Klingon_language "Klingon"
+[klingon-duolingo]: https://www.duolingo.com/course/tlh/en/Learn-Klingon
 [lingua-sistemfrater]: https://en.wikipedia.org/wiki/Lingua_sistemfrater "Lingua sistemfrater"
 [medefaidrin]: https://en.wikipedia.org/wiki/Medefaidrin "Medefaidrin"
 [polari]: https://en.wikipedia.org/wiki/Polari "Polari"
@@ -215,3 +228,5 @@ pona
 [valyrian]: https://en.wikipedia.org/wiki/Valyrian_languages "High Valyrian"
 [valyrian-duolingo]: https://www.duolingo.com/course/hv/en/Learn-High%20Valyrian
 [whistled-languages]: https://en.wikipedia.org/wiki/Whistled_language#List_of_whistled_languages
+[hildegard-spotify]: https://open.spotify.com/artist/2xt1t3lfZ5FGaEKrs0jp0d
+[eibingen-abbey]: https://www.abtei-st-hildegard.de/english/

@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+import           Data.Functor ((<&>))
 import           Data.List (isPrefixOf, delete)
 import           Data.Text (Text)
 import qualified Data.Text as Text
@@ -12,6 +13,7 @@ import           Text.Regex.TDFA ((=~))
 import           Text.CSL.Reference (Reference, RefType(..))
 import           Text.CSL.Style (Agent(..))
 import qualified Text.CSL as CSL
+import qualified Text.CSL.Pandoc as CSL (processCites)
 import           System.Directory (createDirectoryIfMissing)
 import           System.Environment (getArgs, withArgs)
 import           System.FilePath ((</>), (<.>), dropExtension, replaceExtensions)
@@ -167,24 +169,27 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html" indexCtx
           >>= relativizeUrls
 
+    let postCompiler :: Item String -> Compiler (Item String)
+        postCompiler item = do
+          csl <- load "csl/chicago-author-date.csl"
+          bib <- load "bib/sources.bib"
+          readPandocWith readerOptions item
+            >>= processCites csl bib
+            <&> writePandocWith writerOptions
+            >>= saveSnapshot "content"
+            >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= loadAndApplyTemplate "templates/default.html" siteCtx
+            >>= relativizeUrls
+
     -- Compile posts
     match (postMarkdownPattern True) $ do
       route $ setExtension "html"
-      compile $ pandocCompilerWith readerOptions writerOptions
-        >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/post.html"    postCtx
-        >>= loadAndApplyTemplate "templates/default.html" siteCtx
-        >>= relativizeUrls
+      compile $ getResourceBody >>= postCompiler
 
     -- Compile Literate Agda posts
     match (postLagdaPattern True) $ do
       route $ gsubRoute "\\.lagda\\.md" (const ".html")
-      compile $ agdaCompiler
-        >>= renderPandocWith readerOptions writerOptions
-        >>= saveSnapshot "content"
-        >>= loadAndApplyTemplate "templates/post.html"    postCtx
-        >>= loadAndApplyTemplate "templates/default.html" siteCtx
-        >>= relativizeUrls
+      compile $ agdaCompiler >>= postCompiler
 
     -- Compile publications
     match "bib/*.bib" $ compile biblioCompiler
@@ -213,8 +218,26 @@ main = do
 
 
 --------------------------------------------------------------------------------
--- Compile Literate Agda posts
+-- Citations
 --------------------------------------------------------------------------------
+
+-- | Process citations in a Pandoc document.
+processCites :: Item CSL -> Item Biblio -> Item Pandoc -> Compiler (Item Pandoc)
+processCites csl bib item = do
+    -- Parse CSL file, if given
+    style <- unsafeCompiler $ CSL.readCSLFile Nothing . toFilePath . itemIdentifier $ csl
+
+    -- We need to know the citation keys, add then *before* actually parsing the
+    -- actual page. If we don't do this, pandoc won't even consider them
+    -- citations!
+    let Biblio refs = itemBody bib
+    withItemBody (return . CSL.processCites style refs) item
+
+
+--------------------------------------------------------------------------------
+-- Literate Agda
+--------------------------------------------------------------------------------
+
 agdaCompiler :: Compiler (Item String)
 agdaCompiler = cached "agda" $ getResourceBody >>= withItemBody renderAgda
 
