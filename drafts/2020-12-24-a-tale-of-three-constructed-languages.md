@@ -13,50 +13,44 @@ Much as I *love* roasting Solrésol, that’s not what this blog post is about
 
 # Lingua Ignota<br />*by St. Hildegaard von Bingen*
 
+<img alt="A bronze statue of St. Hildegard von Bingen." src="/public/images/hildegard-1.jpg" />
+
 Lingua Ignota is the earliest conlang that we know about! It was created by St. Hildegard von Bingen in the 12^th^ century. Hildegard was pretty impressive, to say the least. These days, she’s mostly known for her music—she’s blowing up [on Spotify!][hildegard-spotify]—but she also founded two monasteries, wrote poetry and plays, texts on theology, botany, medicine, *etc.*, and addition to *all this*, she constructed a language, *Lingua Ignota*. She did all this in a time where it wasn’t particularly common for women to write, let alone *create language*, an act which was either “demonized [or] divinized” [@Higley2007].
 
-Hildegard was canonised as a saint by the Catholic Church, which implies the pendulum swung closer to “divinized” in her case, and which makes her an obvious pick for patron saint of conlangs![^patron-saints] A golden reliquary [in Eibingen][eibingen-abbey] stores her relics: her heart and, fittingly, her tongue!
-
-!["A bronze statue of St. Hildegard von Bingen."](/public/images/hildegard-1.jpg)\
+Hildegard was canonised as a saint by the Catholic Church, so I guess the pendulum swung closer to “divinized” in her case. This makes her an obvious pick for patron saint of conlangs![^patron-saints] A golden reliquary [in Eibingen][eibingen-abbey] stores her relics: her heart and, fittingly, her tongue!
 
 Hildegard introduced Lingua Ignota in a manuscript titled *Ignota Lingua per simplicem hominem Hildegardem prolata*, or “An unknown language brought forward by the simple human being Hildegard.” Throughout her writing, Hildegard refers to herself as a “simple human” and a “poor little womanly shape”, that her achievements are those of God. Such repeated self-deprecatory remarks have led to an image of Hildegard as “simple, humble, stumbling, [and] requiring help from her male advisers.” Much more likely, however, is that it was her emphasis on her lowliness which allowed her to get away with such great achievements![^higley]
 
-- *Script called* Litteræ Ignotæ
-- *Glossary of* 1011 nouns *and adjectives*
-- *Substitute words into* Latin phrases
-- *Meant to* clearly and unambiguously express oneself
-- An obvious choice for patron saint of conlangers.
-- This is a trend we see in a lot of constructed languages:
-  + Script maps 1-to-1 to Latin alphabet
-  + List a bunch of words, mostly nouns
-  + Grammar of a language you know
-- Evidence in her letters indicates others knew of her language.
-- First thought: I have to make a font for this. Fortunately, someone had already done that for me!
-- Anyway: this is what it looks like.
-- Wikipedia cites this as "the only extant text in the language".
+Lingua Ignota is based on Latin. It consists of a glossary of nouns and adjectives to be used in Latin sentences. There are 1011 surviving glosses, preserved via the [Riesencodex][riesencodex] (fol. 461^a^) and the Berliner Handschrift (Lat. Quart. 4º 674). There is only one surviving text written in Lingua Ignota, “O orzchis Ecclesia”, found *twice* in the Riesencodex (fol. 472^a^ and 405^a^):
+
+> O [orzchis]{.lingua-ignota-highlight} Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es [caldemia]{.lingua-ignota-highlight} stigmatum [loifolum]{.lingua-ignota-highlight} et urbs scienciarum. O, o tu es etiam [crizanta]{.lingua-ignota-highlight} in alto sono, et es [chorzta]{.lingua-ignota-highlight} gemma.
+
+The text contains only five foreign words, of which only one is glossed in the Riesencodex—*loifolum* is the genitive of *loifol*, “people”, but @Higley2007 conjectures that *crizanta* means “annointed” and is the past participle of *crizia*, “church”, and that *orzchis* means “great” as used in the compound word *orschibuz*, “oak tree”. She conjectures the following translation of the text:
+
+| Lingua Ignota                                                 | English
+| ---                                                           | ---
+| O [orzchis]{.lingua-ignota-highlight} Ecclesia                | O [immense]{.lingua-ignota-highlight} Church
+| armis divinis praecincta                                      | girded by divine arms
+| et hyacinto ornata                                            | and ornamented in jacinth!
+| tu es [caldemia]{.lingua-ignota-highlight}                    | Thou art the [fragrance]{.lingua-ignota-highlight}
+| stigmatum [loifolum]{.lingua-ignota-highlight}                | of the wounds [of peoples]{.lingua-ignota-highlight}
+| et urbs scienciarum.                                          | and the city of knowledge.
+| O, o tu es etiam [crizanta]{.lingua-ignota-highlight}         | O, o, thou art also [anointed]{.lingua-ignota-highlight}
+| in alto sono et es [chorzta]{.lingua-ignota-highlight} gemma. | in sounds on high and art a [glittering]{.lingua-ignota-highlight} gem.
+
+The fact that only *one* of the foreign words in “O orzchis Ecclesia” is actually glossed in the Riesencodex hints at the possibility that Lingua Ignota may have been a much larger language! Personally, I like to imagine Hildegard using her unknown language to write down her thoughts and keep notes, though there is *zero evidence* for this. However, there is *tonnes of disagreement* as to *what purpose* Lingua Ignota served to Hildegard. @Dronke2000
+
+The glossary in the Riesencodex is not in any alphabetical order. Rather, it is in order of hierarchy—God, angels, saints, *etc.*
+
+- describe compound words (p. 101)
+
+Hildegard also introduces a script, *Litteræ Ignotæ*, printed in the Riesencodex (fol. 464^a^). Unfortunately, there are no surviving texts which use it, but I’ve rendered “O orzchis Ecclesia” in Litteræ Ignotæ below:
 
 ::: {.font-litterae-ignotae .x-large}
 > O [orzchis]{.lingua-ignota-highlight} Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es [caldemia]{.lingua-ignota-highlight} stigmatum [loifolum]{.lingua-ignota-highlight} et urbs scienciarum. O, o tu es etiam [crizanta]{.lingua-ignota-highlight} in alto sono, et es [chorzta]{.lingua-ignota-highlight} gemma.
 :::
 
-- When you transliterate that, this is what you get.
-
-> O [orzchis]{.lingua-ignota-highlight} Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es [caldemia]{.lingua-ignota-highlight} stigmatum [loifolum]{.lingua-ignota-highlight} et urbs scienciarum. O, o tu es etiam [crizanta]{.lingua-ignota-highlight} in alto sono, et es [chorzta]{.lingua-ignota-highlight} gemma.
-
-- Curiously, in the entire passage, there's only five Lingua Ignota words.
-
-| Lingua Ignota                  | English
-| ---                            | ---
-| *O* orzchis *Ecclesia*         | *O* measureless *Church*
-| *tu es* caldemia *stigmatum*   | *you are the* fragrance
-| loifulum *et urbs scienciarum* | *of the wounds of* nations
-| *O, o tu es etiam* crizanta    | *O, o, and you are* anointed
-| *es* chorzta *gemma*           | *you are a* sparkling *gem*
-
-- This all seems VERY religious.
-- The glossary is not in any alphabetical order, but in order of hierarchy; of course, God and angels listed are first.
-- An obsession with hierarchy is a common trend in early conlangs!
-- We could easily find ourselves saying that this language had a religious purpose for Hildegaard, but don't forget that she's an 11th century abbess. A lot of things in her life were probably very religious!
+When I saw Litteræ Ignotæ, my first thought was “I *have to* make a font for this!”, but fortunately, someone had already done that for me!
 
 ::: {.font-litterae-ignotae .xxx-large}
 Lingae Ignotae bizimonza est.
@@ -230,3 +224,4 @@ pona
 [whistled-languages]: https://en.wikipedia.org/wiki/Whistled_language#List_of_whistled_languages
 [hildegard-spotify]: https://open.spotify.com/artist/2xt1t3lfZ5FGaEKrs0jp0d
 [eibingen-abbey]: https://www.abtei-st-hildegard.de/english/
+[riesencodex]: https://hlbrm.digitale-sammlungen.hebis.de/handschriften-hlbrm/content/titleinfo/449618

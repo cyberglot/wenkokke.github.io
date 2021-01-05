@@ -16,7 +16,7 @@ import qualified Text.CSL as CSL
 import qualified Text.CSL.Pandoc as CSL (processCites)
 import           System.Directory (createDirectoryIfMissing)
 import           System.Environment (getArgs, withArgs)
-import           System.FilePath ((</>), (<.>), dropExtension, replaceExtensions)
+import           System.FilePath ((</>), (<.>), joinPath, splitDirectories, dropExtension, replaceExtensions)
 import           System.Process (system)
 
 --------------------------------------------------------------------------------
@@ -33,6 +33,9 @@ siteCtx = constField "version" "1.0.0"
        <> defaultContext
 
 --------------------------------------------------------------------------------
+data Mode =  Production | Draft
+  deriving (Eq)
+
 productionConfig :: Configuration
 productionConfig = defaultConfiguration
   { destinationDirectory = "_production/site"
@@ -47,44 +50,26 @@ draftConfig = productionConfig
   , tmpDirectory         = "_draft/cache/tmp"
   }
 
-config :: Bool -> Configuration
-config draftMode
-  | draftMode = draftConfig
-  | otherwise = productionConfig
+config :: Mode -> Configuration
+config Production = productionConfig
+config Draft = draftConfig
 
 --------------------------------------------------------------------------------
-productionPostPattern :: Pattern
-productionPostPattern = "posts/*.md"
 
-productionPostLagdaPattern :: Pattern
-productionPostLagdaPattern = "posts/*.lagda.md"
+fromGlobs :: [FilePath] -> Pattern
+fromGlobs = foldr1 (.||.) . map fromGlob
 
-productionPostMarkdownPattern :: Pattern
-productionPostMarkdownPattern = productionPostPattern .&&. complement productionPostLagdaPattern
+postDirs :: Mode -> [FilePath]
+postDirs mode = ["posts"] ++ ["drafts" | mode == Draft]
 
-draftPostPattern :: Pattern
-draftPostPattern = "drafts/*.md"
+postPattern :: Mode -> Pattern
+postPattern mode = fromGlobs [dir </> "*.md" | dir <- postDirs mode]
 
-draftPostLagdaPattern :: Pattern
-draftPostLagdaPattern = "drafts/*.lagda.md"
+postLagdaPattern :: Mode -> Pattern
+postLagdaPattern mode = fromGlobs [dir </> "*.lagda.md" | dir <- postDirs mode]
 
-draftPostMarkdownPattern :: Pattern
-draftPostMarkdownPattern = draftPostPattern .&&. complement draftPostLagdaPattern
-
-postPattern :: Bool -> Pattern
-postPattern draftMode
-  | draftMode = draftPostPattern .||. productionPostPattern
-  | otherwise = productionPostPattern
-
-postMarkdownPattern :: Bool -> Pattern
-postMarkdownPattern draftMode
-  | draftMode = draftPostMarkdownPattern .||. productionPostMarkdownPattern
-  | otherwise = productionPostMarkdownPattern
-
-postLagdaPattern :: Bool -> Pattern
-postLagdaPattern draftMode
-  | draftMode = draftPostLagdaPattern .||. productionPostLagdaPattern
-  | otherwise = productionPostLagdaPattern
+postMarkdownPattern :: Mode -> Pattern
+postMarkdownPattern mode = postPattern mode .&&. complement (postLagdaPattern mode)
 
 --------------------------------------------------------------------------------
 pubSections :: [([RefType], Text)]
@@ -114,8 +99,8 @@ feedCtx = mconcat
     ]
 
 --------------------------------------------------------------------------------
-feedConfiguration :: FeedConfiguration
-feedConfiguration = FeedConfiguration
+feedConfig :: FeedConfiguration
+feedConfig = FeedConfiguration
     { feedTitle       = "All The Language"
     , feedDescription = "Personal website of Wen Kokke"
     , feedAuthorName  = "Wen Kokke"
@@ -139,9 +124,9 @@ defaultKaTeXUrl = "https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/"
 main :: IO ()
 main = do
   args <- getArgs
-  let draftMode = "--drafts" `elem` args
-      hakyllArgs = delete "--drafts" args
-  withArgs hakyllArgs . hakyllWith (config draftMode) $ do
+  let mode = if "--drafts" `elem` args then Draft else Production
+  let hakyllArgs = delete "--drafts" args
+  withArgs hakyllArgs . hakyllWith (config mode) $ do
 
     -- Copy resources
     match "public/**" $ do
@@ -160,7 +145,7 @@ main = do
     match "index.html" $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll (postPattern draftMode)
+        posts <- recentFirst =<< loadAll (postPattern mode)
         let indexCtx = listField "posts" postCtx (return posts)
                     <> siteCtx
 
@@ -169,10 +154,18 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html" indexCtx
           >>= relativizeUrls
 
+    let postBibCompiler :: Item a -> Compiler (Item Biblio)
+        postBibCompiler postItem = do
+          let postPath = toFilePath (itemIdentifier postItem)
+          let bibPath = joinPath
+                $ map (\dir -> if dir `elem` postDirs Draft then "bib" else dir)
+                $ splitDirectories (replaceExtensions postPath "bib")
+          load (fromFilePath bibPath)
+
     let postCompiler :: Item String -> Compiler (Item String)
         postCompiler item = do
           csl <- load "csl/chicago-author-date.csl"
-          bib <- load "bib/sources.bib"
+          bib <- postBibCompiler item
           readPandocWith readerOptions item
             >>= processCites csl bib
             <&> writePandocWith writerOptions
@@ -182,12 +175,12 @@ main = do
             >>= relativizeUrls
 
     -- Compile posts
-    match (postMarkdownPattern True) $ do
+    match (postMarkdownPattern Draft) $ do
       route $ setExtension "html"
       compile $ getResourceBody >>= postCompiler
 
     -- Compile Literate Agda posts
-    match (postLagdaPattern True) $ do
+    match (postLagdaPattern Draft) $ do
       route $ gsubRoute "\\.lagda\\.md" (const ".html")
       compile $ agdaCompiler >>= postCompiler
 
@@ -210,9 +203,9 @@ main = do
     -- Render RSS feed
     create ["rss.xml"] $ do
       route idRoute
-      compile $ loadAllSnapshots (postPattern draftMode) "content"
+      compile $ loadAllSnapshots (postPattern mode) "content"
           >>= fmap (take 10) . recentFirst
-          >>= renderRss feedConfiguration feedCtx
+          >>= renderRss feedConfig feedCtx
 
     match "templates/*" $ compile templateBodyCompiler
 
