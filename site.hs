@@ -14,7 +14,7 @@ import           Text.CSL.Reference (Reference, RefType(..))
 import           Text.CSL.Style (Agent(..))
 import qualified Text.CSL as CSL
 import qualified Text.CSL.Pandoc as CSL (processCites)
-import           System.Directory (createDirectoryIfMissing)
+import           System.Directory (createDirectoryIfMissing, doesFileExist)
 import           System.Environment (getArgs, withArgs)
 import           System.FilePath ((</>), (<.>), joinPath, splitDirectories, dropExtension, replaceExtensions)
 import           System.Process (system)
@@ -160,7 +160,11 @@ main = do
           let bibPath = joinPath
                 $ map (\dir -> if dir `elem` postDirs Draft then "bib" else dir)
                 $ splitDirectories (replaceExtensions postPath "bib")
-          load (fromFilePath bibPath)
+          bibPathExists <- unsafeCompiler $ doesFileExist bibPath
+          let bibIdentifier = fromFilePath bibPath
+          if bibPathExists
+            then load bibIdentifier
+            else return $ Item bibIdentifier (Biblio [])
 
     let postCompiler :: Item String -> Compiler (Item String)
         postCompiler item = do
