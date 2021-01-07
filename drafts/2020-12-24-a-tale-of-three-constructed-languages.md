@@ -45,7 +45,7 @@ The fact that only *one* of the foreign words in “O orzchis Ecclesia” is ac
 - Folks have suggested that Hildegard was inspired by Adam’s language in Paradise, but that since she did not consider herself a capable linguist, she settled for creating something to replace Latin.
 - *Etc.*
 
-Unfortunately, we probably don’t have enough surviving evidence to ever really answer this question… However, @Higley2007 makes a compelling argument that Lingua Ignota *isn’t* a glossolalia. Where others saw recurring syllables, “as if an obsessive leitmotif”, she argues that these are *compound words*. For instance, take *-buz*, which recurs frequently between glosses 750–800:
+Unfortunately, we probably don’t have enough surviving evidence to ever really answer this question. However, @Higley2007 makes a compelling argument that Lingua Ignota *isn’t* a glossolalia. Where others saw recurring syllables, “as if an obsessive leitmotif”, she argues that these are *compound words*. For instance, take *-buz*, which recurs frequently between glosses 750–800:
 
 | Lingua Ignota | English      | Lingua Ignota | English
 | ---           | ---          | ---           | ---
