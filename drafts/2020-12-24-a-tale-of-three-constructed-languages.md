@@ -80,82 +80,97 @@ Lingae Ignotae bizimonza est.
 
 # Láadan<br />*by Suzette Haden Elgin*
 
-- *Created by* Suzette Haden Elign *ca.* 1985
-- *Rules for* phonology*,* morphology*,* grammar*, etc.*
-- *Glossary of* 1000 words *with ways to* create new words
-- *Offered within a* work of fiction*: Native Tongue*
-- *Meant to* test a socio-linguistic hypothesis
-- *Within the framework of the* Sapir-Whorf *hypothesis*
-- Suzette had a Ph.D. in Linguistics, writing two dissertations: one on English, one on Navajo.
-- Here's something infuriating to anyone *not* born in the 1930s:
-  Suzette started writing Science Fiction to pay her tuition.
-- Hypothesis: Existing human languages are inadequate to express the perceptions of women
-- A Thought Experiment:
-  1. *the* Sapir-Whorf *hypothesis is true*
-  2. *existing languages are* inadequate for women
-  3. *change in* language brings societal change
-  4. *when offered a women's language:*
-     + *women will* adopt it *or;*
-     + *women will* create a better language
-- Problems with English:
-  + words obscure imperfection
-    *their meaning does not conform to the reality perceived by women*
-  + words are insufficiently nuanced
-    *their meaning glosses over a vast range of distinct female experiences*
-  + *there is* too much potential for misunderstanding
-- The problem is natural languages lack vocabulary for many things that are extremely important to women, making it cumbersome and inconvenient to talk about them. 
-- Furthermore, they lack ways to express emotional information conveniently. Much of that information had to be carried by body language and was almost entirely missing from written language. This leaves women vulnerable to hostile language followed by the “But all I said was….” excuse; and it restricted women to the largely useless “It wasn’t what you said, it was the way you said it!” defense against such hostility.
+<img alt="A crop of the cover for Native Tongue by Suzette Haden Elgin." src="/public/images/native-tongue.png" />
 
+Láadan was created by Suzette Haden Elgin in 1982. Suzette had a Ph.D. in linguistics, and wrote *two* theses—one on English, one on Navajo—so she was well-equipped to create a language. Láadan is—*ugh, I swear there’s a word for this*…—let’s go with *philosophical*. It’s a *philosophical* language, which is when you have a neat idea, and you use it to guide your language design. For Láadan, Suzette had the following idea:
 
-| Láadan        | English                                                                                                                                                                                                                                    |
-| ---           | ---                                                                                                                                                                                                                                        |
-| *lowitheláad* | to feel another's feelings as if directly                                                                                                                                                                                                  |
-| *radíidin*    | non-holiday, holiday more work that it’s worth*, a time allegedly a holiday but actually so much a burden because of work and preparations that it is a dreaded occasion; especially when there are too many guests and none of them help* |
-| *rathóo*      | non-guest*, someone who comes to visit knowing perfectly well that* they are intruding and causing difficulty                                                                                                                              |
-| *doroledim*   | overeating followed by guilt *(when food is the only part of your life you have control over)*                                                                                                                                             |
+1. Let’s assume the [Sapir-Whorf hypothesis][sapir-whorf] is true, and the language you speak *really does* affect how you view the world!
+2. Natural languages, such as English, tend to be male-centred, and are very bad at capturing the experiences of women.
+3. If you change the language, you change how people see the world, and societal change will follow!
 
-- Illustrates English vocabulary being deceitful, and obscuring imperfection.
-- Defined negatively, in terms of what they are supposed to be, but they are not, in an attempt to amend the way English does not match the way reality is perceived by Elgin and the women she interviewed.
+*Therefore*: if you offer women a *women’s language*, they will adopt it, or at very least see that this is something that’d been missing from their lives and create a better language for women. And voilà, societal change follows! At least, that was her hope, and the hypothesis she wanted to test by creating Láadan.
 
-| Láadan      | English                                 |
-| ---         | ---                                     |
-| *osháana*   | menstruate                              |
-| *elasháana* | *menstruate* for the first time         |
-| *zhesháana* | *menstruate* in sync with another woman |
-| *husháana*  | *menstruate* painfully                  |
-| *desháana*  | *menstruate* early                      |
-| *wesháana*  | *menstruate* late                       |
-| *ásháana*   | *menstruate* joyfully                   |
+What problems did she see with English, exactly?
 
-| Láadan | English                                                            |
-| ---    | ---                                                                |
-| bara   | *anger* with reason, with someone to blame, which is futile        |
-| bana   | *anger* with reason, with no one to blame, which is futile         |
-| bama   | *anger* with reason, but with no one to blame, which is not futile |
-| bina   | *anger* with no reason, with no one to blame, which is not futile  |
-| bala   | *anger* with reason, with someone to blame, which is not futile    |
+- Natural languages often lack the vocabulary for things that are *extremely important* to women, making it difficult to talk about them. Either:
+  + words *obscure imperfections*, and their meaning does not conform to the reality perceived by women; or
+  + words are *insufficiently nuanced*, and their meaning glosses over a vast range of distinct experiences.
+- Natural languages have *too much potential for misunderstanding*, which can and often is *weaponized* against women.
 
-- Illustrates English vocabulary not being nuanced enough.
+*First*: Suzette felt that English words often disguise imperfections. Let’s look at the following Láadan words, which can hopefully help illustrate that point a bit:
 
-| Láadan  | English                                               |
-| ---     | ---                                                   |
-| *bíi*   | *I say to you* as a statement                         |
-| *báa*   | *I say to you* as a question                          |
-| *bíid*  | *I say to you* in anger                               |
-| *bíida* | *I say to you* in jest                                |
-| *...*   | *...*                                                 |
-| *wa*    | *what I’m saying is true because* I have perceived it |
-| *wi*    | *what I’m saying is true because* it’s self-evident   |
+| Láadan        | English
+| ---           | ---
+| *radíidin*    | non-holiday, holiday more work that it’s worth, a time allegedly a holiday but actually so much a burden because of work and preparations that it is a dreaded occasion; especially when there are too many guests and none of them help
+| *rathóo*      | non-guest, someone who comes to visit knowing perfectly well that they are intruding and causing difficulty
 
-- Illustrates English being too imprecise when it comes to emotional information.
-- A Brief Feminist Critique of Láadan
-  + based on the experiences of Suzette
-    *and the women whom she consulted*
-  + copies over societal taboos
-    *e.g. has no more nuanced words for sex*
-  + assumes traditional model of sex and gender:
-    - *assumes* sex is binary
-    - *assumes* gender is binary, immutable, determined by sex
+These words are defined *negatively*, in terms of what they’re supposed to be, but *aren’t*—the common meanings of “holiday” and “guest” gloss over these experiences, as they’re only associated with happy experiences! “It’s a holiday! Let’s invite over all our friends! Yummy food for everyone!”
+
+*Next Up*: Suzette felt that English words are often *insufficiently nuanced*, glossing over *very different* experiences. Let’s look at the Láadan words for menstruation:
+
+| Láadan      | English
+| ---         | ---
+| *osháana*   | menstruate
+| *elasháana* | menstruate for the first time
+| *zhesháana* | menstruate in sync with another woman
+| *husháana*  | menstruate painfully
+| *desháana*  | menstruate early
+| *wesháana*  | menstruate late
+| *ásháana*   | menstruate joyfully
+
+Those can all be *heckin’ different* experiences, and English just kinda lumps them all together in a single word! Mind you, that doesn’t mean you *can’t express* these differences in English—you clearly can, just look at the glossary above—but it *does* mean you have to put *a bunch of effort* into clarifying!
+
+A distinction that I’ve actually found *really useful* for clarifying my own thoughts are those for *emotions*. Let’s have a look at the Láadan words for anger:
+
+| Láadan | English
+| ---    | ---
+| *bara* | anger with reason, with someone to blame, which is futile
+| *bala* | anger with reason, with someone to blame, which is not futile
+| *bana* | anger with reason, with no one to blame, which is futile
+| *bama* | anger with reason, with no one to blame, which is not futile
+| *bina* | anger with no reason, with no one to blame, which is not futile
+
+Láadan distinguishes between types of anger with or without reason, with or without someone to blame, and whether the anger is futile or not!
+
+*Finally*: Suzette felt that English has too much potential for misunderstanding. For instance, English doesn’t usually carry emotional information *explicitly*. Rather, it is carried by body language and intonation. That leaves women vulnerable to hostile language followed by the “But all I said was…” excuse, and restricts women to the “It wasn’t *what* you said, it was *the way you said it*!” defence. Suzette addresses this by introducing *speech-act* particles and *evidentials*.
+
+The speech-act particles tell you whether the sentence is meant as a statement, a question, a command, a promise, a warning, a joke, *etc*:
+
+| Láadan  | English
+| ---     | ---
+| *bíi*   | I say to you as a statement
+| *báa*   | I say to you as a question
+| *bíid*  | I say to you in anger
+| *bíida* | I say to you in jest
+
+The evidence particles tell you the source and trustworthiness of the statement:
+
+| Láadan  | English
+| ---     | ---
+| *wa*    | what I’m saying is true because I have perceived it
+| *wi*    | what I’m saying is true because it’s self-evident
+| *wáa*   | what I’m saying is true because it comes from a trusted source
+| *wóo*   | I have no idea whether or not what I’m saying is true
+
+> TODO:
+>
+> - Rules for phonology, tones, morphology, grammar, etc.
+> - Glossary of 1000 words with ways to create new words
+> - Evidentials, tonality, taken from Navajo.
+
+Suzette offered her language *to the world* in the form of a work of fiction—she wrote a book, *Native Tongue*, in which she uses Láadan, much like this Jerry fellow had done with [z$5h#]{.font-tengwar} about half a century earlier. When she started working on Native Tongue, she had already been a published author for over a decade. Here’s a little fact that’ll infuriate everyone under forty: Suzette first started writing science fiction to pay her university tuition!
+
+> TODO:
+>
+> A Brief Feminist Critique of Láadan
+>
+> + based on the experiences of Suzette
+>   *and the women whom she consulted*
+> + copies over societal taboos
+>   *e.g. has no more nuanced words for sex*
+> + assumes traditional model of sex and gender:
+>   - *assumes* sex is binary
+>   - *assumes* gender is binary, immutable, determined by sex
 
 ::: xx-large
 bíilan ril le
@@ -246,3 +261,4 @@ pona
 [hildegard-spotify]: https://open.spotify.com/artist/2xt1t3lfZ5FGaEKrs0jp0d
 [eibingen-abbey]: https://www.abtei-st-hildegard.de/english/
 [riesencodex]: https://hlbrm.digitale-sammlungen.hebis.de/handschriften-hlbrm/content/titleinfo/449618
+[sapir-whorf]: https://en.wikipedia.org/wiki/Linguistic_relativity
