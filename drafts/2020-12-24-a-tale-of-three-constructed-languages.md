@@ -19,9 +19,9 @@ Lingua Ignota is the earliest conlang that we know about! It was created by St. 
 
 Hildegard was canonised as a saint by the Catholic Church, so I guess the pendulum swung closer to “divinized” in her case. This makes her an obvious pick for patron saint of conlangs![^patron-saints] A golden reliquary [in Eibingen][eibingen-abbey] stores her relics: her heart and, fittingly, her tongue!
 
-Hildegard introduced Lingua Ignota in a manuscript titled *Ignota Lingua per simplicem hominem Hildegardem prolata*, or “An unknown language brought forward by the simple human being Hildegard.” Throughout her writing, Hildegard refers to herself as a “simple human” and a “poor little womanly shape”, that her achievements are those of God. Such repeated self-deprecatory remarks have led to an image of Hildegard as “simple, humble, stumbling, [and] requiring help from her male advisers.” Much more likely, however, is that it was her emphasis on her lowliness which allowed her to get away with such great achievements![^higley]
+Hildegard introduced Lingua Ignota in a manuscript titled *Ignota Lingua per simplicem hominem Hildegardem prolata*, or “An unknown language brought forward by the simple human being Hildegard.” Throughout her writing, Hildegard refers to herself as a “simple human” and a “poor little womanly shape”, and emphasises that her achievements are *really* those of God, and that she is merely a vessel. Such repeated self-deprecatory remarks have led to an image of Hildegard as “simple, humble, stumbling, [and] requiring help from her male advisers.” Much more likely, however, is that it was her emphasis on her lowliness which allowed her to get away with such great achievements![^higley]
 
-Lingua Ignota is based on Latin. It consists of a glossary of nouns and adjectives to be used in Latin sentences. There are 1011 surviving glosses, preserved via the [Riesencodex][riesencodex] (fol. 461^a^) and the Berliner Handschrift (Lat. Quart. 4º 674). There is only one surviving text written in Lingua Ignota, “O orzchis Ecclesia”, found *twice* in the Riesencodex (fol. 472^a^ and 405^a^):
+Lingua Ignota is based on Latin. It consists of a glossary of nouns and adjectives to be used in Latin sentences. There are 1011 surviving glosses, preserved via the [Riesencodex][riesencodex] (fol. 461^a^) and the Berliner Handschrift (Lat. Quart. 4º 674). Interestingly, the glossary in the Riesencodex is not in any alphabetical order. Rather, it is in order of hierarchy—God, angels, saints, *etc.* There is only one surviving text written in Lingua Ignota, “O orzchis Ecclesia”, found *twice* in the Riesencodex (fol. 472^a^ and 405^a^):
 
 > O [orzchis]{.lingua-ignota-highlight} Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es [caldemia]{.lingua-ignota-highlight} stigmatum [loifolum]{.lingua-ignota-highlight} et urbs scienciarum. O, o tu es etiam [crizanta]{.lingua-ignota-highlight} in alto sono, et es [chorzta]{.lingua-ignota-highlight} gemma.
 
@@ -38,13 +38,34 @@ The text contains only five foreign words, of which only one is glossed in the R
 | O, o tu es etiam [crizanta]{.lingua-ignota-highlight}         | O, o, thou art also [anointed]{.lingua-ignota-highlight}
 | in alto sono et es [chorzta]{.lingua-ignota-highlight} gemma. | in sounds on high and art a [glittering]{.lingua-ignota-highlight} gem.
 
-The fact that only *one* of the foreign words in “O orzchis Ecclesia” is actually glossed in the Riesencodex hints at the possibility that Lingua Ignota may have been a much larger language! Personally, I like to imagine Hildegard using her unknown language to write down her thoughts and keep notes, though there is *zero evidence* for this. However, there is *tonnes of disagreement* as to *what purpose* Lingua Ignota served to Hildegard. @Dronke2000
+The fact that only *one* of the foreign words in “O orzchis Ecclesia” is actually glossed in the Riesencodex hints at the possibility that Lingua Ignota may have been a much larger language! Personally, I like to imagine Hildegard using her unknown language to write down her thoughts and keep notes, though there is *zero evidence* for this. But you know what there’s *tonnes* of? Disagreement as to *what purpose* Lingua Ignota served to Hildegard:
 
-The glossary in the Riesencodex is not in any alphabetical order. Rather, it is in order of hierarchy—God, angels, saints, *etc.*
+- Folks have called it an enigmatic code—but that’s rather unlikely, since she *literally* wrote a letter to the pope to brag about it. Good on her!
+- Folks have compared it to glossolalia—which is like scat singing, but you pretend you’re speaking a divine language.
+- Folks have suggested that Hildegard was inspired by Adam’s language in Paradise, but that since she did not consider herself a capable linguist, she settled for creating something to replace Latin.
+- *Etc.*
 
-- describe compound words (p. 101)
+Unfortunately, we probably don’t have enough surviving evidence to ever really answer this question… However, @Higley2007 makes a compelling argument that Lingua Ignota *isn’t* a glossolalia. Where others saw recurring syllables, “as if an obsessive leitmotif”, she argues that these are *compound words*. For instance, take *-buz*, which recurs frequently between glosses 750–800:
 
-Hildegard also introduces a script, *Litteræ Ignotæ*, printed in the Riesencodex (fol. 464^a^). Unfortunately, there are no surviving texts which use it, but I’ve rendered “O orzchis Ecclesia” in Litteræ Ignotæ below:
+| Lingua Ignota | English      | Lingua Ignota | English
+| ---           | ---          | ---           | ---
+| Scoibuz       | boxwood      | Laschiabuz    | mountain ash
+| Gramzibuz     | chestnut     | Sparinichibuz | peach tree
+| Zaimzabuz     | quince       | Zirunzibuz    | pear tree
+| Grumzimbuz    | cherry tree  | Burzimibuz    | plum tree
+| Culmendiabuz  | dogwood      | Scinzibuz     | savin
+| Guskaibuz     | winter oak   | Kisanzibuz    | cotton tree
+| Gigunzibuz    | fig tree     | Ornalzibuz    | sanguinaria
+| Scongilbuz    | spindle tree | Vischobuz     | yew
+| Clamizibuz    | laurel       | Gulizb[a]z    | birch
+| Zaschibuz     | mastic       | Scuanibuz     | myrtle
+| Schalnihilbuz | juniper      | Schirobuz     | maple
+| Mizamabuz     | mulberry     | Orschibuz     | oak
+| Burschiabuz   | tamarisk     | Muzimibuz     | walnut
+
+Clearly, *-buz* means “bush” or “tree”, and they’re all clustered together because trees and bushes are all at approximately the same level in Hildegard’s hierarchy of the holy. In fact, @Higley2007 finds a bunch more suffixes and compound words, such as *phazur*, “grandfather”, and *kulzphazur*, “ancestor”.
+
+Hildegard also introduced a script, *Litteræ Ignotæ*, printed in the Riesencodex (fol. 464^a^). Unfortunately, there are no surviving texts which use it, but I’ve rendered “O orzchis Ecclesia” in Litteræ Ignotæ below:
 
 ::: {.font-litterae-ignotae .x-large}
 > O [orzchis]{.lingua-ignota-highlight} Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es [caldemia]{.lingua-ignota-highlight} stigmatum [loifolum]{.lingua-ignota-highlight} et urbs scienciarum. O, o tu es etiam [crizanta]{.lingua-ignota-highlight} in alto sono, et es [chorzta]{.lingua-ignota-highlight} gemma.
