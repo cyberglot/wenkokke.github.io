@@ -22,7 +22,7 @@ But first, I should probably briefly go over how a Turing machine works---though
 
 A Turing machine is a tiny machine, which sits whirring away on top of an infinite roll of tape. It has a head, which hoovers over the tape, and reads and writes whatever cell it happens to hoover over. It also has a state. This is basically saying that it can remember what it was doing, but practically speaking this'll be some number. The number of the thing it was supposed to be doing. It was never supposed to be built, but of course someone did:
 
-![An actual Turing machine.](/public/images/Model_of_a_Turing_machine.jpg)\
+![An actual Turing machine.](/public/images/model-of-a-turing-machine.jpg)\
 
 Actually, many people have built one. Out of everything from [wood and scrap metal](https://web.archive.org/web/20150924052601/https://www.newscientist.com/blogs/nstv/2011/03/turing-machine-built-from-wood-and-scrap-metal.html), to [Legos](http://web.archive.org/web/20170513045644/http://www.legoturingmachine.org/lego-turing-machine/), to [artificial muscle](http://dx.doi.org/10.1063/1.4793648).
 
@@ -35,7 +35,7 @@ Some Turing machines have faulty tables, which never let it reach a stopping sta
 
 Now, it just so happens that the first search result for "Turing machine example program" on the day I wrote this post was a machine which increments binary numbers, and its table looked like this:
 
-[![Transition function for a Turing machine which computes the binary successor.](/public/images/BitSuccTM.png)](https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/turing-machine/four.html)
+[![Transition function for a Turing machine which computes the binary successor.](/public/images/bit-succ-tm.png)](https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/turing-machine/four.html)
 
 These programs are a little hard to read, so let's go over what the Turing machine will be doing at each of these states.
 

@@ -13,9 +13,9 @@ Much as I *love* roasting Solrésol, that’s not what this blog post is about
 
 # Lingua Ignota<br />*by St. Hildegaard von Bingen*
 
-<img alt="A bronze statue of St. Hildegard von Bingen." src="/public/images/hildegard-1.jpg" />
+<img alt="A bronze statue of St. Hildegard von Bingen." src="/public/images/hildegard.jpg" />
 
-Lingua Ignota is the earliest conlang that we know about! It was created by St. Hildegard von Bingen in the 12^th^ century. Hildegard was pretty impressive, to say the least. These days, she’s mostly known for her music—she’s blowing up [on Spotify!][hildegard-spotify]—but she also founded two monasteries, wrote poetry and plays, texts on theology, botany, medicine, *etc.*, and addition to *all this*, she constructed a language, *Lingua Ignota*. She did all this in a time where it wasn’t particularly common for women to write, let alone *create language*, an act which was either “demonized [or] divinized” [@Higley2007].
+Lingua Ignota is the earliest conlang that we know about! It was created by St. Hildegard von Bingen in the 12^th^ century. Hildegard was pretty impressive, to say the least. These days, she’s mostly known for her music—she’s blowing up [on Spotify!][hildegard-spotify]—but she also founded two monasteries, wrote poetry and plays, texts on theology, botany, medicine, *etc.*, and addition to *all this*, she constructed a language, *Lingua Ignota*. She did all this in a time where it wasn’t particularly common for women to write, let alone *create a language*, an act which was either “demonized [or] divinized” [@Higley2007].
 
 Hildegard was canonised as a saint by the Catholic Church, so I guess the pendulum swung closer to “divinized” in her case. This makes her an obvious pick for patron saint of conlangs![^patron-saints] A golden reliquary [in Eibingen][eibingen-abbey] stores her relics: her heart and, fittingly, her tongue!
 
