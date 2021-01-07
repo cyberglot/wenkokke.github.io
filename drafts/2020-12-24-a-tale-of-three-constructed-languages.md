@@ -164,13 +164,11 @@ Suzette offered her language *to the world* in the form of a work of fiction—s
 >
 > A Brief Feminist Critique of Láadan
 >
-> + based on the experiences of Suzette
->   *and the women whom she consulted*
-> + copies over societal taboos
->   *e.g. has no more nuanced words for sex*
-> + assumes traditional model of sex and gender:
->   - *assumes* sex is binary
->   - *assumes* gender is binary, immutable, determined by sex
+> - based on the experiences of Suzette *and the women whom she consulted*
+> - copies over societal taboos *e.g. has no more nuanced words for sex*
+> - assumes traditional model of sex and gender
+>   + *assumes* sex is binary
+>   + *assumes* gender is binary, immutable, determined by sex
 
 ::: xx-large
 bíilan ril le
