@@ -152,23 +152,23 @@ The evidence particles tell you the source and trustworthiness of the statement:
 | *wáa*   | what I’m saying is true because it comes from a trusted source
 | *wóo*   | I have no idea whether or not what I’m saying is true
 
-> TODO:
->
-> - Rules for phonology, tones, morphology, grammar, etc.
-> - Glossary of 1000 words with ways to create new words
-> - Evidentials, tonality, taken from Navajo.
+These evidence particles were likely taken from Navajo. Other aspects of Láadan, such as its tonality, were likely inspired by Navajo as well. 
 
-Suzette offered her language *to the world* in the form of a work of fiction—she wrote a book, *Native Tongue*, in which she uses Láadan, much like this Jerry fellow had done with [z$5h#]{.font-tengwar} about half a century earlier. When she started working on Native Tongue, she had already been a published author for over a decade. Here’s a little fact that’ll infuriate everyone under forty: Suzette first started writing science fiction to pay her university tuition!
+Unlike Lingua Ignota—or what survives of it, at least—Láadan is a full-fledged language! There’s rules for phonology, tonality, morphology, grammar, *etc.* When Láadan was first introduced, it came with a glossary of *one thouseand* words, but also had rules for constructing new words. It’s hard to guess how many Láadan words are in use at the moment, but, *e.g.*, the [Láadan Vocabulary][laadan-memrise] course on Memrise has close to *twice as many*.
 
-> TODO:
->
-> A Brief Feminist Critique of Láadan
->
-> - based on the experiences of Suzette *and the women whom she consulted*
-> - copies over societal taboos *e.g. has no more nuanced words for sex*
-> - assumes traditional model of sex and gender
->   + *assumes* sex is binary
->   + *assumes* gender is binary, immutable, determined by sex
+Suzette offered her language to the world in the form of a work of fiction. She wrote a book, *Native Tongue*, in which she motivates the need for Láadan. Her story is set in a world in which women have been stripped of their rights and their agency, and her story follows the liberating effects of being able to clearly communicate ones experiences in a language *made for you*. Native Tongue gives a vivid portrayal of sexism, but it *kind of* glances over liberation through language—that a change in language brings about a change in society is simply one of the axioms of the story, it’s just something that *happens*. Unfortunately, I did not come away from reading Native Tongue with an understanding of Láadan, as there are only *two Láadan words* used in the book itself—and one of them is *Láadan*! (The other word is *héenahal*, or “siblings of the heart to an unusual degree”, which is what women will be to each other if they’re allowed to grow speak Láadan amongst themselves.)
+
+The book itself is a pretty good read! Suzette was already an experienced author when she wrote it, and she’d already been publishing for over a *decade*! Here’s a little fact that’ll infuriate anyone under forty: *Suzette first started writing science fiction to pay her tuition!*
+
+Let’s end with *a brief feminist critique* of Láadan. Suzette constructed Láadan based on her own experiences and those of a handful of women whom she consulted. I’ll assume, *recklessly*, that means it was largely based on the experiences of white, Christian, well-to-do women, and I feel it shows:
+
+- Láadan copies over societal taboos. For instance, it has no more nuance words for sex—it has *shim* for “sex”, and *lila* for “lesbian sex”, but nothing more specific than that.
+
+- Láadan gives us no vocabulary for the indignities of poverty, not even for those suffered largely by women. For instance, it has no word for when you can’t afford pads and have to use, *e.g.*, bits of cloth instead.
+
+- Láadan assumes a colonial model of sex and gender—it assumes sex is binary, and gender is binary, immutable, and determined by sex—and has *really* taken gender essentialism to heart. Hell, the story is basically feminist separatist propaganda! It ends with women and men living separately, which is hailed by both as a wondrous solution!  Even in its grammatical gender it only has female and male—it may be *female-default*, but that’s such a *second-wave* idea of progress.
+
+I’d say Láadan is a deeply flawed experiment, but I’m still, *uh*, what’s the word?
 
 ::: xx-large
 bíilan ril le
@@ -260,3 +260,4 @@ pona
 [eibingen-abbey]: https://www.abtei-st-hildegard.de/english/
 [riesencodex]: https://hlbrm.digitale-sammlungen.hebis.de/handschriften-hlbrm/content/titleinfo/449618
 [sapir-whorf]: https://en.wikipedia.org/wiki/Linguistic_relativity
+[laadan-memrise]: https://app.memrise.com/course/332370/laadan-vocabulary/
