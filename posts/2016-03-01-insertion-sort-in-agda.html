@@ -44,11 +44,11 @@
                      macros: macros,
                      fleqn: true
                  });
-     }}});
+             }
+         }
+     });
     </script>
 </head>
-
-
 
     <body>
         <header class="sidebar">
@@ -259,8 +259,6 @@
 <p>The second question that usually follows is “How do you know that you’ve written down the right <em>property</em>?” For instance, one small mistake in my definition of <code>OVec</code> would have it mean “a list where sometimes an element is smaller than one of the elements after it”. Obviously, sorting algorithms would have this property… Now, the simple answer is that you don’t. And this holds for Agda, Coq, JavaScript, set theory… There is no real way to ensure that what you write down, in general, corresponds to what you wanted to write down.</p>
 <p>But there is one redeeming factor. Set theory is believed to not be a hot mess because there are <em>tons</em> of people who’ve checked the proofs, and who’ve used the proved properties to prove other, more complex properties. When you prove a lemma, you intend to <em>use</em> it to prove some different lemma. And in general, if you’ve proven the wrong lemma, your next proof will <em>fail</em>. And obviously, the notion that the <em>usage</em> of properties and and <em>repeated checking</em> of proofs strengthens a theory applies even more strongly to theories which are also <em>machine-checked</em>.</p>
 </article>
-
-
 
         </main>
     </body>
