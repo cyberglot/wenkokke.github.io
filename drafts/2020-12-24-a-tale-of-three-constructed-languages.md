@@ -65,13 +65,14 @@ Unfortunately, we probably don’t have enough surviving evidence to ever really
 
 Clearly, *-buz* means “bush” or “tree”, and they’re all clustered together because trees and bushes are all at approximately the same level in Hildegard’s hierarchy of the holy. In fact, @Higley2007 finds a bunch more suffixes and compound words, such as *phazur*, “grandfather”, and *kulzphazur*, “ancestor”.
 
-Hildegard also introduced a script, *Litteræ Ignotæ*, printed in the Riesencodex (fol. 464^a^). Unfortunately, there are no surviving texts which use it, but I’ve rendered “O orzchis Ecclesia” in Litteræ Ignotæ below:
+Hildegard also introduced a script, *Litteræ Ignotæ*, printed in the Riesencodex (fol. 464^a^). When I saw that script, my first thought was “I *have to* make a font for this!”, but fortunately, someone had already done that for me! Unfortunately, there are no surviving texts which use it, but I’ve rendered “O orzchis Ecclesia” in Litteræ Ignotæ below:
 
 ::: {.font-litterae-ignotae .x-large}
 > O [orzchis]{.lingua-ignota-highlight} Ecclesia, armis divinis praecincta, et hyacinto ornata, tu es [caldemia]{.lingua-ignota-highlight} stigmatum [loifolum]{.lingua-ignota-highlight} et urbs scienciarum. O, o tu es etiam [crizanta]{.lingua-ignota-highlight} in alto sono, et es [chorzta]{.lingua-ignota-highlight} gemma.
 :::
 
-When I saw Litteræ Ignotæ, my first thought was “I *have to* make a font for this!”, but fortunately, someone had already done that for me!
+While researching Lingua Ignota, I came across [the music of Kristin Hayter *a.k.a.* Lingua Ignota][lingua-ignota], who took her stage name from Hildegard’s unknown language. It’s fantastic! Give it a listen!
+
 
 ::: {.font-litterae-ignotae .xxx-large}
 Lingae Ignotae bizimonza est.
@@ -154,9 +155,9 @@ The evidence particles tell you the source and trustworthiness of the statement:
 
 These evidence particles were likely taken from Navajo. Other aspects of Láadan, such as its tonality, were likely inspired by Navajo as well. 
 
-Unlike Lingua Ignota—or what survives of it, at least—Láadan is a full-fledged language! There’s rules for phonology, tonality, morphology, grammar, *etc.* When Láadan was first introduced, it came with a glossary of *one thouseand* words, but also had rules for constructing new words. It’s hard to guess how many Láadan words are in use at the moment, but, *e.g.*, the [Láadan Vocabulary][laadan-memrise] course on Memrise has close to *twice as many*.
+Unlike Lingua Ignota—or what survives of it, at least—Láadan is a full-fledged language! There’s rules for phonology, tonality, morphology, grammar, *etc.* When Láadan was first introduced, it came with a glossary of *one thouseand* words, but also had rules for constructing new words. It’s hard to guess how many Láadan words are in use at the moment, but, *e.g.*, the [Láadan Vocabulary][laadan-memrise] course on Memrise has close to *twice as many*. I could count the number of glosses in the *official* Láadan dictionary on [Láadan Language][laadan-language], but that seems like a lot of work. (They’ve got some wonderful resources for studying Láadan, by the way!)
 
-Suzette offered her language to the world in the form of a work of fiction. She wrote a book, *Native Tongue*, in which she motivates the need for Láadan. Her story is set in a world in which women have been stripped of their rights and their agency, and her story follows the liberating effects of being able to clearly communicate ones experiences in a language *made for you*. Native Tongue gives a vivid portrayal of sexism, but it *kind of* glances over liberation through language—that a change in language brings about a change in society is simply one of the axioms of the story, it’s just something that *happens*. Unfortunately, I did not come away from reading Native Tongue with an understanding of Láadan, as there are only *two Láadan words* used in the book itself—and one of them is *Láadan*! (The other word is *héenahal*, or “siblings of the heart to an unusual degree”, which is what women will be to each other if they’re allowed to speak Láadan amongst themselves.)
+Suzette offered her language to the world in the form of a work of fiction. She wrote a book, *Native Tongue* [@Elgin1984], in which she motivates the need for Láadan. Her story is set in a world in which women have been stripped of their rights and their agency, and her story follows the liberating effects of being able to clearly communicate ones experiences in a language *made for you*. Native Tongue gives a vivid portrayal of sexism, but it *kind of* glances over liberation through language—that a change in language brings about a change in society is simply one of the axioms of the story, it’s just something that *happens*. Unfortunately, I did not come away from reading Native Tongue with an understanding of Láadan, as there are only *two Láadan words* used in the book itself—and one of them is *Láadan*! (The other word is *héenahal*, or “siblings of the heart to an unusual degree”, which is what women will be to each other if they’re allowed to speak Láadan amongst themselves.)
 
 The book itself is a pretty good read! Suzette was already an experienced author when she wrote it, and she’d already been publishing for over a *decade*! Here’s a little fact that’ll infuriate anyone under forty: *Suzette first started writing science fiction to pay her tuition!*
 
@@ -175,7 +176,6 @@ bíilan ril le
 wéhená
 Láadanth wa
 :::
-
 
 
 # Toki Pona<br />*by Sonja Lang*
@@ -261,3 +261,5 @@ pona
 [riesencodex]: https://hlbrm.digitale-sammlungen.hebis.de/handschriften-hlbrm/content/titleinfo/449618
 [sapir-whorf]: https://en.wikipedia.org/wiki/Linguistic_relativity
 [laadan-memrise]: https://app.memrise.com/course/332370/laadan-vocabulary/
+[laadan-language]: https://laadanlanguage.com/
+[lingua-ignota]: https://linguaignota.bandcamp.com/track/woe-to-all-on-the-day-of-my-wrath
