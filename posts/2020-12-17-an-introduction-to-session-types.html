@@ -138,43 +138,43 @@
 <li>Briar’s response is represented using the <code>Response</code> datatype, in which she can either grant permission, in which case Briar sends an <code>Allow</code> with a sample of pudding attached, or refuse Ada’s request, in which case she sends a <code>Deny</code> with a reason.</li>
 </ul>
 <p>The functions <code>ada</code> and <code>briar</code> represent Ada and Briar—these functions each receive an endpoint for the shared channel, and communicate along the lines of our story—Ada sends a request, Briar evaluates her politeness and responds with either pudding or a refusal, and finally Ada evaluates Briars response, and expresses her emotions accordingly:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">Request</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>  <span class="ot">=</span> <span class="dt">Please</span> <span class="dt">Request</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>  <span class="op">|</span> <span class="dt">MayIHaveSomePudding</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>    </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">Response</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>  <span class="ot">=</span> <span class="dt">Allow</span> <span class="dt">Pudding</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>  <span class="op">|</span> <span class="dt">Deny</span> <span class="dt">String</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>    </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="ot">ada ::</span> <span class="dt">Send</span> <span class="dt">Request</span> (<span class="dt">Recv</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>ada chan <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>  chan' <span class="ot">&lt;-</span> send (<span class="dt">Please</span> <span class="dt">MayIHaveSomePudding</span>) chan</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>  (resp, chan'') <span class="ot">&lt;-</span> recv chan'</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>  <span class="kw">case</span> resp <span class="kw">of</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>    <span class="dt">Allow</span> pudding <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;I’m so happy!&quot;</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>    <span class="dt">Deny</span> reason <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;Woe is me!&quot;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a><span class="ot">briar ::</span> <span class="dt">Recv</span> <span class="dt">Request</span> (<span class="dt">Send</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a>briar chan <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a>  (req, chan') <span class="ot">&lt;-</span> recv chan</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a>  <span class="kw">let</span> resp <span class="ot">=</span> <span class="kw">case</span> req <span class="kw">of</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a>    <span class="dt">MayIHaveSomePudding</span> <span class="ot">-&gt;</span> <span class="dt">Deny</span> <span class="st">&quot;Such rudeness!&quot;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a>    <span class="dt">Please</span> <span class="dt">MayIHaveSomePudding</span> <span class="ot">-&gt;</span> <span class="dt">Allow</span> myPudding</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a>    <span class="dt">Please</span> (<span class="dt">Please</span> _) <span class="ot">-&gt;</span> <span class="dt">Deny</span> <span class="st">&quot;Such beggary!&quot;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a>  chan'' <span class="ot">&lt;-</span> send resp chan'</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Request</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Please</span> <span class="dt">Request</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">MayIHaveSomePudding</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Response</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Allow</span> <span class="dt">Pudding</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Deny</span> <span class="dt">String</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ot">ada ::</span> <span class="dt">Send</span> <span class="dt">Request</span> (<span class="dt">Recv</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>ada chan <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  chan' <span class="ot">&lt;-</span> send (<span class="dt">Please</span> <span class="dt">MayIHaveSomePudding</span>) chan</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  (resp, chan'') <span class="ot">&lt;-</span> recv chan'</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> resp <span class="kw">of</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Allow</span> pudding <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;I’m so happy!&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Deny</span> reason <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;Woe is me!&quot;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ot">briar ::</span> <span class="dt">Recv</span> <span class="dt">Request</span> (<span class="dt">Send</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>briar chan <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  (req, chan') <span class="ot">&lt;-</span> recv chan</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> resp <span class="ot">=</span> <span class="kw">case</span> req <span class="kw">of</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">MayIHaveSomePudding</span> <span class="ot">-&gt;</span> <span class="dt">Deny</span> <span class="st">&quot;Such rudeness!&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Please</span> <span class="dt">MayIHaveSomePudding</span> <span class="ot">-&gt;</span> <span class="dt">Allow</span> myPudding</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Please</span> (<span class="dt">Please</span> _) <span class="ot">-&gt;</span> <span class="dt">Deny</span> <span class="st">&quot;Such beggary!&quot;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  chan'' <span class="ot">&lt;-</span> send resp chan'</span></code></pre></div>
 <p>The example illustrates a crucial notions for session types:</p>
 <p>Firstly, session types are <em>communication protocols.</em> If you glance at the types of the endpoints, you see that they represent the communication protocol from each participants perspective. For instance, Ada’s endpoint says she must send a request, receive a response, and then end the session.</p>
 <p>Secondly, the types of the endpoints of a binary channel must be <em>dual</em>. When Ada’s endpoint says she must send, Briar’s endpoint says she must receive. For classical multiparty session types, the equivalent notion is called <em>coherence</em>, but the principle remains the same.</p>
 <p>Finally, each endpoint must be used <em>exactly once</em> if we want to be sure to stick to the protocol. For instance, in the code above, each channel endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a <a name="cheeky-Ada"></a>cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ot">ada ::</span> <span class="dt">Send</span> <span class="dt">Request</span> (<span class="dt">Recv</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>ada chan <span class="ot">=</span> tryAll <span class="dt">MayIHaveSomePudding</span> chan</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  <span class="kw">where</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>    tryAll req chan <span class="ot">=</span> <span class="kw">do</span> </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>      chan' <span class="ot">&lt;-</span> send req chan</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>      (resp, chan'') <span class="ot">&lt;-</span> recv chan'</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>      <span class="kw">case</span> resp <span class="kw">of</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>        <span class="dt">Allow</span> pudding <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;I’m so happy!&quot;</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>        <span class="dt">Deny</span> reason <span class="ot">-&gt;</span> tryAll (<span class="dt">Please</span> req) chan</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">ada ::</span> <span class="dt">Send</span> <span class="dt">Request</span> (<span class="dt">Recv</span> <span class="dt">Response</span> <span class="dt">End</span>) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ada chan <span class="ot">=</span> tryAll <span class="dt">MayIHaveSomePudding</span> chan</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    tryAll req chan <span class="ot">=</span> <span class="kw">do</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      chan' <span class="ot">&lt;-</span> send req chan</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      (resp, chan'') <span class="ot">&lt;-</span> recv chan'</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> resp <span class="kw">of</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Allow</span> pudding <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;I’m so happy!&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Deny</span> reason <span class="ot">-&gt;</span> tryAll (<span class="dt">Please</span> req) chan</span></code></pre></div>
 <p>But that’s not what the protocol says! Briar doesn’t have time for more than one request, so after the first one has run its course, Ada whispers her second request into the tin can, then waits forever, pining for a response from Briar which will never come!</p>
 <h2 id="a-bit-of-a-roadmap">A Bit of a Roadmap</h2>
 <p>Only a few short years after Ada and Briar enjoyed sweet milk puddings, a man by the name of <em>Alonzo Church</em> was born in Washington, D.C., in the United States. Three decades later, in the 1930s, Alonzo developed <a href="https://www.jstor.org/stable/1968337">the λ-calculus</a>, a foundational calculus which studies computation using <em>functions</em>. To this day, the λ-calculus underpins most theories of functional programming languages. Talk about influential!</p>
