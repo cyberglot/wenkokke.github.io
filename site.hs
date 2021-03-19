@@ -74,7 +74,8 @@ postMarkdownPattern mode = postPattern mode .&&. complement (postLagdaPattern mo
 --------------------------------------------------------------------------------
 pubSections :: [([RefType], Text)]
 pubSections =
-  [ ( [ ArticleJournal           ] , "Journal Articles")
+  [ ( [ Manuscript               ] , "Drafts")
+  , ( [ ArticleJournal           ] , "Journal Articles")
   , ( [ Book                     ] , "Books")
   , ( [ Chapter, PaperConference ] , "Conference and Workshop Papers")
   , ( [ Thesis                   ] , "Theses")

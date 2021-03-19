@@ -119,15 +119,23 @@
   <bibliography entry-spacing="0" second-field-align="flush">
     <layout>
       <choose>
+        <!-- Drafts -->
+        <if type="manuscript">
+          <group delimiter=", " suffix=". ">
+            <text macro="title"/>
+            <text macro="coauthor"/>
+            <text macro="issued"/>
+          </group>
+        </if>
         <!-- Journal Articles -->
-        <if type="article-journal">
+        <else-if type="article-journal">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>
             <text macro="coauthor"/>
             <text macro="journal"/>
             <text macro="issued"/>
           </group>
-        </if>
+        </else-if>
         <!-- Books -->
         <else-if type="book">
           <group delimiter=", " suffix=". ">
@@ -169,7 +177,7 @@
         </else>
       </choose>
       <choose>
-        <if type="article-journal book chapter paper-conference thesis speech" match="any">
+        <if type="manuscript article-journal book chapter paper-conference thesis speech" match="any">
           <text prefix="(" suffix=".)" font-style="italic" variable="note"/>
         </if>
       </choose>

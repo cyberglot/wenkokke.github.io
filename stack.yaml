@@ -1,7 +1,11 @@
-resolver: lts-16.16
-compiler: ghc-8.8.4
+resolver: lts-17.6
+compiler: ghc-8.10.4
+
+allow-newer: true
 
 packages:
 - .
 
-extra-deps: []
+extra-deps:
+- hakyll-4.13.4.1@sha256:af3096c611bcb164143df2d9543e88f1eaabe76e8f0261423aff8382f10368c3,9212
+- pandoc-citeproc-0.17.0.2@sha256:39c5c60a5eca2c1cb50ae9a00dc7093ca1baac78ad5be4e222505de257dce456,8737
