@@ -6,7 +6,16 @@
 % Drafts
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-@UNPUBLISHED{KokkeD21,
+@UNPUBLISHED{KokkeD21:priority-sesh,
+  author     = {Wen Kokke and Ornela Dardha},
+  title      = {Deadlock-Free Session Types in Linear Haskell},
+  year       = 2021,
+  month      = mar,
+  note       = {Manuscript submitted for publication.},
+  url        = {https://wen.works/public/drafts/priority-sesh.pdf},
+}
+
+@UNPUBLISHED{KokkeD21:pgv,
   author     = {Wen Kokke and Ornela Dardha},
   title      = {Prioritise the Best Variation},
   year       = 2021,
@@ -20,7 +29,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-@ARTICLE{KokkeMW20LMCS,
+@ARTICLE{KokkeMW20:cpnd-ext,
   abstract   = {Process calculi based in logic, such as 𝜋DILL and CP, provide a
                   foundation for deadlock-free concurrent programming, but
                   exclude non-determinism and races. HCP is a reformulation of
@@ -43,9 +52,9 @@
   volume     = {{Volume 16, Issue 4}},
   year       = 2020,
   month      = dec,
-  note       = {Extended version of \cite{KokkeMW19COORDINATION}},
+  note       = {Extended version of \cite{KokkeMW19:cpnd}},
 }
-@ARTICLE{GriesemerHKLTTWY20OOPSLA,
+@ARTICLE{GriesemerHKLTTWY20:featherweight-go,
   abstract   = {We describe a design for generics in Go inspired by previous work
                   on Featherweight Java by Igarashi, Pierce, and Wadler. Whereas
                   subtyping in Java is nominal, in Go it is structural, and
@@ -62,7 +71,7 @@
   year       = 2020,
   url        = {https://wen.works/public/pubs/oopsla2020.pdf},
 }
-@ARTICLE{Kokke19ICE,
+@ARTICLE{Kokke19:sesh,
   abstract   = {Rusty Variation (RV) is a library for session-typed communication
                   in Rust which offers strong compile-time correctness
                   guarantees. Programs written using RV are guaranteed to
@@ -81,7 +90,7 @@
   doi        = {10.4204/eptcs.304.4},
   note       = {Renamed to Sesh},
 }
-@ARTICLE{KokkeSW20SCP,
+@ARTICLE{KokkeSW20:on-plfa,
   abstract   = {One of the leading textbooks for formal methods is Software
                   Foundations (SF), written by Benjamin Pierce in collaboration
                   with others, and based on Coq. After five years using SF in
@@ -119,7 +128,7 @@
   doi        = {10.1016/j.scico.2020.102440},
   url        = {https://wen.works/public/pubs/scp2020.pdf},
 }
-@ARTICLE{KokkeMP19POPL,
+@ARTICLE{KokkeMP19:dhcp,
   abstract   = {We present Hypersequent Classical Processes (HCP), a revised
                   interpretation of the "Proofs as Processes" correspondence
                   between linear logic and the π-calculus initially proposed by
@@ -154,7 +163,7 @@
   month      = jan,
   url        = {https://wen.works/public/pubs/popl2019.pdf},
 }
-@ARTICLE{ToledoACKKKKW14LILT,
+@ARTICLE{ToledoACKKKKW14:pelican,
   abstract   = {We introduce a new formal semantic model for
                   annotating textual entailments that describes
                   restrictive, intersective, and appositive
@@ -191,7 +200,7 @@
 % Books
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-@BOOK{WadlerKS20PLFA,
+@BOOK{WadlerKS20:plfa,
   author     = {Philip Wadler and Wen Kokke and Jeremy G. Siek},
   title      = {Programming Language Foundations in {A}gda},
   year       = {2020},
@@ -204,7 +213,7 @@
 % Conference and Workshop Papers
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-@INPROCEEDINGS{KokkeKKAA20APLAS,
+@INPROCEEDINGS{KokkeKKAA20:starchild-ext,
   abstract   = {We present StarChild and Lazuli, two libraries which leverage
                   refinement types to verify neural networks, implemented in F*
                   and Liquid Haskell. Refinement types are types augmented, or
@@ -228,9 +237,10 @@
   editor     = {Bruno C. d. S. Oliveira},
   booktitle  = {Proceedings 18th {A}sian {S}ymposium on {P}rogramming {L}anguages and {S}ystems, {APLAS} 2020},
   venue      = {Fukuoka, Japan},
-  url        = {https://wen.works/public/pubs/aplas2020.pdf}
+  url        = {https://wen.works/public/pubs/aplas2020.pdf},
+  note       = {Extended version of \cite{KokkeKKA20:starchild}},
 }
-@INPROCEEDINGS{KokkeKKA20LiVe,
+@INPROCEEDINGS{KokkeKKA20:starchild,
   abstract   = {We introduce StarChild and Lazuli, two proof-of-concept libraries
                   which leverage the type system and theorem proving
                   capabilities of F* and Liquid Haskell, respectively, to verify
@@ -256,7 +266,7 @@
   note       = {Presentation cancelled due to COVID'19 pandemic},
   url        = {https://wen.works/public/pubs/live2020.pdf}
 }
-@INPROCEEDINGS{KokkeMP19TLLA,
+@INPROCEEDINGS{KokkeMP19:hcp,
   abstract   = {Process calculi based on logic, such as πDILL and CP, provide a
                   foundation for deadlock-free concurrent programming. However,
                   in previous work, there is a mismatch between the rules for
@@ -289,7 +299,7 @@
   url        = {https://wen.works/public/pubs/eptcs2019a.pdf},
   note       = {The EPTCS version has errors, which are fixed here},
 }
-@INPROCEEDINGS{KokkeMW19COORDINATION,
+@INPROCEEDINGS{KokkeMW19:cpnd,
   abstract   = {Process calculi based in logic, such as πDILL and CP, provide a
                   foundation for deadlock-free concurrent programming, but
                   exclude non-determinism and races. HCP is a reformulation of
@@ -316,7 +326,7 @@
   url        = {https://wen.works/public/pubs/coordination2019.pdf},
   note       = {The COORDINATION version has errors, which are fixed here},
 }
-@INPROCEEDINGS{KokkeL17CG,
+@INPROCEEDINGS{KokkeL17:cg,
   author     = {Wen Kokke and Inari Listenmaa},
   title      = {Exploring the Expressivity of Constraint Grammar},
   year       = {2017},
@@ -325,7 +335,7 @@
   booktitle  = {{Workshop on Constraint Grammar at NoDaLiDa'17}},
   venue      = {Gothenburg, Sweden},
 }
-@INPROCEEDINGS{Kokke16LACL,
+@INPROCEEDINGS{Kokke16:nlq,
   year       = {2016},
   month      = dec,
   publisher  = {Springer},
@@ -337,7 +347,7 @@
   doi        = {10.1007/978-3-662-53826-5_9},
   url        = {https://wen.works/public/pubs/lacl2016.pdf},
 }
-@INPROCEEDINGS{Kokke15TyTLeS,
+@INPROCEEDINGS{Kokke15:lambek,
   abstract   = {In recent years, the interest in using proof
                   assistants to formalise and reason about mathematics
                   and programming languages has grown. Type-logical
@@ -372,7 +382,7 @@
   eventtitle = {{Workshop on Type Theory and Lexical Semantics at ESSLLI'15}},
   url        = {https://wen.works/public/pubs/msla2014.pdf},
 }
-@INPROCEEDINGS{KokkeS15MPC,
+@INPROCEEDINGS{KokkeS15:auto,
   abstract   = {As proofs in type theory become increasingly
                   complex, there is a growing need to provide better
                   proof automation. This paper shows how to implement
@@ -398,7 +408,7 @@
   author     = {Wen Kokke and Wouter Swierstra},
   pages      = {276-301},
 }
-@INPROCEEDINGS{ToledoAKKKW13IWCS,
+@INPROCEEDINGS{ToledoAKKKW13:pelican,
   abstract   = {We introduce a new formal semantic model for
                   annotating textual entailments, that describes
                   restrictive, intersective and appositive
@@ -428,7 +438,7 @@
   publisher  = {{Association for Computational Linguistics}},
   pages      = {240--251},
 }
-@INPROCEEDINGS{ToledoACGKKNNW14WISA,
+@INPROCEEDINGS{ToledoACGKKNNW14:pelican,
   abstract   = {We introduce a new platform for annotating
                   inferential phenomena in entailment data, buttressed
                   by a formal semantic model and a proof-system that
@@ -470,7 +480,7 @@
 % Theses
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-@MASTERSTHESIS{Kokke17MSc,
+@MASTERSTHESIS{Kokke17:cpnd,
   abstract   = {Process calculi based in logic, such as {\textpi DILL} and CP,
                   provide a foundation for deadlock-free concurrent programming,
                   but at the cost of excluding non-determinism and races. We
@@ -490,7 +500,7 @@
   type       = {Master's thesis},
   url        = {https://wen.works/public/pubs/msc2017.pdf},
 }
-@MASTERSTHESIS{Kokke16MSc,
+@MASTERSTHESIS{Kokke16:nlq,
   abstract   = {In this thesis, I will discuss the grammar logic {NLQ}, an
                   extension of the non-associative Lambek calculus based on
                   Barker and Shan’s (2014) NLCL. For this logic, derivability is
@@ -810,6 +820,19 @@
 % Public Houses
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Edinburgh
+@PUBLICHOUSE{TheBansheeLabyrinth,
+  title      = {{The Banshee Labyrinth}},
+  address    = {Edinburgh, UK},
+  url        = {https://www.thebansheelabyrinth.com/},
+}
+@PUBLICHOUSE{TheAuldHoose,
+  title      = {{The Auld Hoose}},
+  address    = {Edinburgh, UK},
+  url        = {http://theauldhoose.co.uk/},
+}
+
+% Kyoto
 @PUBLICHOUSE{ChezPhilippe,
   title      = {{Chez Philippe}},
   address    = {Kyōto, Japan},
@@ -820,6 +843,8 @@
   address    = {Kyōto, Japan},
   url        = {https://kishikorofreee.com/entry/2016/02/07/201832?fbclid=IwAR0S5MQXYzvSm9U-m8gBNumZMpFgqET7Jxyx0-a-R4fG1NvxJjsdyWqvE6U},
 }
+
+% Utrecht
 @PUBLICHOUSE{KafeBelgie,
   title      = {{Kafé België}},
   address    = {Utrecht, The Netherlands},
@@ -830,7 +855,9 @@
   address    = {Utrecht, The Netherlands},
   url        = {https://acu.nl/},
 }
-@PUBLICHOUSE{deonderbroek,
+
+% Nijmegen
+@PUBLICHOUSE{DeOnderbroek,
   title      = {{De Onderbroek}},
   address    = {Nijmegen, The Netherlands},
   url        = {http://grotebroek.nl/groepen/de-onderbroek/},
@@ -839,19 +866,4 @@
   title      = {{De Bijstand}},
   address    = {Nijmegen, The Netherlands},
   url        = {http://www.debijstand.nl/},
-}
-@PUBLICHOUSE{DagdaBar,
-  title      = {{Dagda Bar}},
-  address    = {Edinburgh, UK},
-  url        = {https://www.facebook.com/thedagdabar/},
-}
-@PUBLICHOUSE{TheBansheeLabyrinth,
-  title      = {{The Banshee Labyrinth}},
-  address    = {Edinburgh, UK},
-  url        = {https://www.thebansheelabyrinth.com/},
-}
-@PUBLICHOUSE{TheAuldHoose,
-  title      = {{The Auld Hoose}},
-  address    = {Edinburgh, UK},
-  url        = {http://theauldhoose.co.uk/},
 }
