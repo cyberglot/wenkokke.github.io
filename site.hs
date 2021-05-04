@@ -60,7 +60,7 @@ fromGlobs :: [FilePath] -> Pattern
 fromGlobs = foldr1 (.||.) . map fromGlob
 
 postDirs :: Mode -> [FilePath]
-postDirs mode = ["posts"] ++ ["drafts" | mode == Draft]
+postDirs mode = "posts" : ["posts" </> "drafts" | mode == Draft]
 
 postPattern :: Mode -> Pattern
 postPattern mode = fromGlobs [dir </> "*.md" | dir <- postDirs mode]
@@ -70,6 +70,12 @@ postLagdaPattern mode = fromGlobs [dir </> "*.lagda.md" | dir <- postDirs mode]
 
 postMarkdownPattern :: Mode -> Pattern
 postMarkdownPattern mode = postPattern mode .&&. complement (postLagdaPattern mode)
+
+recipeDirs :: Mode -> [FilePath]
+recipeDirs mode = "recipes" : ["recipes" </> "drafts" | mode == Draft]
+
+recipePattern :: Mode -> Pattern
+recipePattern mode = fromGlobs [dir </> "*.md" | dir <- recipeDirs mode]
 
 --------------------------------------------------------------------------------
 pubSections :: [([RefType], Text)]
@@ -88,6 +94,11 @@ postCtx :: Context String
 postCtx = dateField "date" "%B %e, %Y"
        <> teaserField "teaser" "content"
        <> siteCtx
+
+recipeCtx :: Context String
+recipeCtx = dateField "date" "%B %e, %Y"
+         <> teaserField "teaser" "content"
+         <> siteCtx
 
 --------------------------------------------------------------------------------
 feedCtx :: Context String
@@ -198,6 +209,33 @@ main = do
           >>= loadAndApplyTemplate "templates/page.html"    siteCtx
           >>= loadAndApplyTemplate "templates/default.html" siteCtx
           >>= relativizeUrls
+
+    -- Compile recipes page
+    match "recipes.html" $ do
+      route idRoute
+      compile $ do
+        recipes <- loadAll (recipePattern mode)
+        let indexCtx = listField "recipes" recipeCtx (return recipes)
+                    <> siteCtx
+
+        getResourceBody
+          >>= applyAsTemplate indexCtx
+          >>= loadAndApplyTemplate "templates/default.html" indexCtx
+          >>= relativizeUrls
+
+    let recipeCompiler :: Item String -> Compiler (Item String)
+        recipeCompiler item =
+          readPandocWith readerOptions item
+            <&> writePandocWith writerOptions
+            >>= saveSnapshot "content"
+            >>= loadAndApplyTemplate "templates/recipe.html"  recipeCtx
+            >>= loadAndApplyTemplate "templates/default.html" siteCtx
+            >>= relativizeUrls
+
+    -- Compile recipes
+    match (recipePattern Draft) $ do
+      route $ setExtension "html"
+      compile $ getResourceBody >>= recipeCompiler
 
     -- Compile 404 page
     match "404.html" $ do
