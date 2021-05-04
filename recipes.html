@@ -2,23 +2,15 @@
 title: Recipes
 ---
 
-<div class="posts">
+<div class="recipes">
     $for(recipes)$
-    <article class="post">
-        $if(external)$
+    <article class="recipe">
         <header>
-            <h1 class="post-title"><a href="$external$">$title$</a></h1>
+            $if(banner)$
+            <img class="recipe-banner" src="$banner$" />
+            $endif$
+            <h1 class="recipe-title"><a href="$if(external)$$external$$else$$url$$endif$">$title$</a></h1>
         </header>
-        $else$
-        <header>
-            <h1 class="post-title"><a href="$url$">$title$</a></h1>
-        </header>
-        $if(teaser)$
-        <section>
-            $teaser$
-        </section>
-        $endif$
-        $endif$
     </article>
     $endfor$
 </div>
