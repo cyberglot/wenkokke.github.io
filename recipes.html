@@ -5,14 +5,19 @@ title: Recipes
 <div class="posts">
     $for(recipes)$
     <article class="post">
+        $if(external)$
+        <header>
+            <h1 class="post-title"><a href="$external$">$title$</a></h1>
+        </header>
+        $else$
         <header>
             <h1 class="post-title"><a href="$url$">$title$</a></h1>
-            <span class="post-date">$date$</span>
         </header>
         $if(teaser)$
         <section>
             $teaser$
         </section>
+        $endif$
         $endif$
     </article>
     $endfor$

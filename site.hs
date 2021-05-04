@@ -96,8 +96,7 @@ postCtx = dateField "date" "%B %e, %Y"
        <> siteCtx
 
 recipeCtx :: Context String
-recipeCtx = dateField "date" "%B %e, %Y"
-         <> teaserField "teaser" "content"
+recipeCtx = teaserField "teaser" "content"
          <> siteCtx
 
 --------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ WATCH_PID := $(BUILD_DIR)/watch.pid
 .PHONY: build
 build: $(SITE_DIR)
 
-$(SITE_DIR): site.hs index.html bib csl css drafts pages posts public templates
+$(SITE_DIR): site.hs index.html bib csl css pages posts public recipes templates
 	@echo "Building site..."
 	stack build && stack run build -- $(HAKYLL_FLAGS)
 
