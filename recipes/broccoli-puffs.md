@@ -1,6 +1,6 @@
 ---
 title: Broccoli Puffs
-banner: /public/images/broccoli-puffs-small.jpg
+banner: /public/images/broccoli-puffs-banner.jpg
 ---
 
 These broccoli puffs started out their life as a quiche by [the Groene Meisjes][groene-meisjes], but over time, they changed, became smaller, cuter, and puffier!
