@@ -1,6 +1,13 @@
 resolver: lts-17.2
-compiler: ghc-8.10.3
 
+# Use GHC 8.10.3
+compiler: ghc-8.10.3
+compiler-check: match-exact
+
+# Use the system install of GHC
+system-ghc: true
+
+# Allow newer versions of packages
 allow-newer: true
 
 packages:
@@ -8,8 +15,8 @@ packages:
 
 extra-deps:
 # Version of text-icu with support for ICU 68
-- git: https://github.com/RikvanToor/text-icu.git
-  commit: 5451d335a6fd27ab3be99b1d2328bd89a8ce4a20
+# - git: https://github.com/RikvanToor/text-icu.git
+#   commit: 5451d335a6fd27ab3be99b1d2328bd89a8ce4a20
 # Hakyll dependencies:
 - hakyll-4.13.4.1
 - pandoc-2.10.1@sha256:23d7ec480c7cb86740475a419d6ca4819987b6dd23bbae9b50bc3d42a7ed2f9f,36933
