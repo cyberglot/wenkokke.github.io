@@ -171,6 +171,7 @@ main = do
           let bibPath = joinPath
                 $ map (\dir -> if dir `elem` postDirs Draft then "bib" else dir)
                 $ splitDirectories (replaceExtensions postPath "bib")
+          unsafeCompiler $ putStrLn bibPath
           bibPathExists <- unsafeCompiler $ doesFileExist bibPath
           let bibIdentifier = fromFilePath bibPath
           if bibPathExists
@@ -200,8 +201,8 @@ main = do
       compile $ agdaCompiler >>= postCompiler
 
     -- Compile publications
-    match "bib/*.bib" $ compile biblioCompiler
-    match "csl/*.csl" $ compile cslCompiler
+    match "bib/**.bib" $ compile biblioCompiler
+    match "csl/**.csl" $ compile cslCompiler
     match "pages/pubs.md" $ do
       route $ setExtension "html"
       compile $ pubsCompiler pubSections

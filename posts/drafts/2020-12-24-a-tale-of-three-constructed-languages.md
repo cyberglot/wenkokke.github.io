@@ -1,5 +1,6 @@
 ---
 title: A Tale of Three Constructed Languages
+bibliography: 2020-12-24-a-tale-of-three-constructed-languages
 ---
 
 Today, we’re gonna talk about *conlangs*! Conlang is short for *constructed language*. There’s a bunch of famous conlangs. [Esperanto][esperanto] is probably the most famous of the idealistic “let’s unite the world” conlangs—it’s pretty old, going back to the late 1870s. In the 1930s, some dude named Jerry Tolkien published a whole series of fantasy novels just to popularise [[z$5h#]{.font-tengwar}][quenya][^quenya] and his other conlangs, an effort we can say was at least passably successful. In recent decades, we got [tlhIngan Hol][klingon], [lekh dothraki][dothraki] and [Valyrio udrir][valyrian], each of which now have communities of speakers formed around them. Heck, two of those even got their’s own [DuoLingo][klingon-duolingo] [course][valyrian-duolingo]![^ads] Unfortunately, one thing all these languages share is that they were created by dudes…
@@ -153,7 +154,7 @@ The evidence particles tell you the source and trustworthiness of the statement:
 | *wáa*   | what I’m saying is true because it comes from a trusted source
 | *wóo*   | I have no idea whether or not what I’m saying is true
 
-These evidence particles were likely taken from Navajo. Other aspects of Láadan, such as its tonality, were likely inspired by Navajo as well. 
+These evidence particles were likely taken from Navajo. Other aspects of Láadan, such as its tonality, were likely inspired by Navajo as well.
 
 Unlike Lingua Ignota—or what survives of it, at least—Láadan is a full-fledged language! There’s rules for phonology, tonality, morphology, grammar, *etc.* When Láadan was first introduced, it came with a glossary of *one thousand* words, but also had rules for constructing new words. It’s hard to guess how many Láadan words are in use at the moment, but, *e.g.*, the [Láadan Vocabulary][laadan-memrise] course on Memrise has close to *twice as many*. I could count the number of glosses in the *official* Láadan dictionary on [Láadan Language][laadan-language], but that seems like a lot of work. (They’ve got some wonderful resources for studying Láadan, by the way!)
 
@@ -216,14 +217,14 @@ Láadanth wa
 
 > toki pi jan Wen li pini, la o kama jo e telo nasa!
 
-> 言 ぴ 人 Wen り 終, ら お 来 有 え 水 狂！ 
+> 言 ぴ 人 Wen り 終, ら お 来 有 え 水 狂！
 
 > 言 的 人 Wen 哩 末, 喇 令 到 有 把 水 怪！
 
 ![](/public/images/sitelen-sitelen-grey.png)
 
 ::: xx-large
-toki pona 
+toki pona
 li
 pona
 :::
