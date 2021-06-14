@@ -4,7 +4,7 @@ bibliography: 2020-12-24-a-tale-of-three-constructed-languages
 twitter: true
 ---
 
-Today, we’re gonna talk about *conlangs*! Conlang is short for *constructed language*. There’s a bunch of famous conlangs. [Esperanto][esperanto] is probably the most famous of the idealistic “let’s unite the world” conlangs—it’s pretty old, going back to the late 1870s. In the 1930s, some dude named Jerry Tolkien published a whole series of fantasy novels just to popularise [[z$5h#]{.font-tengwar}][quenya][^quenya] and his other conlangs, an effort we can say was at least passably successful. In recent decades, we got [tlhIngan Hol][klingon], [lekh dothraki][dothraki] and [Valyrio udrir][valyrian], each of which now have communities of speakers formed around them. Heck, two of those even got their’s own [DuoLingo][klingon-duolingo] [course][valyrian-duolingo]![^ads] Unfortunately, one thing all these languages share is that they were created by dudes…
+Today, we’re gonna talk about *conlangs*! Conlang is short for *constructed language*. There’s a bunch of famous conlangs. [Esperanto][esperanto] is probably the most famous of the idealistic “let’s unite the world” conlangs—it’s pretty old, going back to the late 1870s. In the 1930s, some dude named Jerry Tolkien published a whole series of fantasy novels just to popularise [[z$5h#]{.font-tengwar name="quenya"}][quenya][^quenya] and his other conlangs, an effort we can say was at least passably successful. In recent decades, we got [tlhIngan Hol][klingon], [lekh dothraki][dothraki] and [Valyrio udrir][valyrian], each of which now have communities of speakers formed around them. Heck, two of those even got their’s own [DuoLingo][klingon-duolingo] [course][valyrian-duolingo]![^ads] Unfortunately, one thing all these languages share is that they were created by dudes…
 
 <!--more-->
 
@@ -184,92 +184,105 @@ Láadanth wa
 
 <img alt="Three repetitions of the symbol associated with Toki Pona." src="/public/images/toki-pona.png" />
 
-Toki Pona was created by Sonja Lang *ca.* 2001. It's a wonderful language, first and foremost because it is *oligoisolating*---that's a word I learnt from this language, and it is it!---which is a fancy way of saying the language has *very few words*. Toki Pona has a total of 120 words[^toki-pona-vocabulary], and that's it, you're not allowed to come up with any new ones!
+Toki Pona was created by Sonja Lang *ca.* 2001. It's a wonderful language, first and foremost because it is *oligoisolating*---that's a word I learnt from this language, and it is it!---which is a fancy way of saying the language has *very few words*. Toki Pona has a total of 120 words[^toki-pona-vocabulary], and that's it, you're not allowed to come up with any new ones! But why, why so few words?
 
-Sonja developed Toki Pona as a coping mechanism during a bout of depression, and found it useful when trying to work through a problem, as the simplicity of the language forces you to strips away all the confusing and superfluous stuff [@Roberts2007].
+> When I created the language, it was a bit of a personal exploration for myself. I was looking for the meaning of the universe. I was suffering from depression, [and] I looked at the complexity of the modern life we live in and tried to simplify ideas into smaller parts, to go back to the archetypes, the primitive ideas that all modern things come from. I tried to touch all those universal aspects. [@Doucet2007]
 
-> Toki Pona is a human language I invented in 2001. It was my attempt to understand the meaning of life in 120 words.
->
-> — Sonja Lang ([tokipona.org](https://tokipona.org))
+It's a really useful language when you're trying to work through a problem, as the simplicity of the language forces you to strip away all the confusing and superfluous stuff! In fact, a lot of articles report that a Finnish psychiatrist asked patients to keep a diary of their thoughts in Toki Pona *for this exact reason!* [@Roberts2007]
 
-
-What's great about Toki Pona is that you can learn the basics in just, *like*, the last bit of a blog post! So let's go! *Toki Pona, oversimplified!*
-
-Let's start with *nouns* and *noun phrases*.
-
-Let's say we want to say "pub"... Now, there's no word for "pub" in Toki Pona, so we'll have to try and get across what we're talking about by *describing* a pub. What's a pub? Well, it's a place where you drink alcohol. What's alcohol? It's a liquid that makes you act a bit silly. Yes! Those are all things we can say!
-
-First, we combine *telo* and *nasa* to get "silly water", or alcohol:
-
-| toki pona           | literal English        | English   |
-| ---                 | ---                    | ---       |
-| *telo*              | "water"                | "water"   |
-| *telo nasa*         | "silly water"          | "alcohol" |
-
-Next, we modify combine *tomo* and *telo nasa* to get "alcohol house", but *oh no!* If we just say *tomo telo nasa*, both *telo* and *nasa* independently modify *tomo*, so we get a "silly water house", *like*, I dunno, this?
-
-![](/public/images/silly-water-house.jpg)
-
-That's where *pi* comes in!
-
-| toki pona           | literal English        | English           |
-| ---                 | ---                    | ---               |
-| *tomo*              | "house"                | "house"           |
-| *tomo telo nasa*    | "silly water house"    | "silly houseboat" |
-| *tomo pi telo nasa* | "house of silly water" | "pub"             |
-
-> toki pi jan Wen li pona!
-
-| toki pona | English                             |
-| ---       | ---                                 |
-| *toki*    | *language, speech, to say, to talk* |
-| *jan*     | *person*                            |
-| *Wen*     | *(that's my name!)*                 |
-| *li*      | *(between subject and verb phrase)* |
-| *pona*    | *good*                              |
-
-> toki pi jan Wen li pini, la o kama jo e telo nasa!
-
-| toki pona | English                                    |
-| ---       | ---                                        |
-| *pini*    | *end, finished*                            |
-| *la*      | *(between context phrase and main phrase)* |
-| *o*       | *(imperative)*                             |
-| *kama*    | *come*                                     |
-| *jo*      | *have*                                     |
-| *e*       | *(between verb and direct object)*         |
-
-> toki pi jan Wen li pini, la o kama jo e telo nasa!
-
-> 言 ぴ 人 Wen り 終, ら お 来 有 え 水 狂！
-
-> 言 的 人 Wen 哩 末, 喇 令 到 有 把 水 怪！
-
-![](/public/images/sitelen-sitelen-grey.png)
-
-::: xx-large
-toki pona
-li
-pona
-:::
+I tried to find out what happened with that study, but so far, no dice:
 
 ```{=html}
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Heya <a href="https://twitter.com/pekkaroponen?ref_src=twsrc%5Etfw">@pekkaroponen</a>! In 2007, The Globe and Mail reported that you were studying the benefits of keeping a diary in Toki Pona. It&#39;s been over a decade since then, and I&#39;d love to hear from you! Please DM me!</p><p lang="en" dir="ltr"><img alt='A newspaper clipping from The Globe and Mail (July 9, 2007) by Siobhan Roberts titled "Canadian has people talking about lingo she created".' src="/public/images/the-globe-and-mail.jpg"/></p>&mdash; Wen Kokke (@wenkokke) <a href="https://twitter.com/wenkokke/status/1401993958813732870?ref_src=twsrc%5Etfw">June 7, 2021</a></blockquote>
 ```
 
-- *Meant as a* coping mechanism for depression
-- *Within the framework of the* Sapir-Whorf *hypothesis*
+What's great about Toki Pona is that you can learn the basics in just, *like*, the last bit of a blog post! So let's go! *Toki Pona, oversimplified!*
 
+Let's say we want to say "pub"... Now, there's no word for "pub" in Toki Pona, so we'll have to try and get across what we're talking about by *describing* a pub. What's a pub? Well, it's a place where you drink alcohol. What's alcohol? It's a drink that makes you act a bit silly. Yes! Those are all things we can say!
+
+First, we combine *telo* and *nasa* to get "silly water", or alcohol. In Toki Pona, adjectives come *after* the thing they modify:
+
+| toki pona           | literal English        | English   |
+| ---                 | ---                    | ---       |
+| *telo*              | "water"                | "water"   |
+| *nasa*              | "silly"                | "silly"   |
+| *telo nasa*         | "silly water"          | "alcohol" |
+
+Next, we combine *tomo* and *telo nasa* to get "alcohol house", but---*oh no!*---in Toki Pona, everything that comes after a noun is taken to be an adjective modifying *that noun*, so if we say *tomo telo nasa*, both *telo* and *nasa* independently modify *tomo*, and we end up saying "a silly water-house":
+
+<a name="silly-water-house"><img alt="A monochrome photo of a caravan on floaters." src="/public/images/silly-water-house.jpg" /></a>
+
+That's where *pi* comes in! It's a particle which says "actually, the next bit is another noun phrase, which we'll use as a modifier," so *tomo pi telo nasa* means "silly-water house", "house of silly water", or "pub"!
+
+| toki pona           | literal English      | English                           |
+| ---                 | ---                  | ---                               |
+| *tomo*              | "house"              | "house"                           |
+| *tomo telo nasa*    | "silly water-house"  | [*see above*](#silly-water-house) |
+| *tomo pi telo nasa* | "silly-water house"  | "pub"                             |
+
+We can say "pub" now! Plus, I guess we've also learnt how to construct noun phrases in general, so *yay!*
+
+Okay, let's do a whole sentence next! Let's say "Wen's blog post is good!"[^self-flattery]
+
+For "blog post" we're gonna say *lipu sona*, which is a "flat knowledge thing" or---*y'know*---writing. We could emphasise that blog posts are *digital* and say *lipu sona pi ilo sona*, which means "knowledge machine writing", but does the fact it's on a computer *really matter?* Be honest.
+
+For "Wen", we say "jan Wen". You're not supposed to use any letters that aren't in the Toki Pona alphabet, and while that's not a problem for *me*, let's quickly sing the alphabet song together, so we all know what letters we can use![^sounds-not-letters]
+
+> a, e, i, j, k, l, m  <br />
+> n, o, p, s, t, u, w. <br />
+> tenpo ni la, mi sona <br />
+> e kalama pona.
+
+To combine "Wen" and "blog post", we need to combine *jan Wen* and *lipu sona*, but we already know how to do that! So, we say *lipu sona pi jan Wen*.
+
+Finally, all we've gotta do is say that it's good, right? For "good", we say *pona*! "Wait, *pona* from 'Toki Pona'?", you say. Yep, *toki pona* just means "language of good"! Now, to finally make our sentence, we use *li*, which is the particle that separates the subject and what we're saying about it, and that gives us:
+
+::: xx-large
+lipu sona pi jan Wen li pona
+:::
+
+One thing that's great about having only *ca.* 120 words is that it's really easy to switch scripts or even use *logograms*! For instance, here's our sentence rendered using a combination of Kanji, Hiragana, and Romaji (for names), following [jan Mato's word list][toki-pona-word-list], with Kanji whose meanings match the meanings of the Toki Pona words they represent:
+
+> 葉 知 ぴ 人 Ｗ ｅ ｎ り 良
+
+Here's our sentence rendered using Hanzi:
+
+> 叶 知 的 人 Ｗ ｅ ｎ 哩 好
+
+What about Tengwar? Sure! It's not logographic, but it sure is [a callback](#quenya)!
+
+> [.lIpu sonA pi jaN weN lI ponA.]{.font-toki-tengwar}
+
+But it gets better! In her book, jan Sonja introduces [hieroglyphic writing system][toki-pona-hieroglyphs] for Toki Pona [@Lang2014, pp. 104-111], where each word is represented by one hieroglyph, and modifiers are written inside the words they modify.
+
+Here's our sentence written using jan Sonja's hieroglyphs:
+
+<img alt="The example sentence written using the hieroglyphs from the Toki Pona book. The writing has an angular and geometric feel to it. Lots of right angles, and a few simple circles and semicircles." src="/public/images/toki-pona-hieroglyphs.png" />
+
+And now for my favourite writing system of all time: jan Jonatan's [sitelen sitelen][toki-pona-sitelen-sitelen], a non-linear script inspired by Maya script[^maya-script].
+
+As with jan Sonja's hieroglyphs, each word is represented by one glyph. Particles such as *pi* and *li* are boxes which wrap their second argument, *e.g.*, in *lipu sona pi jan Wen*, *pi* wraps *jan Wen*. We read sitelen sitelen *per cluster*, left-to-right and top-to-bottom.
+
+Here's our sentence written using jan Jonatan's sitelen sitelen:
+
+<img alt="The example sentence written using sitelen sitelen." src="/public/images/toki-pona-sitelen-sitelen.svg" />
+
+Isn't that just, *like*, *pona*?
+
+<img alt="The phrase 'toki pona li pona' written using sitelen sitelen." src="/public/images/toki-pona-li-pona.svg" />
 
 ## References
 
 [^ads]: How much of HBO’s advertising budget went to pay for that second one, though, is another question.
 [^quenya]: Quenya peeps come at me for that spelling!
 [^white-dudes]: Honestly, what wasn’t?
-[^overwhelming-whiteness]: While the languages I’m discussing were made by women, they’re still incredibly white, and sometimes very cishet normative—*I’m looking at you, Suzette*! If you’d like to learn about some conlangs made by nonwhite people, check out [Bālaïbalan][balaibalan], [Damin][damin] and [Eskayan][eskayan]—they fucking rule!
+[^overwhelming-whiteness]: While the languages I’m discussing were made by women, they’re still mostly made by white and sometimes *very* cishet people—*I’m looking at you, Suzette*! If you’d like to learn about some conlangs made by nonwhite people, check out [Bālaïbalan][balaibalan], [Damin][damin] and [Eskayan][eskayan]—they fucking rule!
 [^patron-saints]: Is that how patron saints work? I’m not christian, so I don’t know.
 [^higley]: @Higley2007 gives a much more nuanced and eloquent description, but I believe she holds the same opinion.
 [^toki-pona-vocabulary]: Give or take a few.
+[^self-flattery]: Listen, self-flattery is fine if you do it in Toki Pona.
+[^sounds-not-letters]: Actually, these aren't so much *letters* as they are the *sounds* allowed in Toki Pona. Toki Pona is *logographic*, as in, each word is considered it's own character, and these letters are just a convenient way to write them phonetically. So, uh, technically the alphabet song would be more like [this][toki-pona-alphabet-song].
+[^maya-script]: Maya script is *absolutely gorgeous*, and you should *absolutely* go and [read more about it][wikipedia-maya-script].
 
 [afrihili]: https://en.wikipedia.org/wiki/Afrihili "Afrihili"
 [babm]: https://en.wikipedia.org/wiki/Babm "Babm"
@@ -297,3 +310,9 @@ pona
 [laadan-language]: https://laadanlanguage.com/
 [lingua-ignota]: https://linguaignota.bandcamp.com/track/woe-to-all-on-the-day-of-my-wrath
 [toki-pona-memrise]: https://app.memrise.com/course/39856/toki-pona-complete/
+[toki-pona-alphabet-song]: https://www.youtube.com/watch?v=MryDuToQMsg
+[toki-pona-hieroglyphs]: https://web.archive.org/web/20200320191326/http://tokipona.net/tp/janpije/hieroglyphs.php "Toki Pona Hieroglyphs"
+[toki-pona-word-list]: http://tokipona.net/tp/ClassicWordList.aspx
+[toki-pona-sitelen-sitelen]: https://jonathangabel.com/toki-pona/
+[toki-pona-sitelen-sitelen-renderer]: http://livingtokipona.smoishele.com/examples/liveinput/liveinput.html
+[wikipedia-maya-script]: https://en.wikipedia.org/wiki/Maya_script
