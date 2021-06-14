@@ -269,6 +269,12 @@ Here's our sentence written using jan Jonatan's sitelen sitelen:
 
 Isn't that just, *like*, *pona*?
 
+::: xx-large
+toki pona
+li
+pona
+:::
+
 <img alt="The phrase 'toki pona li pona' written using sitelen sitelen." src="/public/images/toki-pona-li-pona.svg" />
 
 ## References
