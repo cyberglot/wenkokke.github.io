@@ -357,14 +357,18 @@ pubsCompiler sections = do
 
   let renderSection :: [RefType] -> Text -> [Block]
       renderSection refType sectionTitle =
-        [ Header 2 (Text.pack (show refType), [], []) [Str sectionTitle]
-        , BulletList [ [Para (stripLinks $ CSL.renderPandoc csl formattedRef)]
-                     | let sectionRefs = filterRefs refType refs
-                     , let withoutMyAgent = map (filterAgent myAgent) sectionRefs
-                     , let formattedRefs = CSL.processBibliography CSL.procOpts csl withoutMyAgent
-                     , formattedRef <- formattedRefs
-                     ]
-        ]
+        let sectionRefs    = filterRefs refType refs
+            withoutMyAgent = map (filterAgent myAgent) sectionRefs
+            formattedRefs  = CSL.processBibliography CSL.procOpts csl withoutMyAgent
+        in
+          if null formattedRefs then
+            []
+          else
+            [ Header 2 (Text.pack (show refType), [], []) [Str sectionTitle]
+            , BulletList [ [Para (stripLinks $ CSL.renderPandoc csl formattedRef)]
+                         | formattedRef <- formattedRefs
+                         ]
+            ]
 
   let bibSections :: [Block]
       bibSections = concat (uncurry renderSection <$> sections)

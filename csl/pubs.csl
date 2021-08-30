@@ -5,8 +5,8 @@
     <id>https://wenkokke.github.io/csl/pubs.csl</id>
     <author>
       <name>Wen Kokke</name>
-      <email>wen.kokke@ed.ac.uk</email>
-      <uri>https://wenkokke.github.io</uri>
+      <email>me@wen.works</email>
+      <uri>https://wen.works</uri>
     </author>
     <summary>A CSL file for formatting a list of publications.</summary>
     <updated>2020-09-22T11:35:00+00:00</updated>
