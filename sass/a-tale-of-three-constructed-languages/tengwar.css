@@ -1,0 +1,18 @@
+@font-face {
+    font-family: 'Tengwar';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/public/webfonts/Tengwar-Regular.ttf') format("truetype");
+}
+.font-tengwar {
+    font-family: 'Tengwar';
+}
+@font-face {
+    font-family: 'TokiTengwar';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/public/webfonts/TokiTengwar-Regular.ttf') format("truetype");
+}
+.font-toki-tengwar {
+    font-family: 'TokiTengwar';
+}

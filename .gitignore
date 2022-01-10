@@ -3,9 +3,14 @@ auto/
 
 # Stack
 .stack-work/
-dist-newstyle/
 stack.yaml.lock
+
+# Cabal
+dist-newstyle/
 
 # Hakyll
 _draft/
 _production/
+
+# Shake
+.shake

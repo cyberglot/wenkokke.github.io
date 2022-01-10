@@ -1,26 +1,87 @@
+cabal-version:      2.4
 name:               wenkokke
 version:            0.1.0.0
 description:        Personal website of Wen Kokke
 homepage:           https://wenkokke.github.io
-license:            AllRightsReserved
 author:             Wen Kokke
+maintainer:         wenkokke@users.noreply.github.com
 copyright:          © 2020 Wen Kokke
 category:           Web
 build-type:         Simple
-cabal-version:      >= 2.0
+extra-source-files: CHANGELOG.md
 
-executable site
-  main-is:          site.hs
-  ghc-options:      -Wall
-  build-depends:    base            >= 4.6     && < 5
-                  , directory       >= 1.2     && < 1.4
-                  , filepath        >= 1.3     && < 1.5
-                  , hakyll          >= 4.10    && < 4.15
-                  , pandoc          >= 2.9     && < 3.0
-                  , pandoc-types    >= 1.20    && < 1.23
-                  , pandoc-citeproc >= 0.17    && < 0.18
-                  , process         >= 1.6     && < 1.7
-                  , regex-tdfa      >= 1.3     && < 1.4
-                  , text            >= 1.2     && < 1.3
-  ghc-options:      -threaded
-  default-language: Haskell2010
+common language-haskell
+  default-language:   Haskell2010
+  default-extensions: ImportQualifiedPost
+
+executable build
+  import:        language-haskell
+  main-is:       Buildfile.hs
+  build-depends:
+    , base
+    , build-prelude
+    , build-style
+    , data-default-class
+    , shake
+    , text
+
+library build-prelude
+  import:          language-haskell
+  hs-source-dirs:  build/prelude
+  exposed-modules:
+    Build.Prelude
+    Build.Prelude.ByteString
+    Build.Prelude.FilePath
+
+  build-depends:
+    , base
+    , bytestring
+    , charsetdetect
+    , data-default-class
+    , directory
+    , filemanip
+    , filepath
+    , hasmin
+    , hsass               >=0.3.0
+    , shake
+    , text
+    , text-icu            >=0.7.1.0
+
+library build-style
+  import:          language-haskell
+  hs-source-dirs:  build/style
+  exposed-modules:
+    Build.Style.CSS
+    Build.Style.Sass
+
+  build-depends:
+    , base
+    , build-prelude
+    , directory
+    , hasmin
+    , hsass          >=0.3.0
+    , shake
+    , text
+
+library build-template
+  import:          language-haskell
+  hs-source-dirs:  build/template
+  exposed-modules:
+    Build.Template
+    Build.Template.Metadata
+    Build.Template.Pandoc
+
+  build-depends:
+    , aeson
+    , base
+    , build-prelude
+    , bytestring
+    , directory
+    , doclayout
+    , frontmatter
+    , pandoc
+    , text
+    , time
+    , unordered-containers
+    , vector
+    , yaml

@@ -1,0 +1,10 @@
+cradle:
+  cabal:
+    - path: "./build/prelude/"
+      component: "lib:build-prelude"
+    - path: "./build/style/"
+      component: "lib:build-style"
+    - path: "./build/template/"
+      component: "lib:build-template"
+    - path: "./Buildfile.hs"
+      component: "exe:build"
