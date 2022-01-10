@@ -1,16 +1,4 @@
-# Emacs
-auto/
-
-# Stack
-.stack-work/
-stack.yaml.lock
-
-# Cabal
-dist-newstyle/
-
-# Hakyll
-_draft/
-_production/
-
-# Shake
 .shake
+_site/
+_cache/
+dist-newstyle/
