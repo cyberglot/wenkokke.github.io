@@ -1,0 +1,20 @@
+site:
+  title: All The Language
+  url: https://wen.works/
+  language: en_US
+
+  author:
+    name: Wen Kokke
+    email: me@wen.works
+    github: wenkokke
+    twitter: wenkokke
+    paypal: wenkokke
+
+  license:
+    name: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+    url: http://creativecommons.org/licenses/by-nc-sa/4.0/
+
+  repository:
+    owner: wenkokke
+    name: wenkokke.github.io
+    branch: dev

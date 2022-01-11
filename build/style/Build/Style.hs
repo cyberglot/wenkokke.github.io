@@ -1,4 +1,4 @@
-module Build.Style (module Export) where
+module Build.Style (module CSS, module Sass) where
 
-import Build.Style.CSS qualified as Export
-import Build.Style.Sass qualified as Export
+import Build.Style.CSS as CSS
+import Build.Style.Sass as Sass

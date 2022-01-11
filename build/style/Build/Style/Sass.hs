@@ -3,7 +3,7 @@ module Build.Style.Sass
     compileSass,
     compileSassWith,
     minCssImporter,
-    Sass.SassOptions (..),
+    SassOptions (..),
   )
 where
 
@@ -11,10 +11,8 @@ import Build.Prelude
 import Build.Prelude.ByteString qualified as BS (toText)
 import Data.Bitraversable (Bitraversable (..))
 import Data.Maybe (fromMaybe)
-import System.Directory
-import System.Directory as IO (doesFileExist, makeAbsolute)
-import System.IO (hFlush, stdout)
-import Text.Sass as Sass
+import System.Directory as System (doesFileExist, makeAbsolute)
+import Text.Sass
 
 -- * Sass
 
@@ -24,7 +22,7 @@ minCssImporter includePath priority =
     { importerPriority = priority,
       importerFunction = \importPath _ -> do
         let minCssPath = includePath </> importPath -<.> "min.css"
-        minCssExists <- IO.doesFileExist minCssPath
+        minCssExists <- System.doesFileExist minCssPath
         if minCssExists
           then do
             minCssSource <- readFile minCssPath
@@ -38,16 +36,16 @@ compileSass :: FilePath -> Action Text
 compileSass = compileSassWith def
 
 -- | Compile Sass with options.
-compileSassWith :: Sass.SassOptions -> FilePath -> Action Text
+compileSassWith :: SassOptions -> FilePath -> Action Text
 compileSassWith opts filePath = do
   (css, includes) <- liftIO $ do
     -- Compile @filePath@ from Sass/SCSS to CSS
-    resultOrError <- liftIO $ Sass.compileFile filePath opts
-    resultOrErrorMsg <- liftIO $ bitraverse Sass.errorMessage return resultOrError
+    resultOrError <- liftIO $ compileFile filePath opts
+    resultOrErrorMsg <- liftIO $ bitraverse errorMessage return resultOrError
     result <- liftIO (liftEither resultOrErrorMsg)
     -- Extract generated CSS source and included files
-    css <- BS.toText (Sass.resultString result)
-    includes <- Sass.resultIncludes result
+    css <- BS.toText (resultString result)
+    includes <- resultIncludes result
     return (css, includes)
 
   -- Inform Shake of the dependencies used during compilation

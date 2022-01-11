@@ -2,9 +2,10 @@
 
 module Build.Template.Pandoc
   ( Template,
+    runPandocIO,
     compileTemplate,
     renderTemplate,
-    module Export,
+    module Pandoc,
   )
 where
 
@@ -12,12 +13,12 @@ import Build.Prelude
 import Build.Template.Metadata (Metadata (..))
 import Control.Exception (displayException)
 import Data.Aeson.Types (Value (Object))
-import Text.DocLayout qualified as Doc (render)
+import Text.DocLayout as Doc (render)
 import Text.Pandoc (PandocIO (..), runIO)
-import Text.Pandoc qualified as Export hiding (Format, Template, compileTemplate, getTemplate, renderTemplate)
-import Text.Pandoc.App qualified as Export
+import Text.Pandoc as Pandoc hiding (Format, Template, compileTemplate, getTemplate, renderTemplate)
+import Text.Pandoc.App as Pandoc
 import Text.Pandoc.Templates qualified as Template
-import Text.Pandoc.Writers.HTML qualified as Export (writeHtmlStringForEPUB)
+import Text.Pandoc.Writers.HTML as Pandoc (writeHtmlStringForEPUB)
 
 type Template = Template.Template Text
 

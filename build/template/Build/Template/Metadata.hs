@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Build.Template.Metadata
   ( Metadata (..),
     readYaml',
@@ -107,22 +105,22 @@ readYamlFrontmatter' inputFile = do
 -- | Read the YAML frontmatter from a file.
 readYamlFrontmatter :: FromJSON a => FilePath -> IO a
 readYamlFrontmatter inputFile =
-  snd <$> readFileWithMetadata inputFile
+  fst <$> readFileWithMetadata inputFile
 
 -- | Read a file with its YAML frontmatter and return both as a Shake action.
-readFileWithMetadata' :: FromJSON a => FilePath -> Action (Text, a)
+readFileWithMetadata' :: FromJSON a => FilePath -> Action (a, Text)
 readFileWithMetadata' inputFile = do
   need [inputFile]
   liftIO $ readFileWithMetadata inputFile
 
 -- | Read a file with its YAML frontmatter and return both.
-readFileWithMetadata :: FromJSON a => FilePath -> IO (Text, a)
+readFileWithMetadata :: FromJSON a => FilePath -> IO (a, Text)
 readFileWithMetadata inputFile = do
   contents <- B.readFile inputFile
   withResult (parseYamlFrontmatter contents)
   where
-    withResult :: (FromJSON a) => IResult ByteString a -> IO (Text, a)
-    withResult (Done body metadata) = do tbody <- BS.toText body; return (tbody, metadata)
+    withResult :: (FromJSON a) => IResult ByteString a -> IO (a, Text)
+    withResult (Done body metadata) = do tbody <- BS.toText body; return (metadata, tbody)
     withResult (Fail _ _ message) = fail message
     withResult (Partial k) = withResult (k "")
 
