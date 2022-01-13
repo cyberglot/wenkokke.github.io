@@ -1,13 +1,16 @@
 module Main where
 
+import Build.Agda qualified as Agda
+import Build.Pandoc as Pandoc
 import Build.PostInfo
 import Build.Prelude
 import Build.Routing
 import Build.Style
-import Build.Template
 import Control.Monad (join)
+import Data.Functor ((<&>))
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
+import System.IO.Temp (getCanonicalTemporaryDirectory, withTempDirectory)
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -15,6 +18,22 @@ tmpDir = "_cache"
 
 main :: IO ()
 main = shakeArgs shakeOptions $ do
+  -- Metadata
+  getMetadata <- newCache $ \inputFile -> do
+    readYaml' @Metadata inputFile
+  let ?defaultMetadata = getMetadata "site.yml"
+
+  -- Templates
+  getTemplate <- newCache $ \inputFile -> do
+    let inputPath = "templates" </> inputFile
+    need [inputPath]
+    compileTemplate inputPath
+  let ?getTemplate = getTemplate
+
+  -- Agda Libraries
+  standardLibrary <- Agda.getStandardLibrary "agda-stdlib"
+  let ?agdaLibraries = [standardLibrary, postLibrary]
+
   -- Make routing table
   routes <-
     join
@@ -27,17 +46,11 @@ main = shakeArgs shakeOptions $ do
   want (snd <$> routes)
   let ?routingTable = makeRoutingTable routes
 
-  -- Metadata
-  getMetadata <- newCache $ \inputFile -> do
-    readYaml' @Metadata inputFile
-  let ?defaultMetadata = getMetadata "site.yml"
-
-  -- Templates
-  getTemplate <- newCache $ \inputFile -> do
-    let inputPath = "templates" </> inputFile
-    need [inputPath]
-    compileTemplate inputPath
-  let ?getTemplate = getTemplate
+  postLinkFixer <- Agda.makeLocalLinkFixer postLibrary
+  standardLibraryLinkFixer <- Agda.makeLibraryLinkFixer standardLibrary
+  let builtinLinkFixer = Agda.makeBuiltinLinkFixer standardLibrary
+  let ?pandocTransform =
+        Pandoc.withUrls $ builtinLinkFixer . standardLibraryLinkFixer . postLinkFixer
 
   -- Posts
   postRules
@@ -54,9 +67,6 @@ main = shakeArgs shakeOptions $ do
       >>= writeFile' out
 
   -- Compile {index,publications,recipes} page to Markdown+HTML
-  -- Compile literate Agda to Markdown+HTML
-  -- Compile Markdown+HTML to HTML
-  -- Apply HTML templates
   return ()
 
 -- Posts
@@ -66,12 +76,15 @@ postSrcDir = "posts"
 postTmpDir = tmpDir </> "posts"
 postOutDir = outDir -- NOTE: cannot rely on 'postOutDir' to test if a FilePath is an output
 
-postRouter :: FilePath -> Rules [FilePath]
+postRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Rules [FilePath]
 postRouter src = do
   PostInfo {..} <- parsePostInfo (makeRelative postSrcDir src)
-  let tmp = postTmpDir </> makeRelative postSrcDir (replaceExtensions src "md")
   let out = postOutDir </> year </> month </> day </> fileName </> "index.html"
-  return $ if "lagda" `elem` fileExts then [tmp, out] else [out]
+  if "lagda" `elem` fileExts
+    then do
+      tmp <- Agda.markdownOutputPath postTmpDir ?agdaLibraries src
+      return [tmp, out]
+    else do return [out]
 
 isPostSrc, isPostTmp :: FilePath -> Bool
 isPostSrc src = postSrcDir `isPrefixOf` src
@@ -80,35 +93,93 @@ isPostTmp tmp = postTmpDir `isPrefixOf` tmp
 isPostOut :: (?routingTable :: RoutingTable) => FilePath -> Bool
 isPostOut out = not (isPostTmp out) && maybe False isPostSrc (routeRev out)
 
+getReferences :: FilePath -> Action Meta
+getReferences src = do
+  let bib = replaceExtensions src "bib"
+  bibExists <- doesFileExist bib
+  if bibExists then do
+    contents <- readFile' bib
+    runPandocIO $ do
+      Pandoc meta _ <- readBibTeX def contents
+      return meta
+  else
+    return mempty
+
 postRules ::
   ( ?routingTable :: RoutingTable,
     ?getTemplate :: FilePath -> Action Template,
-    ?defaultMetadata :: Action Metadata
+    ?defaultMetadata :: Action Metadata,
+    ?agdaLibraries :: [Agda.Library],
+    ?pandocTransform :: Pandoc -> Pandoc
   ) =>
   Rules ()
 postRules = do
   -- Compile Markdown to HTML and apply templates
   isPostOut ?> \out -> do
+    -- Pandoc options
+    let readerOpts = def {readerExtensions = markdownDialect}
+    let writerOpts = def
+
+    -- Optional bibliography
+    bibMeta <- getReferences =<< routeRev out
+
     src <- routePrev out
-    (meta, markdownBody) <- readFileWithMetadata' src
-    htmlBody <- markdownToHtml markdownBody
-    htmlDoc <- applyTemplates ["post.html", "default.html"] meta htmlBody
-    writeFile' out htmlDoc
+    (yamlHeader, markdownBody) <- readFileWithMetadata' src
+
+    -- Render body as Html
+    htmlBody <- runPandocIO $ do
+        Pandoc docMeta docBlocks <- readMarkdown readerOpts markdownBody
+        let doc1 = Pandoc (docMeta <> bibMeta) docBlocks
+        let doc2 = ?pandocTransform doc1
+        let doc3 = withUrls (relativizeUrl out) doc2
+        writeHtml5String writerOpts doc3
+
+    -- Apply templates
+    html <- applyTemplates ["post.html", "default.html"] yamlHeader htmlBody
+    writeFile' out html
 
   -- Compile literate Agda to Markdown & HTML
   isPostTmp ?> \tmp -> do
     src <- routePrev tmp
-    _
+    agdaToHtml src
+
+-- Agda
+
+postLibrary :: Agda.Library
+postLibrary =
+  Agda.Library
+    { libraryRoot = "",
+      includePaths = [postSrcDir],
+      canonicalBaseUrl = "https://wen.works/"
+    }
+
+agdaToHtml :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Action ()
+agdaToHtml src = do
+  need [src]
+  command_ [] "agda" $
+    concat
+      [ ["--verbose=0"],
+        Agda.markdownArgs postTmpDir,
+        Agda.libraryArgs ?agdaLibraries,
+        [src]
+      ]
 
 -- Markdown
 
-markdownToHtml :: Text -> Action Text
-markdownToHtml src =
-  let readerOpts = def {readerExtensions = markdownDialect}
-      writerOpts = def
-   in runPandocIO $ do
-        ast <- readMarkdown readerOpts src
-        writeHtml5String writerOpts ast
+-- markdownToHtml ::
+--   ( ?pandocTransform :: Pandoc -> Pandoc
+--   ) =>
+--   FilePath ->
+--   Text ->
+--   Action Text
+-- markdownToHtml out doc =
+--   let readerOpts = def {readerExtensions = markdownDialect}
+--       writerOpts = def
+--    in runPandocIO $ do
+--         doc1 <- readMarkdown readerOpts doc
+--         let doc2 = ?pandocTransform doc1
+--         let doc3 = withUrls (relativizeUrl out) doc2
+--         writeHtml5String writerOpts doc3
 
 markdownDialect :: Extensions
 markdownDialect =

@@ -12,6 +12,7 @@ extra-source-files: CHANGELOG.md
 
 common language-haskell
   default-language:   Haskell2010
+  build-depends:      base
   default-extensions:
     FlexibleInstances
     ImplicitParams
@@ -22,19 +23,67 @@ common language-haskell
     TypeApplications
     TypeSynonymInstances
 
-executable build
-  import:        language-haskell
-  main-is:       Buildfile.hs
+common build-all
   build-depends:
-    , base
+    , build-agda
+    , build-pandoc
     , build-postinfo
     , build-prelude
     , build-routing
     , build-style
-    , build-template
+
+executable build
+  import:        language-haskell
+  import:        build-all
+  main-is:       Buildfile.hs
+  build-depends:
     , shake
+    , temporary
     , text
     , text-icu
+
+library build-agda
+  import:          language-haskell
+  hs-source-dirs:  build/agda
+  exposed-modules: Build.Agda
+  build-depends:
+    , build-prelude
+    , build-routing
+    , containers
+    , directory
+    , filemanip           ^>=0.3
+    , text
+    , text-icu            ^>=0.7.1.0
+    , text-regex-replace
+
+library build-pandoc
+  import:          language-haskell
+  hs-source-dirs:  build/pandoc
+  exposed-modules:
+    Build.Pandoc
+    Build.Pandoc.Metadata
+    Build.Pandoc.Url
+
+  build-depends:
+    , aeson
+    , build-prelude
+    , build-tagsoup
+    , bytestring
+    , directory
+    , doclayout
+    , frontmatter
+    , pandoc
+    , pandoc-types
+    , text
+    , time
+    , unordered-containers
+    , vector
+    , yaml
+
+library build-postinfo
+  import:          language-haskell
+  hs-source-dirs:  build/postinfo
+  exposed-modules: Build.PostInfo
 
 library build-prelude
   import:          language-haskell
@@ -43,11 +92,12 @@ library build-prelude
     Build.Prelude
     Build.Prelude.ByteString
     Build.Prelude.FilePath
+    Build.Prelude.Url
 
   build-depends:
-    , base
     , bytestring
     , charsetdetect
+    , citeproc
     , data-default-class
     , directory
     , filemanip
@@ -58,6 +108,14 @@ library build-prelude
     , text
     , text-icu            >=0.7.1.0
 
+library build-routing
+  import:          language-haskell
+  hs-source-dirs:  build/routing
+  exposed-modules: Build.Routing
+  build-depends:
+    , bimap
+    , build-prelude
+
 library build-style
   import:          language-haskell
   hs-source-dirs:  build/style
@@ -67,7 +125,6 @@ library build-style
     Build.Style.Sass
 
   build-depends:
-    , base
     , build-prelude
     , directory
     , hasmin
@@ -75,40 +132,10 @@ library build-style
     , shake
     , text
 
-library build-template
+library build-tagsoup
   import:          language-haskell
-  hs-source-dirs:  build/template
-  exposed-modules:
-    Build.Template
-    Build.Template.Metadata
-    Build.Template.Pandoc
-
+  hs-source-dirs:  build/tagsoup
+  exposed-modules: Build.TagSoup
   build-depends:
-    , aeson
-    , base
     , build-prelude
-    , bytestring
-    , directory
-    , doclayout
-    , frontmatter
-    , pandoc
-    , text
-    , time
-    , unordered-containers
-    , vector
-    , yaml
-
-library build-routing
-  import:          language-haskell
-  hs-source-dirs:  build/routing
-  exposed-modules: Build.Routing
-  build-depends:
-    , base
-    , bimap
-    , build-prelude
-
-library build-postinfo
-  import:          language-haskell
-  hs-source-dirs:  build/postinfo
-  exposed-modules: Build.PostInfo
-  build-depends:   base
+    , tagsoup

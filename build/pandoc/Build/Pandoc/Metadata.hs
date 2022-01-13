@@ -1,4 +1,4 @@
-module Build.Template.Metadata
+module Build.Pandoc.Metadata
   ( Metadata (..),
     readYaml',
     readYaml,
@@ -71,16 +71,10 @@ infixl 8 ^.
 (^.) :: (MonadFail m, FromJSON a) => Metadata -> Text -> m a
 metadata@(Metadata obj) ^. key = do
   let msg = "Key '" <> T.unpack key <> "' not found in metadata:\n" <> show metadata
-  v <- liftMaybe msg $ KeyMap.lookup (Key.fromText key) obj
-  liftResult $ fromJSON v
-
-liftMaybe :: MonadFail m => String -> Maybe a -> m a
-liftMaybe errorMessage Nothing = fail errorMessage
-liftMaybe _ (Just a) = return a
-
-liftResult :: MonadFail m => Result a -> m a
-liftResult (Error msg) = fail msg
-liftResult (Success a) = return a
+  v <- maybe (fail msg) return $ KeyMap.lookup (Key.fromText key) obj
+  case fromJSON v of
+    Error msg -> fail msg
+    Success a -> return a
 
 --------------------------------------------------------------------------------
 -- Reading and writing
