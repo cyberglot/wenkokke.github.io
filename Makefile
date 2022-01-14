@@ -59,7 +59,7 @@ watch: build
 	@stack run watch -- $(HAKYLL_FLAGS) --no-server
 
 .PHONY: serve
-serve: build
+serve:
 	@echo "Starting server..."
 	@cd $(SITE_DIR) && \
 		browser-sync start \
@@ -68,6 +68,7 @@ serve: build
 			--no-ui \
 			--reload-delay 500 \
 			--reload-debounce 500
+
 
 
 ########################################

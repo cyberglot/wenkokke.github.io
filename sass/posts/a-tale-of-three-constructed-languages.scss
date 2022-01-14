@@ -1,0 +1,59 @@
+@font-face {
+  font-family: 'LitteraeIgnotae';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/webfonts/LitteraeIgnotae-Regular.ttf');
+}
+.font-litterae-ignotae {
+  font-family: 'LitteraeIgnotae';
+}
+.lingua-ignota-highlight {
+  text-decoration: underline;
+}
+
+.solresol-red, .solresol-orange, .solresol-yellow, .solresol-green, .solresol-cyan, .solresol-blue, .solresol-magenta {
+  font-weight: bold;
+}
+.solresol-red {
+  color: red;
+}
+.solresol-orange {
+  color: orange;
+}
+.solresol-yellow {
+  color: yellow;
+}
+.solresol-green {
+  color: orange;
+}
+.solresol-cyan {
+  color: #00CCCC;
+}
+.solresol-blue {
+  color: #3399FF;
+}
+.solresol-magenta {
+  color: magenta;
+}
+.solresol-red:hover, .solresol-orange:hover, .solresol-yellow:hover, .solresol-green:hover, .solresol-cyan:hover, .solresol-blue:hover, .solresol-magenta:hover {
+  color: black;
+}
+
+@font-face {
+  font-family: 'Tengwar';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/webfonts/Tengwar-Regular.ttf') format("truetype");
+}
+.font-tengwar {
+  font-family: 'Tengwar';
+}
+@font-face {
+  font-family: 'TokiTengwar';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/webfonts/TokiTengwar-Regular.ttf') format("truetype");
+}
+.font-toki-tengwar {
+  font-family: 'TokiTengwar';
+}

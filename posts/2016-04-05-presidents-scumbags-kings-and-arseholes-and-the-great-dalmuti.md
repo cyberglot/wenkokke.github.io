@@ -4,7 +4,7 @@ title: "Presidents, Scumbags, Kings and Arseholes, and The Great Dalmuti"
 
 One of my favourite card games is [The Great Dalmuti][BoardGameGeek]. It's  a variant of a widely-played card game with many, many names: President, Scumbag, Kings and Arseholes. Each of these may have *slightly* different rules, and *slightly* different decks, but they are all more or less the same game.
 
-I've had a bunch of discussions about this game over the years, most of which were about the possible strategies. Personally, I don't believe that this game is all that hard to play well---and consequently, that it isn't all that hard to write an AI for it. Pehaps even a very simple, rule-based AI can play passably. However, friends of mine think that it is a much harder problem, and that much more advanced techniques will be needed. Therefore, I thought I'd write a little playground for AIs to play in. 
+I've had a bunch of discussions about this game over the years, most of which were about the possible strategies. Personally, I don't believe that this game is all that hard to play well---and consequently, that it isn't all that hard to write an AI for it. Pehaps even a very simple, rule-based AI can play passably. However, friends of mine think that it is a much harder problem, and that much more advanced techniques will be needed. Therefore, I thought I'd write a little playground for AIs to play in.
 
 <!--more-->
 
@@ -15,7 +15,7 @@ I'll get back to that later in this post, though if you're familiar with the gam
 
 Before I get to showcasing my playground, it's probably prudent to at least briefly talk about the game. The rules of the game are fairly simple, so I'll summarise them here:
 
-  - **Rank**: Each player has a rank, with the top ranks usually called something like "president" and "vice president", and the lower ranks called something like "scumbag" and, well, "vice scumbag"; 
+  - **Rank**: Each player has a rank, with the top ranks usually called something like "president" and "vice president", and the lower ranks called something like "scumbag" and, well, "vice scumbag";
   - **Setup**: To start the game, *all the cards* in the deck are distributed evenly amongst the players; the highest ranking player then starts the first round;
   - **Rounds**: Starting with the player who starts that round (obviously) each player either plays some cards or passes, and the turn passing to the next in rank (after the lowest rank, the turn passes to the highest in rank);
   - **Legal Plays**: A play is legal if:
@@ -36,7 +36,7 @@ Each variant of the game adds their own rules to this, but this much is shared b
 
 As I mentioned above, I feel that a very simple, rule-based AI could already competently play The Great Dalmuti. As a first step in demonstrating this, I've written a small playground where AIs can compete with one another. Below, you should see a number of tabs, the first of which is labelled 'Console'. In it, there should be a button that looks like this: <span class="runmain">&#9654;</span>. If you click it, the AIs in the other tabs will be pitted against one another in a game of The Great Dalmuti. Try it!
 
-![Screenshot of UI of embedded The Great Dalmuti after an example run.](/public/images/dalmuti-example.png)\
+![Screenshot of UI of embedded The Great Dalmuti after an example run.](/assets/images/dalmuti-example.png)\
 
 In implementing the game, I've made one small concession---while it isn't *technically* forbidden by the original rules, most players would probably say that a pass isn't a legal opening move. Why would you? However, in order to keep faulty AIs from breaking up the flow of the game, I've implemented it such that *it is*. This means that, in the game above, if your AI attempts an illegal move, or throws an error, it is taken as a pass instead. Furthermore, if your AI attempts to abuse the taxation system by giving away too many or too few cards, it is instead penalised by giving *the best cards.*
 

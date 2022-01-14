@@ -20,35 +20,33 @@ common language-haskell
     MultiParamTypeClasses
     OverloadedStrings
     RecordWildCards
+    Strict
+    TupleSections
     TypeApplications
     TypeSynonymInstances
 
-common build-all
-  build-depends:
-    , build-agda
-    , build-pandoc
-    , build-postinfo
-    , build-prelude
-    , build-routing
-    , build-style
-
 executable build
   import:        language-haskell
-  import:        build-all
   main-is:       Buildfile.hs
   build-depends:
     , shake
     , temporary
     , text
     , text-icu
+    , blag-agda
+    , blag-pandoc
+    , blag-postinfo
+    , blag-prelude
+    , blag-routing
+    , blag-style
 
-library build-agda
+library blag-agda
   import:          language-haskell
-  hs-source-dirs:  build/agda
-  exposed-modules: Build.Agda
+  hs-source-dirs:  blag/agda
+  exposed-modules: Blag.Agda
   build-depends:
-    , build-prelude
-    , build-routing
+    , blag-prelude
+    , blag-routing
     , containers
     , directory
     , filemanip           ^>=0.3
@@ -56,18 +54,18 @@ library build-agda
     , text-icu            ^>=0.7.1.0
     , text-regex-replace
 
-library build-pandoc
+library blag-pandoc
   import:          language-haskell
-  hs-source-dirs:  build/pandoc
+  hs-source-dirs:  blag/pandoc
   exposed-modules:
-    Build.Pandoc
-    Build.Pandoc.Metadata
-    Build.Pandoc.Url
+    Blag.Pandoc
+    Blag.Pandoc.Metadata
+    Blag.Pandoc.Url
 
   build-depends:
     , aeson
-    , build-prelude
-    , build-tagsoup
+    , blag-prelude
+    , blag-tagsoup
     , bytestring
     , directory
     , doclayout
@@ -80,19 +78,19 @@ library build-pandoc
     , vector
     , yaml
 
-library build-postinfo
+library blag-postinfo
   import:          language-haskell
-  hs-source-dirs:  build/postinfo
-  exposed-modules: Build.PostInfo
+  hs-source-dirs:  blag/postinfo
+  exposed-modules: Blag.PostInfo
 
-library build-prelude
+library blag-prelude
   import:          language-haskell
-  hs-source-dirs:  build/prelude
+  hs-source-dirs:  blag/prelude
   exposed-modules:
-    Build.Prelude
-    Build.Prelude.ByteString
-    Build.Prelude.FilePath
-    Build.Prelude.Url
+    Blag.Prelude
+    Blag.Prelude.ByteString
+    Blag.Prelude.FilePath
+    Blag.Prelude.Url
 
   build-depends:
     , bytestring
@@ -108,34 +106,34 @@ library build-prelude
     , text
     , text-icu            >=0.7.1.0
 
-library build-routing
+library blag-routing
   import:          language-haskell
-  hs-source-dirs:  build/routing
-  exposed-modules: Build.Routing
+  hs-source-dirs:  blag/routing
+  exposed-modules: Blag.Routing
   build-depends:
     , bimap
-    , build-prelude
+    , blag-prelude
 
-library build-style
+library blag-style
   import:          language-haskell
-  hs-source-dirs:  build/style
+  hs-source-dirs:  blag/style
   exposed-modules:
-    Build.Style
-    Build.Style.CSS
-    Build.Style.Sass
+    Blag.Style
+    Blag.Style.CSS
+    Blag.Style.Sass
 
   build-depends:
-    , build-prelude
+    , blag-prelude
     , directory
     , hasmin
     , hsass          >=0.3.0
     , shake
     , text
 
-library build-tagsoup
+library blag-tagsoup
   import:          language-haskell
-  hs-source-dirs:  build/tagsoup
-  exposed-modules: Build.TagSoup
+  hs-source-dirs:  blag/tagsoup
+  exposed-modules: Blag.TagSoup
   build-depends:
-    , build-prelude
+    , blag-prelude
     , tagsoup

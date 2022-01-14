@@ -1,34 +1,44 @@
 module Main where
 
-import Build.Agda qualified as Agda
-import Build.Pandoc as Pandoc
-import Build.PostInfo
-import Build.Prelude
-import Build.Routing
-import Build.Style
-import Control.Monad (join)
+import Blag.Agda qualified as Agda
+import Blag.Pandoc as Pandoc
+import Blag.PostInfo
+import Blag.Prelude
+import Blag.Routing
+import Blag.Style
+import Control.Monad (forM, join)
 import Data.Functor ((<&>))
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
+import Data.Text qualified as Text
 import System.IO.Temp (getCanonicalTemporaryDirectory, withTempDirectory)
+
+-- cd _site && browser-sync start --server --files "." --no-ui --reload-delay 500 --reload-debounce 500
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
 tmpDir = "_cache"
 
 main :: IO ()
-main = shakeArgs shakeOptions $ do
+main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimple} $ do
+  "clean" ~> do
+    removeFilesAfter tmpDir ["//*"]
+
+  "clobber" ~> do
+    removeFilesAfter outDir ["//*"]
+    removeFilesAfter tmpDir ["//*"]
+
   -- Metadata
   getMetadata <- newCache $ \inputFile -> do
     readYaml' @Metadata inputFile
   let ?defaultMetadata = getMetadata "site.yml"
 
   -- Templates
-  getTemplate <- newCache $ \inputFile -> do
+  getTemplateFile <- newCache $ \inputFile -> do
     let inputPath = "templates" </> inputFile
     need [inputPath]
-    compileTemplate inputPath
-  let ?getTemplate = getTemplate
+    compileTemplateFile inputPath
+  let ?getTemplateFile = getTemplateFile
 
   -- Agda Libraries
   standardLibrary <- Agda.getStandardLibrary "agda-stdlib"
@@ -41,30 +51,55 @@ main = shakeArgs shakeOptions $ do
         [ [assetSrcDir <//> "*"] |-> assetRouter,
           [styleSrcDir </> "*.scss"] |-> styleRouter,
           [postSrcDir </> "*.md"] |-> postRouter,
+          "index.html" |-> outDir </> "index.html",
           "404.html" |-> outDir </> "404.html"
         ]
   want (snd <$> routes)
   let ?routingTable = makeRoutingTable routes
 
+  -- Fix Agda links
   postLinkFixer <- Agda.makeLocalLinkFixer postLibrary
   standardLibraryLinkFixer <- Agda.makeLibraryLinkFixer standardLibrary
   let builtinLinkFixer = Agda.makeBuiltinLinkFixer standardLibrary
   let ?pandocTransform =
         Pandoc.withUrls $ builtinLinkFixer . standardLibraryLinkFixer . postLinkFixer
 
-  -- Posts
-  postRules
-
   -- Assets
   alternatives $ do
     styleRules -- Compile .scss to .css
     assetRules -- Copy assets
 
+  -- Compile posts
+  postRules
+
+  -- index.html
+  outDir </> "index.html" %> \out -> do
+    -- Gather post metadata
+    let postSrcs = filter isPostSrc (fst <$> routes)
+    need postSrcs
+    postsMetadata <- forM postSrcs $ \postSrc -> do
+      postOut <- route postSrc
+      (postMetadata, postBody) <- readFileWithMetadata' postSrc
+      return $
+        mconcat
+          [ postMetadata,
+            constField "url" ("/" <> makeRelative outDir postOut),
+            dateFromFileNameField postSrc "date",
+            teaserField postBody "teaser"
+          ]
+    let postsField = constField "post" (reverse postsMetadata)
+    -- Compile index page
+    src <- routeRev out
+    (yamlHeader, htmlBodyTemplate) <- readFileWithMetadata' src
+    htmlBody <- applyAsTemplate htmlBodyTemplate (postsField <> yamlHeader)
+    html <- applyTemplate "default.html" yamlHeader htmlBody
+    writeFile' out html
+
   -- 404.html
-  outDir </> "404.html" %> \out ->
-    readFile' "404.html"
-      >>= applyTemplate "default.html" mempty
-      >>= writeFile' out
+  outDir </> "404.html" %> \out -> do
+    htmlBody <- readFile' "404.html"
+    html <- applyTemplate "default.html" mempty htmlBody
+    writeFile' out html
 
   -- Compile {index,publications,recipes} page to Markdown+HTML
   return ()
@@ -97,17 +132,17 @@ getReferences :: FilePath -> Action Meta
 getReferences src = do
   let bib = replaceExtensions src "bib"
   bibExists <- doesFileExist bib
-  if bibExists then do
-    contents <- readFile' bib
-    runPandocIO $ do
-      Pandoc meta _ <- readBibTeX def contents
-      return meta
-  else
-    return mempty
+  if bibExists
+    then do
+      contents <- readFile' bib
+      runPandocIO $ do
+        Pandoc meta _ <- readBibTeX def contents
+        return meta
+    else return mempty
 
 postRules ::
   ( ?routingTable :: RoutingTable,
-    ?getTemplate :: FilePath -> Action Template,
+    ?getTemplateFile :: FilePath -> Action Template,
     ?defaultMetadata :: Action Metadata,
     ?agdaLibraries :: [Agda.Library],
     ?pandocTransform :: Pandoc -> Pandoc
@@ -128,11 +163,13 @@ postRules = do
 
     -- Render body as Html
     htmlBody <- runPandocIO $ do
-        Pandoc docMeta docBlocks <- readMarkdown readerOpts markdownBody
-        let doc1 = Pandoc (docMeta <> bibMeta) docBlocks
-        let doc2 = ?pandocTransform doc1
-        let doc3 = withUrls (relativizeUrl out) doc2
-        writeHtml5String writerOpts doc3
+      Pandoc docMeta docBlocks <- readMarkdown readerOpts markdownBody
+      let doc1 = Pandoc (docMeta <> bibMeta) docBlocks
+      doc2 <- processCitations doc1
+      let doc3 = ?pandocTransform doc2
+      let doc4 = withUrls (relativizeUrl out) doc3
+      let doc5 = withUrls (Text.replace "index.html" "") doc4
+      writeHtml5String writerOpts doc5
 
     -- Apply templates
     html <- applyTemplates ["post.html", "default.html"] yamlHeader htmlBody
@@ -140,6 +177,7 @@ postRules = do
 
   -- Compile literate Agda to Markdown & HTML
   isPostTmp ?> \tmp -> do
+    liftIO $ putStrLn tmp
     src <- routePrev tmp
     agdaToHtml src
 
@@ -166,43 +204,10 @@ agdaToHtml src = do
 
 -- Markdown
 
--- markdownToHtml ::
---   ( ?pandocTransform :: Pandoc -> Pandoc
---   ) =>
---   FilePath ->
---   Text ->
---   Action Text
--- markdownToHtml out doc =
---   let readerOpts = def {readerExtensions = markdownDialect}
---       writerOpts = def
---    in runPandocIO $ do
---         doc1 <- readMarkdown readerOpts doc
---         let doc2 = ?pandocTransform doc1
---         let doc3 = withUrls (relativizeUrl out) doc2
---         writeHtml5String writerOpts doc3
-
 markdownDialect :: Extensions
-markdownDialect =
-  extensionsFromList
-    [ Ext_all_symbols_escapable,
-      Ext_auto_identifiers,
-      Ext_backtick_code_blocks,
-      Ext_citations,
-      Ext_footnotes,
-      Ext_header_attributes,
-      Ext_intraword_underscores,
-      Ext_markdown_in_html_blocks,
-      Ext_shortcut_reference_links,
-      Ext_smart,
-      Ext_superscript,
-      Ext_subscript,
-      Ext_task_lists,
-      Ext_yaml_metadata_block,
-      Ext_raw_html,
-      Ext_raw_attribute,
-      Ext_fenced_code_blocks,
-      Ext_backtick_code_blocks
-    ]
+markdownDialect = pandocExtensions
+  & disableExtension Ext_tex_math_dollars
+  & disableExtension Ext_latex_macros
 
 -- Style Files
 
