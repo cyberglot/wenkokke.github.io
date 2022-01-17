@@ -9,7 +9,7 @@ import Blag.Style
 import Control.Monad (forM, join)
 import Data.Functor ((<&>))
 import Data.List (isPrefixOf)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isNothing)
 import Data.Text qualified as Text
 import System.IO.Temp (getCanonicalTemporaryDirectory, withTempDirectory)
 
@@ -29,9 +29,22 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     removeFilesAfter tmpDir ["//*"]
 
   -- Metadata
-  getMetadata <- newCache $ \inputFile -> do
-    readYaml' @Metadata inputFile
-  let ?defaultMetadata = getMetadata "site.yml"
+  getSiteMetadata <- newCache $ \() -> do
+    readYaml' @Metadata "site.yml"
+
+  getFileMetadata <- newCache $ \src -> do
+    siteMetadata <- getSiteMetadata ()
+    (yamlHeader, body) <- readFileWithMetadata' src
+    lastModifiedMetadata <- lastModifiedField src "modified_date"
+    return $
+      mconcat
+        [ siteMetadata,
+          addTitleVariants yamlHeader,
+          lastModifiedMetadata,
+          constField "source" src,
+          constField "body" body
+        ]
+  let ?getFileMetadata = getFileMetadata
 
   -- Templates
   getTemplateFile <- newCache $ \inputFile -> do
@@ -45,24 +58,21 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   let ?agdaLibraries = [standardLibrary, postLibrary]
 
   -- Make routing table
-  routes <-
-    join
-      <$> sequence
-        [ [assetSrcDir <//> "*"] |-> assetRouter,
+  routingTable <- fmap mconcat . sequence $
+        [ [assetSrcDir <//> "*"]     |-> assetRouter,
           [styleSrcDir </> "*.scss"] |-> styleRouter,
-          [postSrcDir </> "*.md"] |-> postRouter,
-          "index.html" |-> outDir </> "index.html",
-          "404.html" |-> outDir </> "404.html"
+          [postSrcDir </> "*.md"]    |-> postRouter,
+          ["index.html"]             |-> outDir </> "index.html",
+          ["404.html"]               |-> outDir </> "404.html"
         ]
-  want (snd <$> routes)
-  let ?routingTable = makeRoutingTable routes
+  let ?routingTable = routingTable
+  want $ outputs routingTable
 
   -- Fix Agda links
-  postLinkFixer <- Agda.makeLocalLinkFixer postLibrary
+  localLinkFixer <- Agda.makeLocalLinkFixer postLibrary
   standardLibraryLinkFixer <- Agda.makeLibraryLinkFixer standardLibrary
   let builtinLinkFixer = Agda.makeBuiltinLinkFixer standardLibrary
-  let ?pandocTransform =
-        Pandoc.withUrls $ builtinLinkFixer . standardLibraryLinkFixer . postLinkFixer
+  let ?agdaLinkFixer = builtinLinkFixer . standardLibraryLinkFixer . localLinkFixer
 
   -- Assets
   alternatives $ do
@@ -75,11 +85,12 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   -- index.html
   outDir </> "index.html" %> \out -> do
     -- Gather post metadata
-    let postSrcs = filter isPostSrc (fst <$> routes)
+    let postSrcs = filter isPostSrc (sources ?routingTable)
     need postSrcs
     postsMetadata <- forM postSrcs $ \postSrc -> do
       postOut <- route postSrc
-      (postMetadata, postBody) <- readFileWithMetadata' postSrc
+      postMetadata <- readYamlFrontmatter' postSrc
+      postBody <- readFile' =<< routeAnchor "html-body" postSrc
       return $
         mconcat
           [ postMetadata,
@@ -89,7 +100,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
           ]
     let postsField = constField "post" (reverse postsMetadata)
     -- Compile index page
-    src <- routeRev out
+    src <- routeSrc out
     (yamlHeader, htmlBodyTemplate) <- readFileWithMetadata' src
     htmlBody <- applyAsTemplate htmlBodyTemplate (postsField <> yamlHeader)
     html <- applyTemplate "default.html" yamlHeader htmlBody
@@ -106,80 +117,84 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
 
 -- Posts
 
-postSrcDir, postTmpDir, postOutDir :: FilePath
+postSrcDir, postTmp1Dir, postTmp2Dir, postOutDir :: FilePath
 postSrcDir = "posts"
-postTmpDir = tmpDir </> "posts"
+postTmp1Dir = tmpDir </> "stage1" </> "posts" -- Render .lagda.md to .md
+postTmp2Dir = tmpDir </> "stage2" </> "posts" -- Render .md to .html
 postOutDir = outDir -- NOTE: cannot rely on 'postOutDir' to test if a FilePath is an output
 
-postRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Rules [FilePath]
+postRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Rules [(Maybe Anchor, FilePath)]
 postRouter src = do
-  PostInfo {..} <- parsePostInfo (makeRelative postSrcDir src)
+  let postSrc = makeRelative postSrcDir src
+  PostInfo {..} <- parsePostInfo postSrc
+  let htmlBody = postTmp2Dir </> postSrc
   let out = postOutDir </> year </> month </> day </> fileName </> "index.html"
   if "lagda" `elem` fileExts
     then do
-      tmp <- Agda.markdownOutputPath postTmpDir ?agdaLibraries src
-      return [tmp, out]
-    else do return [out]
+      highlightAgda <- Agda.markdownOutputPath postTmp1Dir ?agdaLibraries src
+      return [(Nothing, highlightAgda), (Just "html-body", htmlBody), (Nothing, out)]
+    else do return [(Just "html-body", htmlBody), (Nothing, out)]
 
-isPostSrc, isPostTmp :: FilePath -> Bool
+isPostSrc, isPostTmp1, isPostTmp2 :: FilePath -> Bool
 isPostSrc src = postSrcDir `isPrefixOf` src
-isPostTmp tmp = postTmpDir `isPrefixOf` tmp
+isPostTmp1 tmp = postTmp1Dir `isPrefixOf` tmp
+isPostTmp2 tmp = postTmp2Dir `isPrefixOf` tmp
 
 isPostOut :: (?routingTable :: RoutingTable) => FilePath -> Bool
-isPostOut out = not (isPostTmp out) && maybe False isPostSrc (routeRev out)
+isPostOut out = isNothing (routeNext out) && maybe False isPostSrc (routeSrc out)
 
 getReferences :: FilePath -> Action Meta
 getReferences src = do
   let bib = replaceExtensions src "bib"
-  bibExists <- doesFileExist bib
-  if bibExists
-    then do
+  doesFileExist bib >>= \case
+    False -> return mempty
+    True -> do
       contents <- readFile' bib
       runPandocIO $ do
         Pandoc meta _ <- readBibTeX def contents
         return meta
-    else return mempty
 
 postRules ::
   ( ?routingTable :: RoutingTable,
     ?getTemplateFile :: FilePath -> Action Template,
-    ?defaultMetadata :: Action Metadata,
+    ?getFileMetadata :: FilePath -> Action Metadata,
     ?agdaLibraries :: [Agda.Library],
-    ?pandocTransform :: Pandoc -> Pandoc
+    ?agdaLinkFixer :: Url -> Url
   ) =>
   Rules ()
 postRules = do
-  -- Compile Markdown to HTML and apply templates
-  isPostOut ?> \out -> do
+  -- Compile literate Agda to Markdown & HTML
+  isPostTmp1 ?> \next -> do
+    prev <- routePrev next
+    agdaToHtml prev
+
+  -- Compile Markdown to HTML
+  isPostTmp2 ?> \next -> do
+    (out, prev, src) <-
+      (,,) <$> route next <*> routePrev next <*> routeSrc next
+    -- Get optional references
+    references <- getReferences src
     -- Pandoc options
     let readerOpts = def {readerExtensions = markdownDialect}
     let writerOpts = def
-
-    -- Optional bibliography
-    bibMeta <- getReferences =<< routeRev out
-
-    src <- routePrev out
-    (yamlHeader, markdownBody) <- readFileWithMetadata' src
-
-    -- Render body as Html
-    htmlBody <- runPandocIO $ do
-      Pandoc docMeta docBlocks <- readMarkdown readerOpts markdownBody
-      let doc1 = Pandoc (docMeta <> bibMeta) docBlocks
+    -- Render Markdown to HTML
+    contents <- readFile' prev
+    contents <- runPandocIO $ do
+      Pandoc meta blocks <- readMarkdown readerOpts contents
+      let doc1 = Pandoc (meta <> references) blocks
       doc2 <- processCitations doc1
-      let doc3 = ?pandocTransform doc2
-      let doc4 = withUrls (relativizeUrl out) doc3
-      let doc5 = withUrls (Text.replace "index.html" "") doc4
-      writeHtml5String writerOpts doc5
+      let doc3 = withUrls (implicitIndexFile . relativizeUrl out . ?agdaLinkFixer) doc2
+      writeHtml5String writerOpts doc3
+    writeFile' next contents
 
-    -- Apply templates
-    html <- applyTemplates ["post.html", "default.html"] yamlHeader htmlBody
+  -- Apply templates
+  isPostOut ?> \out -> do
+    src <- routeSrc out
+    metadata <- ?getFileMetadata src
+    tmp <- routePrev out
+    htmlBody <- readFile' tmp
+    html <- applyTemplates ["post.html", "default.html"] metadata htmlBody
     writeFile' out html
-
-  -- Compile literate Agda to Markdown & HTML
-  isPostTmp ?> \tmp -> do
-    liftIO $ putStrLn tmp
-    src <- routePrev tmp
-    agdaToHtml src
 
 -- Agda
 
@@ -197,7 +212,7 @@ agdaToHtml src = do
   command_ [] "agda" $
     concat
       [ ["--verbose=0"],
-        Agda.markdownArgs postTmpDir,
+        Agda.markdownArgs postTmp1Dir,
         Agda.libraryArgs ?agdaLibraries,
         [src]
       ]
@@ -205,9 +220,10 @@ agdaToHtml src = do
 -- Markdown
 
 markdownDialect :: Extensions
-markdownDialect = pandocExtensions
-  & disableExtension Ext_tex_math_dollars
-  & disableExtension Ext_latex_macros
+markdownDialect =
+  pandocExtensions
+    & disableExtension Ext_tex_math_dollars
+    & disableExtension Ext_latex_macros
 
 -- Style Files
 
@@ -228,7 +244,7 @@ styleRules =
             sassImporters = Just [minCssImporter styleSrcDir 1]
           }
    in styleOutDir </> "*.css" %> \out -> do
-        src <- routeRev out
+        src <- routeSrc out
         css <- compileSassWith sassOptions src
         cssMin <- minifyCSS css
         writeFile' out cssMin
@@ -247,5 +263,5 @@ assetRouter src =
 assetRules :: (?routingTable :: RoutingTable) => Rules ()
 assetRules =
   assetOutDir <//> "*" %> \out -> do
-    src <- routeRev out
+    src <- routeSrc out
     copyFile' src out

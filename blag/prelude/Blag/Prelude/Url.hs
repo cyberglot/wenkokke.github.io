@@ -12,6 +12,9 @@ import Data.Text qualified as Text
 
 type Url = Text
 
+implicitIndexFile :: Url -> Url
+implicitIndexFile = Text.replace "index.html" ""
+
 -- | Make a Url relative to the site's root directory.
 --
 --   Adapted from hakyll's 'Hakyll.Web.Html.RelativizeUrls.relativizeUrls'

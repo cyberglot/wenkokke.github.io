@@ -17,6 +17,7 @@ common language-haskell
     FlexibleInstances
     ImplicitParams
     ImportQualifiedPost
+    LambdaCase
     MultiParamTypeClasses
     OverloadedStrings
     RecordWildCards
@@ -113,6 +114,7 @@ library blag-routing
   build-depends:
     , bimap
     , blag-prelude
+    , containers
 
 library blag-style
   import:          language-haskell

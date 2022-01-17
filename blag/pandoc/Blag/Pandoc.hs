@@ -51,19 +51,15 @@ renderTemplate template (Metadata obj) =
   Doc.render Nothing (Template.renderTemplate template (Object obj))
 
 applyAsTemplate ::
-  ( ?defaultMetadata :: Action Metadata
-  ) =>
   Text ->
   Metadata ->
   Action Text
 applyAsTemplate template metadata = do
-  siteData <- ?defaultMetadata
   tpl <- compileTemplate "" template
-  return $ renderTemplate tpl (metadata <> siteData)
+  return $ renderTemplate tpl metadata
 
 applyTemplate ::
-  ( ?getTemplateFile :: FilePath -> Action Template,
-    ?defaultMetadata :: Action Metadata
+  ( ?getTemplateFile :: FilePath -> Action Template
   ) =>
   FilePath ->
   Metadata ->
@@ -71,12 +67,10 @@ applyTemplate ::
   Action Text
 applyTemplate templateFile metadata body = do
   template <- ?getTemplateFile templateFile
-  siteData <- ?defaultMetadata
-  return $ renderTemplate template (constField "body" body <> metadata <> siteData)
+  return $ renderTemplate template (constField "body" body <> metadata)
 
 applyTemplates ::
-  ( ?getTemplateFile :: FilePath -> Action Template,
-    ?defaultMetadata :: Action Metadata
+  ( ?getTemplateFile :: FilePath -> Action Template
   ) =>
   [FilePath] ->
   Metadata ->

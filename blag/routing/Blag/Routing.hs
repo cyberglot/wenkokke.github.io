@@ -1,61 +1,101 @@
-{-# LANGUAGE FunctionalDependencies #-}
-
-module Blag.Routing (RoutingTable, Router (..), makeRoutingTable', makeRoutingTable, route, routeRev, routeNext, routePrev) where
+module Blag.Routing (Anchor, RoutingTable, Router (..), route, routeSrc, routeNext, routePrev, routeAnchor, sources, outputs) where
 
 import Blag.Prelude
-import Control.Monad (forM, join)
-import Data.Bimap qualified as BM
+import Control.Monad (forM, join, (>=>))
+import Data.Bimap qualified as Bimap
 import Data.Function (fix)
-import Data.Maybe (fromMaybe)
+import Data.Map qualified as Map
+import Data.Maybe (catMaybes, fromMaybe, mapMaybe)
+import Data.Set qualified as Set
 
-newtype RoutingTable = RoutingTable { unRoutingTable :: BM.Bimap FilePath FilePath }
+type Anchor = Text
+
+data RoutingTable = RoutingTable
+  { routingTableSrcs :: Set.Set FilePath,
+    routingTableOuts :: Set.Set FilePath,
+    routingTableLnks :: Bimap.Bimap FilePath FilePath,
+    routingTableAnks :: Map.Map (Anchor, FilePath) FilePath
+  }
+
+instance Semigroup RoutingTable where
+  RoutingTable srcs1 outs1 lnks1 anks1 <> RoutingTable srcs2 outs2 lnks2 anks2 =
+    RoutingTable (srcs1 <> srcs2) (outs1 <> outs2) (lnks1 <> lnks2) (anks1 <> anks2)
+
+instance Monoid RoutingTable where
+  mempty = RoutingTable mempty mempty mempty mempty
 
 infix 3 |->
 
-class Router files router | router -> files where
-  (|->) :: files -> router -> Rules [(FilePath, FilePath)]
+class Router router where
+  (|->) :: [FilePattern] -> router -> Rules RoutingTable
 
-instance Router [FilePattern] (FilePath -> Rules [FilePath]) where
+instance Router (FilePath -> Rules [(Maybe Anchor, FilePath)]) where
   filePatterns |-> router = do
-    files <- liftIO $ getDirectoryFilesIO "" filePatterns
-    forEach files $ \src -> do
-      stages <- router src
-      return $ zip (src : stages) stages
+    srcs <- liftIO $ getDirectoryFilesIO "" filePatterns
+    routingTables <- forM srcs $ \src -> do
+      anksAndStgs <- router src
+      let stgs = snd <$> anksAndStgs
+      let out = last stgs
+      let lnks = zip (src : stgs) stgs
+      let anks = mapMaybe (\(maybeAnk, stg) -> fmap (\ank -> ((ank, src), stg)) maybeAnk) anksAndStgs
+      return $ makeRoutingTable [src] [out] lnks anks
+    return (mconcat routingTables)
 
-instance Router [FilePattern] (FilePath -> Rules FilePath) where
-  filePatterns |-> router = do
-    files <- liftIO $ getDirectoryFilesIO "" filePatterns
-    forEach files $ \src -> do
-      out <- router src
-      return $ [(src, out)]
+instance Router (FilePath -> Rules [FilePath]) where
+  filePatterns |-> router = filePatterns |-> anchorlessRouter
+    where
+      anchorlessRouter :: FilePath -> Rules [(Maybe Anchor, FilePath)]
+      anchorlessRouter = fmap (fmap (Nothing,)) . router
 
-instance Router FilePath FilePath where
-  src |-> out = return [(src, out)]
+instance Router (FilePath -> Rules FilePath) where
+  filePatterns |-> router = filePatterns |-> singleStageRouter
+    where
+      singleStageRouter :: FilePath -> Rules [FilePath]
+      singleStageRouter = fmap (: []) . router
 
-makeRoutingTable' :: [(FilePath, FilePath)] -> Rules RoutingTable
-makeRoutingTable' routes = do
-  want (map snd routes)
-  return $ makeRoutingTable routes
+instance Router FilePath where
+  filePatterns |-> out = filePatterns |-> constRouter
+    where
+      constRouter :: FilePath -> Rules FilePath
+      constRouter _ = return out
 
-makeRoutingTable :: [(FilePath, FilePath)] -> RoutingTable
-makeRoutingTable routes = RoutingTable (BM.fromList routes)
+makeRoutingTable :: [FilePath] -> [FilePath] -> [(FilePath, FilePath)] -> [((Anchor, FilePath), FilePath)] -> RoutingTable
+makeRoutingTable srcs outs lnks anks =
+  RoutingTable (Set.fromList srcs) (Set.fromList outs) (Bimap.fromList lnks) (Map.fromList anks)
 
-route :: (?routingTable :: RoutingTable, MonadFail m) => FilePath -> m FilePath
+route :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
 route src = case routeNext src of
   Nothing -> fail $ "No route from " <> src
   Just out -> return $ fix (\rec out -> maybe out rec $ routeNext out) out
 
-routeRev :: (?routingTable :: RoutingTable, MonadFail m) => FilePath -> m FilePath
-routeRev out = case routePrev out of
+routeSrc :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
+routeSrc out = case routePrev out of
   Nothing -> fail $ "No route to " <> out
   Just src -> return $ fix (\rec src -> maybe src rec $ routePrev src) src
 
-routeNext :: (?routingTable :: RoutingTable, MonadFail m) => FilePath -> m FilePath
-routeNext src = case BM.lookup src (unRoutingTable ?routingTable) of
+routeNext :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
+routeNext src = case Bimap.lookup src (routingTableLnks ?routingTable) of
   Nothing -> fail $ "No route from " <> src
   Just out -> return out
 
-routePrev :: (?routingTable :: RoutingTable, MonadFail m) => FilePath -> m FilePath
-routePrev out = case BM.lookupR out (unRoutingTable ?routingTable) of
+routePrev :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
+routePrev out = case Bimap.lookupR out (routingTableLnks ?routingTable) of
   Nothing -> fail $ "No route to " <> out
   Just src -> return src
+
+routeAnchor :: (MonadFail m, ?routingTable :: RoutingTable) => Anchor -> FilePath -> m FilePath
+routeAnchor ank src = case Map.lookup (ank, src) (routingTableAnks ?routingTable) of
+  Nothing -> fail $ "No anchor " <> show ank <> " for " <> src
+  Just tmp -> return tmp
+
+outputs :: RoutingTable -> [FilePath]
+outputs routingTable = Set.toAscList $ routingTableOuts routingTable
+
+sources :: RoutingTable -> [FilePath]
+sources routingTable = Set.toAscList $ routingTableSrcs routingTable
+
+instance (Ord a, Ord b) => Semigroup (Bimap.Bimap a b) where
+  bm1 <> bm2 = foldr (uncurry Bimap.insert) bm1 (Bimap.assocs bm2)
+
+instance (Ord a, Ord b) => Monoid (Bimap.Bimap a b) where
+  mempty = Bimap.empty
