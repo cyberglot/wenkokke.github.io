@@ -6,12 +6,16 @@ import Blag.PostInfo
 import Blag.Prelude
 import Blag.Routing
 import Blag.Style
-import Control.Monad (forM, join)
+import Control.Concurrent (threadDelay)
+import Control.Monad (forM, forever, join)
 import Data.Functor ((<&>))
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe, isNothing)
 import Data.Text qualified as Text
+import GHC.Base (when)
+import System.FSNotify (eventIsDirectory, eventPath, watchTree, withManager)
 import System.IO.Temp (getCanonicalTemporaryDirectory, withTempDirectory)
+import System.Process (ProcessHandle, cleanupProcess)
 
 -- cd _site && browser-sync start --server --files "." --no-ui --reload-delay 500 --reload-debounce 500
 
@@ -21,6 +25,34 @@ tmpDir = "_cache"
 
 main :: IO ()
 main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimple} $ do
+  -- Define Agda libraries
+  standardLibrary <- Agda.getStandardLibrary "agda-stdlib"
+  let ?agdaLibraries = [standardLibrary, postLibrary]
+
+  -- Define routing table
+  routingTable <-
+    fmap mconcat . sequence $
+      [ [assetSrcDir <//> "*"] |-> assetRouter,
+        [styleSrcDir </> "*.scss"] |-> styleRouter,
+        [postSrcDir </> "*.md"] |-> postRouter,
+        ["index.html"] |-> outDir </> "index.html",
+        ["404.html"] |-> outDir </> "404.html"
+      ]
+  let ?routingTable = routingTable
+  let allWebTargets = outputs routingTable
+
+  -- Define phony targets
+  "build" ~> do
+    need allWebTargets
+
+  "serve" ~> do
+    need allWebTargets
+    startBrowserSync
+    return ()
+
+  "watch" ~> do
+    need allWebTargets
+
   "clean" ~> do
     removeFilesAfter tmpDir ["//*"]
 
@@ -52,21 +84,6 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     need [inputPath]
     compileTemplateFile inputPath
   let ?getTemplateFile = getTemplateFile
-
-  -- Agda Libraries
-  standardLibrary <- Agda.getStandardLibrary "agda-stdlib"
-  let ?agdaLibraries = [standardLibrary, postLibrary]
-
-  -- Make routing table
-  routingTable <- fmap mconcat . sequence $
-        [ [assetSrcDir <//> "*"]     |-> assetRouter,
-          [styleSrcDir </> "*.scss"] |-> styleRouter,
-          [postSrcDir </> "*.md"]    |-> postRouter,
-          ["index.html"]             |-> outDir </> "index.html",
-          ["404.html"]               |-> outDir </> "404.html"
-        ]
-  let ?routingTable = routingTable
-  want $ outputs routingTable
 
   -- Fix Agda links
   localLinkFixer <- Agda.makeLocalLinkFixer postLibrary
@@ -173,7 +190,7 @@ postRules = do
     (out, prev, src) <-
       (,,) <$> route next <*> routePrev next <*> routeSrc next
     -- Get optional references
-    references <- getReferences src
+    -- references <- getReferences src
     -- Pandoc options
     let readerOpts = def {readerExtensions = markdownDialect}
     let writerOpts = def
@@ -181,7 +198,7 @@ postRules = do
     contents <- readFile' prev
     contents <- runPandocIO $ do
       Pandoc meta blocks <- readMarkdown readerOpts contents
-      let doc1 = Pandoc (meta <> references) blocks
+      let doc1 = Pandoc meta blocks
       doc2 <- processCitations doc1
       let doc3 = withUrls (implicitIndexFile . relativizeUrl out . ?agdaLinkFixer) doc2
       writeHtml5String writerOpts doc3
@@ -265,3 +282,34 @@ assetRules =
   assetOutDir <//> "*" %> \out -> do
     src <- routeSrc out
     copyFile' src out
+
+-- Utilities
+
+stopBrowserSync :: ProcessHandle -> Action ()
+stopBrowserSync ph =
+  liftIO (cleanupProcess (Nothing, Nothing, Nothing, ph))
+
+startBrowserSync :: Action ProcessHandle
+startBrowserSync =
+  fromProcess
+    <$> command
+      [Cwd "_site"]
+      "npx"
+      [ "browser-sync",
+        "--server",
+        "--files '.'",
+        "--no-ui",
+        "--reload-delay 500",
+        "--reload-debounce 500"
+      ]
+
+-- Dependencies
+
+requireNode :: Action ()
+requireNode = do
+  missingNode <- not <$> hasExecutable "node"
+  missingNPM <- not <$> hasExecutable "npm"
+  when (missingNode || missingNPM) $ do
+    fail
+      "BrowserSync requires Node.js\n\
+      \See: https://nodejs.org/en/download/"

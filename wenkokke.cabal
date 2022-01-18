@@ -30,16 +30,18 @@ executable build
   import:        language-haskell
   main-is:       Buildfile.hs
   build-depends:
-    , shake
-    , temporary
-    , text
-    , text-icu
     , blag-agda
     , blag-pandoc
     , blag-postinfo
     , blag-prelude
     , blag-routing
     , blag-style
+    , fsnotify
+    , process
+    , shake
+    , temporary
+    , text
+    , text-icu
 
 library blag-agda
   import:          language-haskell

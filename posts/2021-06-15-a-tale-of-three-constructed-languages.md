@@ -1,6 +1,6 @@
 ---
 title: A Tale of Three Constructed Languages
-bibliography: 2020-12-24-a-tale-of-three-constructed-languages
+bibliography: posts/2021-06-15-a-tale-of-three-constructed-languages.bib
 twitter: true
 ---
 
