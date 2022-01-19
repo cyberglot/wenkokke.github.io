@@ -13,11 +13,8 @@ import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe, isNothing)
 import Data.Text qualified as Text
 import GHC.Base (when)
-import System.FSNotify (eventIsDirectory, eventPath, watchTree, withManager)
 import System.IO.Temp (getCanonicalTemporaryDirectory, withTempDirectory)
 import System.Process (ProcessHandle, cleanupProcess)
-
--- cd _site && browser-sync start --server --files "." --no-ui --reload-delay 500 --reload-debounce 500
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -36,7 +33,8 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
         [styleSrcDir </> "*.scss"] |-> styleRouter,
         [postSrcDir </> "*.md"] |-> postRouter,
         ["index.html"] |-> outDir </> "index.html",
-        ["404.html"] |-> outDir </> "404.html"
+        ["404.html"] |-> outDir </> "404.html",
+        ["rss.xml"] |-> outDir </> "rss.xml"
       ]
   let ?routingTable = routingTable
   let allWebTargets = outputs routingTable
@@ -60,16 +58,42 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   getFileMetadata <- newCache $ \src -> do
     siteMetadata <- getSiteMetadata ()
     (yamlHeader, body) <- readFileWithMetadata' src
-    lastModifiedMetadata <- lastModifiedField src "modified_date"
+    modifiedDate <- lastModifiedISO8601Field src "modified_date"
     return $
       mconcat
         [ siteMetadata,
           addTitleVariants yamlHeader,
-          lastModifiedMetadata,
+          modifiedDate,
           constField "source" src,
           constField "body" body
         ]
   let ?getFileMetadata = getFileMetadata
+
+  getPostMetadata <- newCache $ \() -> do
+    -- Get posts from routing table
+    let postSrcs = filter isPostSrc (sources ?routingTable)
+    -- Gather metadata for each post
+    postsMetadata <- forM postSrcs $ \src -> do
+      -- Get output file for URL and html-body anchor for teaser
+      (out, htmlBody) <-
+        (,) <$> route src <*> routeAnchor "html-body" src
+      let url = "/" <> makeRelative outDir out
+      metadata <- getFileMetadata src
+      htmlBody <- readFile' htmlBody
+      dateField <- postDateField "%a %-d %b, %Y" src "date"
+      dateRFC822Field <- postDateField rfc822DateFormat src "date_rfc822"
+      htmlTeaser <- htmlTeaserField url htmlBody "teaser"
+      textTeaser <- textTeaserField htmlBody "teaser_plain"
+      return $
+        mconcat
+          [ metadata,
+            constField "url" url,
+            dateField,
+            dateRFC822Field,
+            htmlTeaser,
+            textTeaser
+          ]
+    return $ constField "post" (reverse postsMetadata)
 
   -- Templates
   getTemplateFile <- newCache $ \inputFile -> do
@@ -92,27 +116,30 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   -- Compile posts
   postRules
 
+  -- rss.xml
+  outDir </> "rss.xml" %> \out -> do
+    let url = "/" <> makeRelative outDir out
+    postMetadata <- getPostMetadata ()
+    siteMetadata <- getSiteMetadata ()
+    lastBuildDate <- currentDateField rfc822DateFormat "last_build_date"
+    let metadata =
+          mconcat
+            [ siteMetadata,
+              postMetadata,
+              constField "url" url,
+              lastBuildDate
+            ]
+    src <- routeSrc out
+    rssXmlTemplate <- readFile' src
+    rssXml <- applyAsTemplate rssXmlTemplate metadata
+    writeFile' out rssXml
+
   -- index.html
   outDir </> "index.html" %> \out -> do
-    -- Gather post metadata
-    let postSrcs = filter isPostSrc (sources ?routingTable)
-    need postSrcs
-    postsMetadata <- forM postSrcs $ \postSrc -> do
-      postOut <- route postSrc
-      postMetadata <- readYamlFrontmatter' postSrc
-      postBody <- readFile' =<< routeAnchor "html-body" postSrc
-      return $
-        mconcat
-          [ postMetadata,
-            constField "url" ("/" <> makeRelative outDir postOut),
-            dateFromFileNameField postSrc "date",
-            teaserField postBody "teaser"
-          ]
-    let postsField = constField "post" (reverse postsMetadata)
-    -- Compile index page
+    postMetadata <- getPostMetadata ()
     src <- routeSrc out
     (yamlHeader, htmlBodyTemplate) <- readFileWithMetadata' src
-    htmlBody <- applyAsTemplate htmlBodyTemplate (postsField <> yamlHeader)
+    htmlBody <- applyAsTemplate htmlBodyTemplate (postMetadata <> yamlHeader)
     html <- applyTemplate "default.html" yamlHeader htmlBody
     writeFile' out html
 
@@ -122,7 +149,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     html <- applyTemplate "default.html" mempty htmlBody
     writeFile' out html
 
-  -- Compile {index,publications,recipes} page to Markdown+HTML
+  -- Compile {publications,recipes} page to Markdown+HTML
   return ()
 
 -- Posts
@@ -188,14 +215,15 @@ postRules = do
     let readerOpts = def {readerExtensions = markdownDialect}
     let writerOpts = def
     -- Render Markdown to HTML
-    contents <- readFile' prev
-    contents <- runPandocIO $ do
-      Pandoc meta blocks <- readMarkdown readerOpts contents
+    markdownBody <- readFile' prev
+    htmlBody <- runPandocIO $ do
+      Pandoc meta blocks <- readMarkdown readerOpts markdownBody
       let doc1 = Pandoc meta blocks
       doc2 <- processCitations doc1
       let doc3 = withUrls (implicitIndexFile . relativizeUrl out . ?agdaLinkFixer) doc2
       writeHtml5String writerOpts doc3
-    writeFile' next contents
+    let fixedHtmlBody = postprocessHtml5 htmlBody
+    writeFile' next fixedHtmlBody
 
   -- Apply templates
   isPostOut ?> \out -> do
@@ -275,34 +303,3 @@ assetRules =
   assetOutDir <//> "*" %> \out -> do
     src <- routeSrc out
     copyFile' src out
-
--- Utilities
-
-stopBrowserSync :: ProcessHandle -> Action ()
-stopBrowserSync ph =
-  liftIO (cleanupProcess (Nothing, Nothing, Nothing, ph))
-
-startBrowserSync :: Action ProcessHandle
-startBrowserSync =
-  fromProcess
-    <$> command
-      [Cwd "_site"]
-      "npx"
-      [ "browser-sync",
-        "--server",
-        "--files '.'",
-        "--no-ui",
-        "--reload-delay 500",
-        "--reload-debounce 500"
-      ]
-
--- Dependencies
-
-requireNode :: Action ()
-requireNode = do
-  missingNode <- not <$> hasExecutable "node"
-  missingNPM <- not <$> hasExecutable "npm"
-  when (missingNode || missingNPM) $ do
-    fail
-      "BrowserSync requires Node.js\n\
-      \See: https://nodejs.org/en/download/"

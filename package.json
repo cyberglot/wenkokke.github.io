@@ -1,5 +1,6 @@
 {
-  "dependencies": {
-    "browser-sync": "^2.27.7"
+  "devDependencies": {
+    "browser-sync": "^2.27.7",
+    "feed-validator": "^1.1.1"
   }
 }

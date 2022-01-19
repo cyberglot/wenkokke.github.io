@@ -43,7 +43,7 @@ executable builder
     , shake
     , temporary
     , text
-    , text-icu
+    , text-icu            ^>=0.7.1.0
 
 library blag-agda
   import:          language-haskell
@@ -65,11 +65,13 @@ library blag-pandoc
   exposed-modules:
     Blag.Pandoc
     Blag.Pandoc.Metadata
+    Blag.Pandoc.Postprocess
     Blag.Pandoc.Url
 
   build-depends:
     , aeson
     , blag-prelude
+    , blag-postinfo
     , blag-tagsoup
     , bytestring
     , directory
@@ -78,6 +80,8 @@ library blag-pandoc
     , pandoc
     , pandoc-types
     , text
+    , text-icu            ^>=0.7.1.0
+    , text-regex-replace
     , time
     , unordered-containers
     , vector

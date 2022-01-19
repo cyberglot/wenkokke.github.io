@@ -1,7 +1,7 @@
 cradle:
   cabal:
     - path: "./Buildfile.hs"
-      component: "exe:build"
+      component: "exe:builder"
     - path: "./blag/agda/"
       component: "lib:blag-agda"
     - path: "./blag/pandoc/"

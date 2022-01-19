@@ -6,6 +6,10 @@ ifneq ($(OS),Windows_NT)
 OS := $(shell uname -s)
 endif
 
+CABAL ?= $(wildcard $(shell which cabal))
+NPX ?= $(wildcard $(shell which npx))
+RBENV ?= $(wildcard $(shell which rbenv))
+
 
 ########################################
 # Initialize Git Hooks
@@ -15,25 +19,24 @@ endif
 init:
 	git config core.hooksPath .githooks
 
+
 ########################################
 # Build site with Shake
 ########################################
 
-CABAL ?= $(wildcard $(shell which cabal))
-
-CABAL_ARGS += --verbose=0
+CABAL_RUN_ARGS += --verbose=0
 
 .PHONY: build
 build: check-haskell
-	@$(CABAL) $(CABAL_ARGS) run builder -- build
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- build
 
 .PHONY: clean
 clean: check-haskell
-	@$(CABAL) $(CABAL_ARGS) run builder -- clean
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clean
 
 .PHONY: clobber
 clobber: check-haskell
-	@$(CABAL) $(CABAL_ARGS) run builder -- clobber
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clobber
 
 
 ########################################
@@ -66,7 +69,6 @@ watch:
 # Start local server with BrowserSync
 ########################################
 
-NPX ?= $(wildcard $(shell which npx))
 BROWSER_SYNC ?= $(wildcard $(shell which browser-sync))
 
 BROWSER_SYNC_ARGS += start
@@ -82,10 +84,14 @@ serve: check-browser-sync
 
 
 ########################################
-# Test site with HTMLProofer
+# Test site with:
+# - HTMLProofer
+# - feed-validator
 ########################################
 
-RBENV ?= $(wildcard $(shell which rbenv))
+.PHONY: test
+test: build test-html-proofer test-feed-validator
+
 HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
 
 HTML_PROOFER_ARGS += --check-html
@@ -97,11 +103,20 @@ HTML_PROOFER_ARGS += --report-eof-tags
 HTML_PROOFER_ARGS += --report-mismatched-tags
 HTML_PROOFER_ARGS += --check-img-http
 HTML_PROOFER_ARGS += --check-opengraph
+HTML_PROOFER_ARGS += --file-ignore="/\.\/assets\/.*\.html/"
 HTML_PROOFER_ARGS += .
 
-.PHONY: test
-test: build check-html-proofer
+.PHONY: test-html-proofer
+test-html-proofer: build check-html-proofer
 	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
+
+FEED_VALIDATOR ?= $(wildcard $(shell which feed-validator))
+
+FEED_VALIDATOR_ARGS += rss.xml
+
+.PHONY: test-feed-validator
+test-feed-validator: build check-feed-validator
+	@(cd $(OUT_DIR) && $(FEED_VALIDATOR) $(FEED_VALIDATOR_ARGS))
 
 
 ########################################
@@ -168,6 +183,12 @@ endif
 ifeq (,$(BROWSER_SYNC))
 check-browser-sync: check-node
 	@$(eval BROWSER_SYNC := npx browser-sync)
+endif
+
+.PHONY: check-feed-validator
+ifeq (,$(FEED_VALIDATOR))
+check-feed-validator: check-node
+	@$(eval FEED_VALIDATOR := npx feed-validator)
 endif
 
 .PHONY: check-node

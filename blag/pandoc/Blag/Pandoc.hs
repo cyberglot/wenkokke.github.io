@@ -10,12 +10,14 @@ module Blag.Pandoc
     applyTemplates,
     module Metadata,
     module Url,
+    module Postprocess,
   )
 where
 
 import Blag.Pandoc.Metadata (Metadata (..))
 import Blag.Pandoc.Metadata as Metadata
 import Blag.Pandoc.Url as Url
+import Blag.Pandoc.Postprocess as Postprocess
 import Blag.Prelude
 import Control.Exception (displayException)
 import Control.Monad (foldM)

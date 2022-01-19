@@ -1,11 +1,11 @@
 site:
   title: All The Language
-  url: https://wen.works/
+  baseurl: https://wen.works
   language: en_US
 
   author:
     name: Wen Kokke
-    email: me@wen.works
+    email: "me@wen.works"
     github: wenkokke
     twitter: wenkokke
     paypal: wenkokke
