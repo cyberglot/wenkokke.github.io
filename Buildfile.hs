@@ -42,15 +42,8 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   let allWebTargets = outputs routingTable
 
   -- Define phony targets
+
   "build" ~> do
-    need allWebTargets
-
-  "serve" ~> do
-    need allWebTargets
-    startBrowserSync
-    return ()
-
-  "watch" ~> do
     need allWebTargets
 
   "clean" ~> do

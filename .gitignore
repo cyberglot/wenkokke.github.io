@@ -1,6 +1,6 @@
-.shake
-_site/
 _cache/
+_site/
 dist-newstyle/
-package-lock.json
 node_modules/
+package-lock.json
+Gemfile.lock
