@@ -20,13 +20,13 @@ SORrY, LET ME ADJUST.
 
 Ah, I'm so sorry, is this any better? Once again, so sorry, I think I've been reading this stuff for too long, think I got carried away… Anyway, I'll take it from the start. So this weekend, I picked up a copy of *[Paper Girls][papergirls]*, a mystery/science fiction comic about four girls on a paper route…
 
-![Image from Paper Girls. MacKenzie, smoking, sits on her bicycle, while Erin, KJ, and Tiffany stand behind her.](/public/images/paper-girls-1.jpg)\
+![Image from Paper Girls. MacKenzie, smoking, sits on her bicycle, while Erin, KJ, and Tiffany stand behind her.](/assets/images/paper-girls-1.jpg)\
 
 It starts simple. Our four heroes band together to deliver papers on Halloween morning. But it quickly escalates. Testament to this fact, thirty-five pages in we meet three time traveling teenagers, wrapped in black bandages, speaking in *these things*…
 
-![Image from Paper Girls. Two figures wrapped in dark bandages bend over their fallen friend. Their speech is written using strange glyphs.](/public/images/paper-girls-2.png)\
+![Image from Paper Girls. Two figures wrapped in dark bandages bend over their fallen friend. Their speech is written using strange glyphs.](/assets/images/paper-girls-2.png)\
 
-These glyphs are used for the rest of the book, and---best I can tell---the rest of the series without any real explanation… which leaves me with the following question: 
+These glyphs are used for the rest of the book, and---best I can tell---the rest of the series without any real explanation… which leaves me with the following question:
 
 > What in fuck's name are they saying?
 
@@ -34,13 +34,13 @@ Wanna guess what today's topic is? Yep. Welcome to my class, "Help! These letter
 
 Now, I've done this before. Several years ago, I was given a copy of *[Johnny 23][johnny23]* by Charles Burns which is, euh, a book put together using panels from *[X'ed Out][xedout]*, with an entirely new "story" written in strange glyphs… Sound, well, semi-familiar at least?
 
-![Image from X'ed Out. A person is shown a crying worm by a hooded figure with a wound for a nose. The hooded figure then eats the worm. Their speech is written using strange glyphs.](/public/images/xed-out.jpg)\
+![Image from X'ed Out. A person is shown a crying worm by a hooded figure with a wound for a nose. The hooded figure then eats the worm. Their speech is written using strange glyphs.](/assets/images/xed-out.jpg)\
 
 It turns out that what Charles had done was basically a substitution cipher---you make up one crazy glyph for each letter of the alphabet, and then instead of writing letters from the alphabet, you use the alien glyphs you came up with…
 
 Honestly, there's some pretty good reasons to assume that *Paper Girls* does the same. Substitution ciphers are really easy to come up with---you basically have to come up with one weird glyph for ever letter in your alphabet. Plus, they get the job done! At least, it's pretty clear to me that our time traveling teenagers are speaking some arcane language!
 
-Substitution ciphers are pretty easy to solve, but compare that more complex ciphers. We could have the cipher evolve over time, say, shift those sinister glyphs by one every time we turn a page. But… do the characters know what page they're on? And could you speak a language where the sounds you make to say, say *chair*, change every few minutes? 
+Substitution ciphers are pretty easy to solve, but compare that more complex ciphers. We could have the cipher evolve over time, say, shift those sinister glyphs by one every time we turn a page. But… do the characters know what page they're on? And could you speak a language where the sounds you make to say, say *chair*, change every few minutes?
 
 What about actual cryptographic ciphers? We might as well be putting random noise on the page! There's no way any reader would crack anything like that, and no way any human could actually speak, say, [RSA-encrypted][rsa] English.
 
@@ -58,8 +58,8 @@ First off, I'll be writing some Python code in this section.
 Really, I'm just doing that 'cuz I'm bad at counting.
 You can do everything I'll be doing by hand, with just some pen and paper.
 
-The first thing you need to do is get some data. 
-Grab your favourite comic with a cipher in there, and start writing down words. 
+The first thing you need to do is get some data.
+Grab your favourite comic with a cipher in there, and start writing down words.
 I'll be using the first five issues of *Paper Girls* for this, because that's how far I've read.
 
 <pre><code class="highlight"><span class="n">data</span> <span class="o">=</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
@@ -77,7 +77,7 @@ I'll be using the first five issues of *Paper Girls* for this, because that's ho
 And then?
 
 
-### Frequency analysis
+## Frequency analysis
 
 Let's do a wee bit of counting, shall we?
 First off, we're gonna blindly assume that spaces mean spaces, apostrophe means apostrophe---I've only found one in the entire series so far---and comma means comma.
@@ -103,7 +103,7 @@ We remove spaces, apostrophes, and commas, and while we're at it, let's convert 
 letters_emma = " ".join(nltk.corpus.gutenberg.words('austen-emma.txt'))
 letters_emma = re.sub("[\s',]","",emma).lower()
 letters_counts_emma = collections.Counter(letters_emma)
-letters_counts_emma = 
+letters_counts_emma =
     sorted(letters_counts_emma.items(), key=lambda x: x[1], reverse=True)
 ```
 
@@ -113,15 +113,15 @@ letters_counts_emma =
 
 Let's plot those side by side, see if anything looks off about this.
 
-![Frequency analysis graphs for single characters in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graphs look similar.](/public/images/paper-girls-frequency-analysis.png)\
+![Frequency analysis graphs for single characters in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graphs look similar.](/assets/images/paper-girls-frequency-analysis.png)\
 
-Great news! 
+Great news!
 The distribution of the letters looks like *language*.
 For comparison, if we encrypt *Emma* and then do frequency analysis, it looks something like this:
 
-![Frequency analysis graphs for single characters in the speech in Jane Austen's Emma encrypted compared to the speech in Jane Austen's Emma unencrypted. The frequency counts for the encrypted speech are virtually uniform.](/public/images/paper-girls-frequency-analysis-encrypted.png)\
+![Frequency analysis graphs for single characters in the speech in Jane Austen's Emma encrypted compared to the speech in Jane Austen's Emma unencrypted. The frequency counts for the encrypted speech are virtually uniform.](/assets/images/paper-girls-frequency-analysis-encrypted.png)\
 
-Ok, so hypothesis: 
+Ok, so hypothesis:
 
 > The frequencies for *Paper Girls* overlap *exactly* with those of *Emma*.
 
@@ -161,7 +161,7 @@ Those first peaks look pretty convincing, so let's assume '<span class="font-pap
 What else can we do?
 
 
-### Common words
+## Common words
 
 We can have a look at the single-letter words!
 Let's pretend we don't know English.
@@ -179,7 +179,7 @@ single_letter_words_counts = sorted(
  ('E', 11),   ('o', 8),    ('F', 4),   ('W', 4),   ('V', 3),  … ]
 ```
 
-Ah, yes, the well-known word 'W'. 
+Ah, yes, the well-known word 'W'.
 But at least we can be fairly sure that the only single-letter words which matter in English are 'I' and 'a', and we didn't even have to think!
 Let's see what single-letter words our data has on offer…
 
@@ -196,17 +196,17 @@ We can repeat this trick for two letter words, three letter words, four letter w
 However, we'll probably need quite a lot of data for word counts to start looking like your average word counts for English---like those found in *Emma* and only *Emma*.
 Let's count up the two-letter words, and plot their frequencies:
 
-![Frequency analysis graphs for two-letter words in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graphs look similar.](/public/images/paper-girls-frequency-analysis-two-letter.png)\
+![Frequency analysis graphs for two-letter words in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graphs look similar.](/assets/images/paper-girls-frequency-analysis-two-letter.png)\
 
 It's tempting to assume that those plots align exactly, but we're dealing with *really* sparse data at this point.
 Instead, let's use the knowledge that we've uncovered so far to see if we can find any of those common words.
-The words '<span class="font-papergirls">TO</span>', '<span class="font-papergirls">IT</span>', and '<span class="font-papergirls">AT</span>' all feature a '<span class="font-papergirls">T</span>'. 
+The words '<span class="font-papergirls">TO</span>', '<span class="font-papergirls">IT</span>', and '<span class="font-papergirls">AT</span>' all feature a '<span class="font-papergirls">T</span>'.
 They seem like pretty likely candidates for 'to', 'it', and 'at', so it seems quite likely that '<span class="font-papergirls">O</span>' is 'o', and that '<span class="font-papergirls">I</span>' is 'i' and '<span class="font-papergirls">A</span>' is 'a', or vice versa. Note that '<span class="font-papergirls">A</span>' is the fourth most character, like we'd expect from an 'i' or an 'a'. Based on the frequencies---'a' is a more common character than 'i', but 'I' is a more common word than 'a'---we can guess that '<span class="font-papergirls">I</span>' is 'i' and '<span class="font-papergirls">a</span>' is 'a'.
 
 We could continue with this trick for quite a while, using three-letter words, four-letter words, bi-grams, tri-grams, etc. However, we could quite quickly run into the problem that the data we have is really quite sparse, and we can only really solve that by reading more *Paper Girls* and adding more phrases to our database… which… well, the first part of that sounds like fun. However, there is one trick which we can still quite easily exploit…
 
 
-### Double letters
+## Double letters
 
 Let's do some counting of *repeated letters*, such as the 'tt' in letters, and see how those patterns compare to those found in English. We do this by zipping the data with the data offset by one--e.g. from `"hello"` we would get `[('h','e'), ('e','l'), ('l','l'), ('l','o')]`---and then picking only the pairs where both letters are the same---in our example, `('l','l')`.
 
@@ -218,14 +218,14 @@ doubles_counts = sorted(doubles_counts.items(), key=lambda x: x[1], reverse=True
 
 You've got the hang of this by now---we count doubles in *Emma* as well, and plot both distributions.
 
-![Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graph for paper girls has only two entries.](/public/images/paper-girls-frequency-analysis-doubles-1.png)\
+![Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graph for paper girls has only two entries.](/assets/images/paper-girls-frequency-analysis-doubles-1.png)\
 
 Whoa, so something kinda weird is going on here. First off, really? There's only *two* characters that are ever repeated? Like, our sample size is small, but not *that* small. Also, neither of these characters are anything we have a guess for yet… so if our guesses are correct, we don't have *any* occurances of 'ee' or 'tt'. Look at the chart for *Emma*, they're pretty common.
 
 It may be a good idea to have a closer look at the data.
 If you scroll up to where we defined `data`, you'll find '<span class="font-papergirls">Dd</span>' and '<span class="font-papergirls">Ee</span>', and actually, if we look at all the data, we'll find '<span class="font-papergirls">Oo</span>' and '<span class="font-papergirls">Ss</span>' as well.
 These mirrored versions of the characters only seem to appear directly after a neutral versions of the same character, and they look *suspiciously* like repeated characters.
-Actually, we should've asked this *a long time ago*. 
+Actually, we should've asked this *a long time ago*.
 How many characters do we even have?
 
 ```python
@@ -236,7 +236,7 @@ num_characters = len(letters_counts)
 32
 ```
 
-*WHAT?!* 32 CHARACTERS?! 
+*WHAT?!* 32 CHARACTERS?!
 Right, that doesn't mash with our whole "Latin alphabet" thing.
 Eugh, let's finish this "double characters" thing first, and then we'll look into our surplus of characters.
 
@@ -250,12 +250,12 @@ doubles_or_mirrored_counts = sorted(
     doubles_or_mirrored_counts.items(), key=lambda x: x[1], reverse=True)
 ```
 
-![Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graphs look similar.](/public/images/paper-girls-frequency-analysis-doubles-2.png)\
+![Frequency analysis graphs for bigrams in the speech in Paper Girls compared to the speech in Jane Austen's Emma. The graphs look similar.](/assets/images/paper-girls-frequency-analysis-doubles-2.png)\
 
-Ah, that makes *way* more sense. 
+Ah, that makes *way* more sense.
 We can still probably assume that '<span class="font-papergirls">LL</span>' is 'll', and it probably makes sense to stick to our guns and say that '<span class="font-papergirls">Oo</span>' is 'oo' and '<span class="font-papergirls">Ee</span>' is 'ee'.
 
-### Too many characters
+## Too many characters
 
 Eek! So let's get to that whole "too many characters thing".
 See, if our hypothesis is true, and this is really English, then we'd kinda expect to see at most 26 characters.
@@ -272,13 +272,13 @@ Moreover, almost every speech bubble ends with one of these characters, the only
 We can assume that these are '.', '!', and '?', in order of frequency.
 Honestly, it doesn't hurt too much if we get these wrong, the only important thing is that---if these truly are punctuation---we don't try to assign letters to them.
 
-### Write down everything we've got!
+## Write down everything we've got!
 
 Right, so, we've made quite a few guesses by now, let's see if that gets us anywhere.
 First, let's write down everything we've got…
 
 <pre><code class="highlight"><span class="n">trans</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">" "</span><span class="p">:</span> <span class="s">" "</span><span class="p">,</span> <span class="s">"'"</span><span class="p">:</span> <span class="s">"'"</span><span class="p">,</span> <span class="s">","</span><span class="p">:</span> <span class="s">","</span><span class="p">,</span> 
+    <span class="s">" "</span><span class="p">:</span> <span class="s">" "</span><span class="p">,</span> <span class="s">"'"</span><span class="p">:</span> <span class="s">"'"</span><span class="p">,</span> <span class="s">","</span><span class="p">:</span> <span class="s">","</span><span class="p">,</span>
     <span class="s font-papergirls">'A'</span><span class="p">:</span> <span class="s">'a'</span><span class="p">,</span> <span class="s font-papergirls">'E'</span><span class="p">:</span> <span class="s">'e'</span><span class="p">,</span> <span class="s font-papergirls">'e'</span><span class="p">:</span> <span class="s">'e'</span><span class="p">,</span> <span class="s font-papergirls">'T'</span><span class="p">:</span> <span class="s">'t'</span><span class="p">,</span> <span class="s font-papergirls">'I'</span><span class="p">:</span> <span class="s">'i'</span><span class="p">,</span> <span class="s font-papergirls">'o'</span><span class="p">:</span> <span class="s">'o'</span><span class="p">,</span> <span class="s font-papergirls">'O'</span><span class="p">:</span> <span class="s">'o'</span><span class="p">,</span> <span class="s font-papergirls">'L'</span><span class="p">:</span> <span class="s">'l'</span><span class="p">,</span> <span class="s font-papergirls">'.'</span><span class="p">:</span> <span class="s">'.'</span><span class="p">,</span> <span class="s font-papergirls">'!'</span><span class="p">:</span> <span class="s">'!'</span><span class="p">,</span> <span class="s font-papergirls">'?'</span><span class="p">:</span> <span class="s">'?'</span><span class="p">}</span></code></pre>
 
 …and then use that to try and translate our data, replacing anything for which we haven't made a guess yet with an underscore.
@@ -300,7 +300,7 @@ data_transed = [
  …]
 ```
 
-From here, it's a bit of a word puzzle. 
+From here, it's a bit of a word puzzle.
 For instance, "_e'll _eet at t_e" looks like it's saying "we'll meet at the".
 Let's add those guesses, and translate again, see if they make sense?
 
@@ -353,10 +353,10 @@ We can keep doing this, and eventually we'll manage to find guesses for most of 
 The authors have even included an 'x' and a 'q' in such natural words such as 'vertex' and 'tuplequad'.
 Honestly, that last one took me a while. The 'ua' and the fact that it was either gonna be a 'q' or a 'z' helped.
 
-### …and then you make a nice table
+## …and then you make a nice table
 
-Woo! 
-We've done it! 
+Woo!
+We've done it!
 We can read the bizzare glyphs in *Paper Girls* now!
 And the only letter we're missing is the 'z'.
 Hope I'll find one of those in one of the later books.

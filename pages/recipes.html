@@ -1,0 +1,16 @@
+---
+title: Recipes
+---
+
+<div class="recipes">
+    $for(recipe)$
+    <article class="recipe">
+        <header>
+            $if(recipe.banner)$
+            <img class="recipe-banner" src="$recipe.banner$" />
+            $endif$
+            <h2 class="recipe-title"><a href="$if(recipe.external_link)$$recipe.external_link$$else$$recipe.url$$endif$">$recipe.title$</a></h2>
+        </header>
+    </article>
+    $endfor$
+</div>

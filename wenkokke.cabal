@@ -1,26 +1,153 @@
+cabal-version:      2.4
 name:               wenkokke
 version:            0.1.0.0
 description:        Personal website of Wen Kokke
 homepage:           https://wenkokke.github.io
-license:            AllRightsReserved
 author:             Wen Kokke
+maintainer:         wenkokke@users.noreply.github.com
 copyright:          © 2020 Wen Kokke
 category:           Web
 build-type:         Simple
-cabal-version:      >= 2.0
+extra-source-files: CHANGELOG.md
+tested-with:        GHC ==8.10.7
 
-executable site
-  main-is:          site.hs
-  ghc-options:      -Wall
-  build-depends:    base            >= 4.6     && < 5
-                  , directory       >= 1.2     && < 1.4
-                  , filepath        >= 1.3     && < 1.5
-                  , hakyll          >= 4.10    && < 4.15
-                  , pandoc          >= 2.9     && < 3.0
-                  , pandoc-types    >= 1.20    && < 1.23
-                  , pandoc-citeproc >= 0.17    && < 0.18
-                  , process         >= 1.6     && < 1.7
-                  , regex-tdfa      >= 1.3     && < 1.4
-                  , text            >= 1.2     && < 1.3
-  ghc-options:      -threaded
-  default-language: Haskell2010
+common language-haskell
+  default-language:   Haskell2010
+  build-depends:      base
+  default-extensions:
+    FlexibleContexts
+    FlexibleInstances
+    ImplicitParams
+    ImportQualifiedPost
+    LambdaCase
+    MultiParamTypeClasses
+    OverloadedStrings
+    PatternSynonyms
+    RecordWildCards
+    Strict
+    TupleSections
+    TypeApplications
+    TypeSynonymInstances
+
+executable builder
+  import:        language-haskell
+  main-is:       Buildfile.hs
+  build-depends:
+    , blag-agda
+    , blag-postinfo
+    , blag-prelude
+    , blag-routing
+    , blag-style
+    , blag-template
+    , citeproc
+    , containers
+    , multimap
+    , process
+    , shake
+    , temporary
+    , text
+    , text-icu       ^>=0.7.1.0
+
+library blag-agda
+  import:          language-haskell
+  hs-source-dirs:  blag/agda
+  exposed-modules: Blag.Agda
+  build-depends:
+    , blag-prelude
+    , blag-routing
+    , containers
+    , directory
+    , filemanip           ^>=0.3
+    , text
+    , text-icu            ^>=0.7.1.0
+    , text-regex-replace
+
+library blag-template
+  import:          language-haskell
+  hs-source-dirs:  blag/template
+  exposed-modules:
+    Blag.Template
+    Blag.Template.Pandoc
+    Blag.Template.Pandoc.Builder
+    Blag.Template.Pandoc.Citeproc
+    Blag.Template.TagSoup
+
+  other-modules:
+    Blag.Template.Metadata
+    Blag.Template.Template
+    Blag.Template.Pandoc.Url
+    Blag.Template.Pandoc.Postprocess
+
+  build-depends:
+    , aeson
+    , blag-postinfo
+    , blag-prelude
+    , bytestring
+    , citeproc
+    , containers
+    , directory
+    , doclayout
+    , frontmatter
+    , mtl
+    , pandoc
+    , pandoc-types
+    , tagsoup
+    , text
+    , text-icu              ^>=0.7.1.0
+    , text-regex-replace
+    , time
+    , unordered-containers
+    , vector
+    , yaml
+
+library blag-postinfo
+  import:          language-haskell
+  hs-source-dirs:  blag/postinfo
+  exposed-modules: Blag.PostInfo
+
+library blag-prelude
+  import:          language-haskell
+  hs-source-dirs:  blag/prelude
+  exposed-modules:
+    Blag.Prelude
+    Blag.Prelude.ByteString
+  other-modules:
+    Blag.Prelude.FilePath
+    Blag.Prelude.Url
+
+  build-depends:
+    , bytestring
+    , charsetdetect
+    , directory
+    , filemanip
+    , filepath
+    , shake
+    , text
+    , text-icu       >=0.7.1.0
+
+library blag-routing
+  import:          language-haskell
+  hs-source-dirs:  blag/routing
+  exposed-modules: Blag.Routing
+  build-depends:
+    , bimap
+    , blag-prelude
+    , containers
+    , text
+
+library blag-style
+  import:          language-haskell
+  hs-source-dirs:  blag/style
+  exposed-modules:
+    Blag.Style
+  other-modules:
+    Blag.Style.CSS
+    Blag.Style.Sass
+
+  build-depends:
+    , blag-prelude
+    , directory
+    , hasmin
+    , hsass         >=0.3.0
+    , shake
+    , text

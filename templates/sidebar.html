@@ -1,8 +1,8 @@
 <header class="sidebar">
     <div class="container sidebar-sticky">
         <div class="sidebar-about">
-            <img class="sidebar-about-photo" src="/public/images/me.png" alt="It's me!"/>
-            <h1><a href="$site_url$">$site_title$</a></h1>
+            <img class="sidebar-about-photo" src="/assets/images/me.png" alt="It's me!"/>
+            <h1><a href="$site.baseurl$">$site.title$</a></h1>
             <p class="lead">
                 Hiya!
                 I'm <span class="tooltip" title="/wɛn/">Wen</span>.
@@ -14,21 +14,21 @@
             <a class="sidebar-nav-item" href="/">
                 Blog
             </a>
-            <a class="sidebar-nav-item" href="/pages/pubs.html">
+            <a class="sidebar-nav-item" href="/pubs/">
                 Pubs
             </a>
         </nav>
         <nav class="sidebar-nav">
-            <a class="sidebar-nav-item sidebar-nav-icon" href="mailto:$email$">
+            <a class="sidebar-nav-item sidebar-nav-icon" href="mailto:$site.author.email$">
                 <i class="far fa-envelope"></i>
             </a>
-            <a class="sidebar-nav-item sidebar-nav-icon" href="https://github.com/$github_user$">
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://github.com/$site.author.github$">
                 <i class="fab fa-github"></i>
             </a>
-            <a class="sidebar-nav-item sidebar-nav-icon" href="https://twitter.com/$twitter_user$">
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://twitter.com/$site.author.twitter$">
                 <i class="fab fa-twitter"></i>
             </a>
-            <a class="sidebar-nav-item sidebar-nav-icon" href="https://www.paypal.me/$paypal_user$">
+            <a class="sidebar-nav-item sidebar-nav-icon" href="https://www.paypal.me/$site.author.paypal$">
                 <i class="fab fa-paypal"></i>
             </a>
         </nav>

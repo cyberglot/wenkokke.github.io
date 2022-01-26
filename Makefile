@@ -1,84 +1,157 @@
-########################################
-# Build mode (draft, production)
-########################################
+OUT_DIR := _site
+TMP_DIR := _cache
 
-MODE ?= draft
-
-ifeq (draft,$(MODE))
-HAKYLL_FLAGS += --drafts
-BUILD_DIR := $(abspath _draft)
-else
-BUILD_DIR := $(abspath _production)
+# OS = {Windows_NT, Linux, Darwin}
+ifneq ($(OS),Windows_NT)
+OS := $(shell uname -s)
 endif
 
-SITE_DIR := $(BUILD_DIR)/site
-CACHE_DIR := $(BUILD_DIR)/cache
-TMP_DIR := $(CACHE_DIR)/tmp
-WATCH_PID := $(BUILD_DIR)/watch.pid
+CABAL ?= $(wildcard $(shell which cabal))
+NPX ?= $(wildcard $(shell which npx))
+RBENV ?= $(wildcard $(shell which rbenv))
+
+default: build
+
+########################################
+# Command-line arguments
+########################################
+
+# make test:
+#   - CHECK_EXTERNAL_LINKS:
+#     If set, external links are checked.
 
 
 ########################################
-# Build blog with Hakyll
+# Initialize Git Hooks
 ########################################
+
+.PHONY: init
+init:
+	git config core.hooksPath .githooks
+
+
+########################################
+# Build site with Shake
+########################################
+
+CABAL_RUN_ARGS += --verbose=0
 
 .PHONY: build
-build: $(SITE_DIR)
+build: check-haskell
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- build
 
-$(SITE_DIR): site.hs index.html bib csl css pages posts public recipes templates
-	@echo "Building site..."
-	stack build && stack run build -- $(HAKYLL_FLAGS)
+.PHONY: clean
+clean: check-haskell
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clean
+
+.PHONY: clobber
+clobber: check-haskell
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clobber
+
 
 ########################################
-# Test blog with HTMLProofer
+# Watch for changes with fswatch
+########################################
+
+FSWATCH ?= $(wildcard $(shell which fswatch))
+
+FSWATCH_ARGS += --event=IsFile
+FSWATCH_ARGS += --event=Created
+FSWATCH_ARGS += --event=Updated
+FSWATCH_ARGS += --event=Removed
+FSWATCH_ARGS += --event=Renamed
+FSWATCH_ARGS += --event=MovedFrom
+FSWATCH_ARGS += --event=MovedTo
+FSWATCH_ARGS += --one-per-batch
+FSWATCH_ARGS += --recursive
+FSWATCH_ARGS += --exclude="\.git/.*"
+FSWATCH_ARGS += --exclude="dist-newstyle/.*"
+FSWATCH_ARGS += --exclude="$(OUT_DIR)/.*"
+FSWATCH_ARGS += --exclude="$(TMP_DIR)/.*"
+FSWATCH_ARGS += "."
+
+.PHONY: watch
+watch:
+	$(FSWATCH) $(FSWATCH_ARGS) | xargs -n1 -I{} make build
+
+
+########################################
+# Start local server with BrowserSync
+########################################
+
+BROWSER_SYNC ?= $(wildcard $(shell which browser-sync))
+
+BROWSER_SYNC_ARGS += start
+BROWSER_SYNC_ARGS += --server
+BROWSER_SYNC_ARGS += --files "."
+BROWSER_SYNC_ARGS += --no-ui
+BROWSER_SYNC_ARGS += --reload-delay 500
+BROWSER_SYNC_ARGS += --reload-debounce 500
+
+.PHONY: serve
+serve: check-browser-sync
+	@(cd $(OUT_DIR) && $(BROWSER_SYNC) $(BROWSER_SYNC_ARGS))
+
+
+########################################
+# Test site with:
+# - html-validate
+# - feed-validator
 ########################################
 
 .PHONY: test
-test: $(SITE_DIR)
-	cd $(SITE_DIR) \
-		&& htmlproofer \
-			--check-html \
-			--report-invalid-tags \
-			--report-missing-names \
-			--report-script-embeds \
-			--report-missing-doctype \
-			--report-eof-tags \
-			--report-mismatched-tags \
-			--check-img-http \
-			--check-opengraph \
-			.
+test: build test-html-validate test-feed-validator
 
 
-########################################
-# Start server
-########################################
+# HTMLProofer
 
-.PHONY: watch
-watch: build
-	@echo "Starting watch process..."
-	@mkdir -p $(BUILD_DIR)
-	@stack run watch -- $(HAKYLL_FLAGS) --no-server
+HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
 
-.PHONY: serve
-serve: build
-	@echo "Starting server..."
-	@cd $(SITE_DIR) && \
-		browser-sync start \
-			--server \
-			--files "." \
-			--no-ui \
-			--reload-delay 500 \
-			--reload-debounce 500
+HTML_PROOFER_ARGS += --check-html
+HTML_PROOFER_ARGS += --check-img-http
+HTML_PROOFER_ARGS += --check-opengraph
+ifeq (,$(CHECK_EXTERNAL_LINKS))
+HTML_PROOFER_ARGS += --disable-external
+endif
+HTML_PROOFER_ARGS += --file-ignore="/\.\/assets\/.*\.html/"
+HTML_PROOFER_ARGS += --report-eof-tags
+HTML_PROOFER_ARGS += --report-invalid-tags
+HTML_PROOFER_ARGS += --report-missing-names
+HTML_PROOFER_ARGS += --report-missing-doctype
+HTML_PROOFER_ARGS += --report-mismatched-tags
+HTML_PROOFER_ARGS += --report-script-embeds
+HTML_PROOFER_ARGS += .
+
+.PHONY: test-html-proofer
+test-html-proofer: build check-html-proofer
+	@echo "Checking HTML..."
+	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
 
 
-########################################
-# Clean generated files
-########################################
+# html-validate
 
-.PHONY: clean
-clean:
-	@stack build \
-		&& stack run clean \
-		&& stack run clean -- --drafts
+HTML_VALIDATE ?= $(wildcard $(shell which html-validate))
+
+HTML_VALIDATE_ARGS += .
+
+.PHONY: test-html-validate
+test-html-validate: build check-html-validate
+	@echo "Checking HTML..."
+	@(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
+
+
+# feed-validator
+
+FEED_VALIDATOR ?= $(wildcard $(shell which feed-validator))
+
+FEED_VALIDATOR_ARGS += --config ../.feed-validator.config.js
+FEED_VALIDATOR_ARGS += --no-showfeed
+FEED_VALIDATOR_ARGS += rss.xml
+
+.PHONY: test-feed-validator
+test-feed-validator: build check-feed-validator
+	@echo "Checking rss.xml..."
+	@(cd $(OUT_DIR) && $(FEED_VALIDATOR) $(FEED_VALIDATOR_ARGS))
 
 
 ########################################
@@ -88,21 +161,21 @@ clean:
 .PHONY: deploy
 deploy:
 	@echo "Cleaning up..."
-	MODE=production make clean
-	@echo "Building production site..."
-	MODE=production make build
+	make clobber
+	@echo "Building site..."
+	make build
 	@echo "Creating main branch..."
 	git fetch --all
 	git checkout -b main --track origin/main
 	rsync -a \
-		--filter='P _production/site/' \
-		--filter='P _production/cache/' \
+		--filter='P _site/' \
+		--filter='P _cache/' \
 		--filter='P .git/' \
 		--filter='P .gitignore' \
-		--filter='P .stack-work' \
+		--filter='P dist-newstyle/' \
 		--filter='P CNAME' \
 		--delete-excluded \
-		_production/site/ .
+		_site/ .
 	git add -A
 	@echo "Publishing main branch..."
 	git commit -m "Publish."
@@ -113,54 +186,77 @@ deploy:
 
 
 ########################################
-# Setup Git Hooks
+# Dependencies for build
 ########################################
 
-.PHONY: init
-init:
-	git config core.hooksPath .githooks
-
-
-########################################
-# Setup dependencies
-########################################
-
-.PHONY: setup
-setup: check-stack install-browser-sync install-html-proofer
-
-.PHONY: check-stack
-check-stack:
-ifeq (,$(wildcard $(shell which stack)))
-	@echo "Setup requires the Haskell Tool Stack"
-	@echo "See: https://docs.haskellstack.org/en/stable/install_and_upgrade/"
+.PHONY: check-haskell
+check-haskell:
+ifeq (,$(CABAL))
+	@echo "This task requires GHC and Cabal:"
+	@echo "https://www.haskell.org/ghcup/"
 	@exit 1
 endif
 
-.PHONY: check-npm
-ifeq (,$(wildcard $(shell which npm)))
-	@echo "Setup requires the Node Package Manager"
-	@echo "See: https://www.npmjs.com/get-npm"
+########################################
+# Dependencies for watch
+########################################
+
+.PHONY: check-fswatch
+ifeq (,$(FSWATCH))
+check-fswatch:
+	@echo "This task requires fswatch:"
+	@echo "https://github.com/emcrisostomo/fswatch#getting-fswatch"
 	@exit 1
 endif
 
-.PHONY: check-gem
-check-gem:
-ifeq (,$(wildcard $(shell which gem)))
-	@echo "Setup requires the RubyGems Package Manager"
-	@echo "See: https://www.ruby-lang.org/en/documentation/installation/"
+
+########################################
+# Dependencies for serve
+########################################
+
+.PHONY: check-browser-sync
+ifeq (,$(BROWSER_SYNC))
+check-browser-sync: check-node
+	@$(eval BROWSER_SYNC := npx browser-sync)
+endif
+
+.PHONY: check-feed-validator
+ifeq (,$(FEED_VALIDATOR))
+check-feed-validator: check-node
+	@$(eval FEED_VALIDATOR := npx feed-validator)
+endif
+
+.PHONY: check-html-validate
+ifeq (,$(HTML_VALIDATE))
+check-html-validate: check-node
+	@$(eval HTML_VALIDATE := npx html-validate)
+endif
+
+.PHONY: check-node
+ifeq (,$(NPX))
+check-node:
+	@echo "This task requires Node.js:"
+	@echo "https://nodejs.org/en/download/"
 	@exit 1
 endif
 
-.PHONY: install-browser-sync
-install-browser-sync: check-npm
-ifeq (,$(wildcard $(shell which browser-sync)))
-	@echo "Installing Browsersync..."
-	npm install -g browser-sync
+
+########################################
+# Dependencies for test
+########################################
+
+.PHONY: check-html-proofer
+ifeq (,$(HTML_PROOFER))
+check-html-proofer: check-rbenv
+	@$(RBENV) exec gem install --silent bundler
+	@$(RBENV) exec bundle install --quiet
+	@$(eval HTML_PROOFER := $(RBENV) exec bundle exec htmlproofer)
 endif
 
-.PHONY: install-html-proofer
-install-html-proofer: check-npm
-ifeq (,$(wildcard $(shell which htmlproofer)))
-	@echo "Installing HTMLProofer..."
-	gem install html-proofer
+.PHONY: check-rbenv
+ifeq (,$(RBENV))
+check-rbenv:
+	@echo "This task requires RBEnv:"
+	@echo "https://github.com/rbenv/rbenv#installation"
+	@exit 1
 endif

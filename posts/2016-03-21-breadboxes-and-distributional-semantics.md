@@ -171,7 +171,7 @@ If you wish to read more about distributional semantics, there's a pretty good o
 ---
 
 [^source]: You can still try to run it [from source][breadbox], but be warned… I did not future-proof it.
-[DontCountPredict]: http://clic.cimec.unitn.it/marco/publications/acl2014/baroni-etal-countpredict-acl2014.pdf
+[DontCountPredict]: http://clic.cimec.unitn.it/marco/assetsations/acl2014/baroni-etal-countpredict-acl2014.pdf
 [word2vec]: http://deeplearning4j.org/word2vec
 [slides]: https://www.cs.utexas.edu/~mooney/cs388/slides/dist-sem-intro-NLP-class-UT.pdf
 [semantic-vectors]: http://clic.cimec.unitn.it/composes/semantic-vectors.html

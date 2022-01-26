@@ -4,18 +4,18 @@ title: "Presidents, Scumbags, Kings and Arseholes, and The Great Dalmuti"
 
 One of my favourite card games is [The Great Dalmuti][BoardGameGeek]. It's  a variant of a widely-played card game with many, many names: President, Scumbag, Kings and Arseholes. Each of these may have *slightly* different rules, and *slightly* different decks, but they are all more or less the same game.
 
-I've had a bunch of discussions about this game over the years, most of which were about the possible strategies. Personally, I don't believe that this game is all that hard to play well---and consequently, that it isn't all that hard to write an AI for it. Pehaps even a very simple, rule-based AI can play passably. However, friends of mine think that it is a much harder problem, and that much more advanced techniques will be needed. Therefore, I thought I'd write a little playground for AIs to play in. 
+I've had a bunch of discussions about this game over the years, most of which were about the possible strategies. Personally, I don't believe that this game is all that hard to play well---and consequently, that it isn't all that hard to write an AI for it. Pehaps even a very simple, rule-based AI can play passably. However, friends of mine think that it is a much harder problem, and that much more advanced techniques will be needed. Therefore, I thought I'd write a little playground for AIs to play in.
 
 <!--more-->
 
 I'll get back to that later in this post, though if you're familiar with the game, you may as well [skip the next section](#an-ai-playground).
 
 
-## The Rules
+# The Rules
 
 Before I get to showcasing my playground, it's probably prudent to at least briefly talk about the game. The rules of the game are fairly simple, so I'll summarise them here:
 
-  - **Rank**: Each player has a rank, with the top ranks usually called something like "president" and "vice president", and the lower ranks called something like "scumbag" and, well, "vice scumbag"; 
+  - **Rank**: Each player has a rank, with the top ranks usually called something like "president" and "vice president", and the lower ranks called something like "scumbag" and, well, "vice scumbag";
   - **Setup**: To start the game, *all the cards* in the deck are distributed evenly amongst the players; the highest ranking player then starts the first round;
   - **Rounds**: Starting with the player who starts that round (obviously) each player either plays some cards or passes, and the turn passing to the next in rank (after the lowest rank, the turn passes to the highest in rank);
   - **Legal Plays**: A play is legal if:
@@ -32,11 +32,11 @@ Each variant of the game adds their own rules to this, but this much is shared b
   - **Revolution**: Before the taxation, there is a check. If any player has *both* jokers in their hand, they may cry "Revolution!" If this happens, the taxation phase is skipped; if the lowest ranking player cries "Revolution!", instead of skipping the taxation, there is an actual revolution---the lowest ranking player changes places with the highest ranking player, and the second lowest ranking player changes places with the second highest ranking player.
 
 
-## An AI Playground
+# An AI Playground
 
 As I mentioned above, I feel that a very simple, rule-based AI could already competently play The Great Dalmuti. As a first step in demonstrating this, I've written a small playground where AIs can compete with one another. Below, you should see a number of tabs, the first of which is labelled 'Console'. In it, there should be a button that looks like this: <span class="runmain">&#9654;</span>. If you click it, the AIs in the other tabs will be pitted against one another in a game of The Great Dalmuti. Try it!
 
-![Screenshot of UI of embedded The Great Dalmuti after an example run.](/public/images/dalmuti-example.png)\
+![Screenshot of UI of embedded The Great Dalmuti after an example run.](/assets/images/dalmuti-example.png)\
 
 In implementing the game, I've made one small concession---while it isn't *technically* forbidden by the original rules, most players would probably say that a pass isn't a legal opening move. Why would you? However, in order to keep faulty AIs from breaking up the flow of the game, I've implemented it such that *it is*. This means that, in the game above, if your AI attempts an illegal move, or throws an error, it is taken as a pass instead. Furthermore, if your AI attempts to abuse the taxation system by giving away too many or too few cards, it is instead penalised by giving *the best cards.*
 
@@ -45,7 +45,7 @@ The default AIs---for now---are a little disappointing. There are some functions
 Much worse are `playBestCards` and `giveBestCards`, which make up Neil's AI, eager as he is to show how great his cards are, even if it means giving them to other players. And then finally, there's Ruth. She's just very nice, and wants to give other players a chance, so she's been written to pass every turn, even if she's starting a round. And when it comes to giving away cards, she just gives away the cards that she would be happiest receiving. So, you know, obviously there's some room for improvement in the department. At least, if competitive play is your goal.
 
 
-## Write your own AI
+# Write your own AI
 
 I'd love to make it easy for you, and tell you that you can write your AI in *any* language you want, but the matter of the fact is that you're reading this on what is basically a huge JavaScript interpreter. So AIs are written in JavaScript.
 
@@ -81,7 +81,7 @@ The second function, `give` is much simpler. You're given your hand of cards, an
 As a final tip for this section: there's a function built into my implementation of The Great Dalmuti, `allPlays(allowSplit,game)`, which returns all legal moves. The second argument, `game`, is simply the game state that you've been passed. The first argument, `allowSplit`, is a boolean flag. If `allowSplit` is set to true, then the returned moves will include moves which break up sets. Otherwise, well, it won't.
 
 
-## Join in on the fun!
+# Join in on the fun!
 
 Let me leave you with a small snippet of JavaScript. The below code, if copied into one of the AI slots above---I recommend Ruth---will allow you to join in on the fun! It will prompt you, ever time it's your move, with a request as to which move you'd like to make:
 

@@ -1,11 +1,6 @@
-# Emacs
-auto/
-
-# Stack
-.stack-work/
+_cache/
+_site/
 dist-newstyle/
-stack.yaml.lock
-
-# Hakyll
-_draft/
-_production/
+node_modules/
+package-lock.json
+Gemfile.lock

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en-us">
-    $partial("templates/head.html")$
+<html lang="$site.lang$">
+    $^$${ head() }
     <body>
-        $partial("templates/sidebar.html")$
+        $^$${ sidebar() }
         <main class="content container">
-            $body$
+            $^$$body$
         </main>
     </body>
 </html>

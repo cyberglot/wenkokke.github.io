@@ -4,7 +4,7 @@ date       : 2017-05-15 12:00:00
 tags       : [formal language theory]
 ---
 
-This post is a continuation of *[Constraint Grammar can count!](/posts/2016-03-16-constraint-grammar-can-count.html)*, in which I talked a bunch about how expressive constraint grammar is. Now, for most of that post, what I actually meant was the fragment of constraint grammar where you only use the `REMOVE` rule. However, I always had the suspicion that I'd be pretty easy to simulate a Turing machine using only the `ADDCOHORT` and `REMCOHORT` commands, treating the list of cohorts as the Turing machine's tape---and I don't think I was the only one to feel that way.
+This post is a continuation of *[Constraint Grammar can count!](/2016/03/16/constraint-grammar-can-count/)*, in which I talked a bunch about how expressive constraint grammar is. Now, for most of that post, what I actually meant was the fragment of constraint grammar where you only use the `REMOVE` rule.[^ext] However, I always had the suspicion that I'd be pretty easy to simulate a Turing machine using only the `ADDCOHORT` and `REMCOHORT` commands, treating the list of cohorts as the Turing machine's tape---and I don't think I was the only one to feel that way.
 
 <!--more-->
 
@@ -22,7 +22,7 @@ But first, I should probably briefly go over how a Turing machine works---though
 
 A Turing machine is a tiny machine, which sits whirring away on top of an infinite roll of tape. It has a head, which hoovers over the tape, and reads and writes whatever cell it happens to hoover over. It also has a state. This is basically saying that it can remember what it was doing, but practically speaking this'll be some number. The number of the thing it was supposed to be doing. It was never supposed to be built, but of course someone did:
 
-![An actual Turing machine.](/public/images/model-of-a-turing-machine.jpg)\
+![An actual Turing machine.](/assets/images/model-of-a-turing-machine.jpg)\
 
 Actually, many people have built one. Out of everything from [wood and scrap metal](https://web.archive.org/web/20150924052601/https://www.newscientist.com/blogs/nstv/2011/03/turing-machine-built-from-wood-and-scrap-metal.html), to [Legos](http://web.archive.org/web/20170513045644/http://www.legoturingmachine.org/lego-turing-machine/), to [artificial muscle](http://dx.doi.org/10.1063/1.4793648).
 
@@ -35,7 +35,7 @@ Some Turing machines have faulty tables, which never let it reach a stopping sta
 
 Now, it just so happens that the first search result for "Turing machine example program" on the day I wrote this post was a machine which increments binary numbers, and its table looked like this:
 
-[![Transition function for a Turing machine which computes the binary successor.](/public/images/bit-succ-tm.png)](https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/turing-machine/four.html)
+[![Transition function for a Turing machine which computes the binary successor.](/assets/images/bit-succ-tm.png)](https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/turing-machine/four.html)
 
 These programs are a little hard to read, so let's go over what the Turing machine will be doing at each of these states.
 
@@ -165,7 +165,7 @@ I've also implemented my example machine, the binary successor function, and wro
   - the interpreted binary successor machine; and
   - the compiled binary successor in VISL CG-3.
 
-Turns out, everthing works![^cav] If you want to have a go---maybe implement that sorting algorithm so you can *really* do a speed comparison---the library is available [on my Github](https://github.com/wenkokke/cgtm), and you can get VISL CG-3 [on the internet](http://beta.visl.sdu.dk/cg3/chunked/installation.html).
+Turns out, everthing works\![^cav] If you want to have a go---maybe implement that sorting algorithm so you can *really* do a speed comparison---the library is available [on my Github](https://github.com/wenkokke/cgtm), and you can get VISL CG-3 [on the internet](http://beta.visl.sdu.dk/cg3/chunked/installation.html).
 
 ---
 

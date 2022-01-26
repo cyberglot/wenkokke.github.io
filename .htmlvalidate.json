@@ -1,0 +1,16 @@
+{
+  "root": true,
+  "elements": ["html5"],
+  "extends": ["html-validate:recommended", "html-validate:document"],
+  "rules": {
+    "void-style": ["error", { "style": "selfclosing" }],
+    "wcag/h30": ["off"],
+    "no-trailing-whitespace": ["off"],
+    "no-deprecated-attr": ["off"],
+    "long-title": ["off"],
+    "no-inline-style": ["off"],
+    "element-required-attributes": ["off"],
+    "no-dup-id": ["off"],
+    "require-sri": ["off"]
+  }
+}

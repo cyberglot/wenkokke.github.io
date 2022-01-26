@@ -23,7 +23,7 @@ One last hurdle is that constraint grammar has no notion of *failure*. The worst
 From here on out, when we say 'CG3', we are referring to this fragment of constraint grammar.
 
 
-### CG3 is not regular; the language $a^nb^n$
+# CG3 is not regular; the language $a^nb^n$
 
 In this section we show that CG3, restricted to sections and `REMOVE` is not regular. We show this by implementing a grammar for the counting language $a^nb^n$.
 
@@ -95,7 +95,7 @@ SELECT B (NOT 0 OPT_A);
 The grammar described so far exactly expresses the language $a^nb^n$.[^emptystring] Since this language is not regular, we can conclude that constraint grammar is not regular.
 
 
-### CG3 is not context-free; the language $a^nb^nc^n$
+# CG3 is not context-free; the language $a^nb^nc^n$
 
 In this section we show that CG3, restricted to sections and `REMOVE` is not context-free. We show this by implementing a grammar for the counting language $a^nb^nc^n$.
 
@@ -182,7 +182,7 @@ SELECT C (0 OPT_C LINK NOT 0 OPT_A_OR_B)
 The grammar described so far exactly expresses the language $a^nb^nc^n$. Since this language is not context-free, we can conclude that constraint grammar is not context-free.
 
 
-### Beyond Context-Free
+# Beyond Context-Free
 
 It seems pretty obvious that a language formalism whose only construct has the power to observe *all* of its surrounding context ends up being at least context-sensitive. I could continue. It is still fairly straightforward to generate the language $a^nb^nc^nd^n$---divide into half, and divide halves into half---and using similar strategies, you can keep on constructing CGs which compute the counting language $\sigma_1^n\cdots \sigma_k^n$ for any $k$ as long as you can come up with new strategies for prime numbers.. but this won't do us a whole lot of good---at least, it won't help us escape the class of context-sensitive languages.
 

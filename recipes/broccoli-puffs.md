@@ -1,13 +1,13 @@
 ---
 title: Broccoli Puffs
-banner: /public/images/broccoli-puffs-banner.jpg
+banner: /assets/images/broccoli-puffs-banner.jpg
 ---
 
 These broccoli puffs started out their life as a quiche by [the Groene Meisjes][groene-meisjes], but over time, they changed, became smaller, cuter, and puffier!
 
 <!--more-->
 
-![Puff pastry cups with a broccoli filling topped with rosemary and a roasted cherry tomato.](/public/images/broccoli-puffs.jpg)
+![Puff pastry cups with a broccoli filling topped with rosemary and a roasted cherry tomato.](/assets/images/broccoli-puffs.jpg)
 
 The filling is about equal amounts of tofu and broccoli, a dash of oil, a generous helping of nooch, and various herbs and spices. For me, there's usually lots of rosemary, and I usually top the puffs with fresh rosemary for serving.
 
