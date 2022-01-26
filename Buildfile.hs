@@ -109,17 +109,17 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     (fileMetadata, indexHtmlTemplate) <- ?getFileWithMetadata src
     applyAsTemplate (postMetadata <> fileMetadata) indexHtmlTemplate
       >>= applyTemplate "default.html" fileMetadata
-      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
 
   outDir </> "rss.xml" %> \out -> do
-      src <- routeSrc out
-      postMetadata <- ?getPostMetadata ()
-      (fileMetadata, rssXmlTemplate) <- ?getFileWithMetadata src
-      readFile' src
-        >>= applyAsTemplate (fileMetadata <> postMetadata)
-        >>= writeFile' out
+    src <- routeSrc out
+    postMetadata <- ?getPostMetadata ()
+    (fileMetadata, rssXmlTemplate) <- ?getFileWithMetadata src
+    readFile' src
+      >>= applyAsTemplate (fileMetadata <> postMetadata)
+      >>= writeFile' out
 
   postRules
 
@@ -130,7 +130,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     (fileMetadata, recipesHtmlTemplate) <- ?getFileWithMetadata src
     applyAsTemplate (recipeMetadata <> fileMetadata) recipesHtmlTemplate
       >>= applyTemplate "default.html" fileMetadata
-      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
 
@@ -141,10 +141,9 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     metadata <- ?getSiteMetadata ()
     readFile' "404.html"
       >>= applyTemplate "default.html" metadata
-      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
-
 
 --------------------------------------------------------------------------------
 -- Posts
@@ -203,7 +202,7 @@ postRules = do
     metadata <- fst <$> ?getFileWithMetadata src
     readFile' prev
       >>= applyTemplates ["post.html", "default.html"] metadata
-      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
 
@@ -234,7 +233,7 @@ recipeRules = do
     readFile' src
       >>= markdownToHtml Nothing
       >>= applyTemplates ["recipe.html", "default.html"] metadata
-      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
 
@@ -260,7 +259,15 @@ agdaToHtml src = do
         [src]
       ]
 
-getAgdaLinkFixer :: (MonadIO m, MonadFail m, ?routingTable :: RoutingTable) => Maybe Agda.Library -> [Agda.Library] -> [Agda.Library] -> m (Url -> Url)
+getAgdaLinkFixer ::
+  ( MonadIO m,
+    MonadFail m,
+    ?routingTable :: RoutingTable
+  ) =>
+  Maybe Agda.Library ->
+  [Agda.Library] ->
+  [Agda.Library] ->
+  m (Url -> Url)
 getAgdaLinkFixer standardLibrary localLibraries otherLibraries = do
   let maybeBuiltinLinkFixer = Agda.makeBuiltinLinkFixer <$> standardLibrary
   maybeStandardLibraryLinkFixer <- traverse Agda.makeLibraryLinkFixer standardLibrary
@@ -335,7 +342,6 @@ markdownToHtml maybeTransform markdown =
               doc
                 & walk (shiftHeadersBy 2)
                 & fromMaybe id maybeTransform
-                & Pandoc.withUrls implicitIndexFile
         Pandoc.writeHtml5String writerOpts docFix
 
 markdownDialect :: Extensions
@@ -432,8 +438,7 @@ getRecipeMetadata () = do
     -- Get output file for URL and html-body anchor for teaser
     out <- route src
     let url = "/" <> makeRelative outDir out
-    metadata <- fst <$> ?getFileWithMetadata src
-    return metadata
+    fst <$> ?getFileWithMetadata src
   return $ constField "recipe" recipesMetadata
 
 -- | Get a template from the @templates/@ directory.
@@ -502,7 +507,7 @@ pubsRules = do
 
     applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
       >>= applyTemplates ["page.html", "default.html"] fileMetadata
-      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
 
