@@ -1,4 +1,6 @@
 # TODO
 
-- render pubs
 - render recipes
+- insert SRI
+- conditional KaTeX?
+- conditional CSS?

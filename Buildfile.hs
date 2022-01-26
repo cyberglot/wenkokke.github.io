@@ -47,13 +47,15 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
 
   routingTable <-
     fmap mconcat . sequence $
-      [ [assetSrcDir <//> "*"] |-> assetRouter,
-        [styleSrcDir </> "*.scss"] |-> styleRouter,
+      [ ["index.html"] |-> outDir </> "index.html",
         [postSrcDir </> "*.md"] |-> postRouter,
-        ["index.html"] |-> outDir </> "index.html",
+        ["pages/recipes.html"] |-> outDir </> "recipes" </> "index.html",
+        [recipeSrcDir </> "*.md"] |-> recipeRouter,
         ["404.html"] |-> outDir </> "404.html",
-        ["rss.xml"] |-> outDir </> "rss.xml",
-        ["pages/pubs.html"] |-> outDir </> "pubs/index.html"
+        ["pages/pubs.html"] |-> outDir </> "pubs" </> "index.html",
+        [assetSrcDir <//> "*"] |-> assetRouter,
+        [styleSrcDir </> "*.scss"] |-> styleRouter,
+        ["rss.xml"] |-> outDir </> "rss.xml"
       ]
   let ?routingTable = routingTable
 
@@ -68,6 +70,8 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   let ?getPostMetadata = cachedGetPostMetadata
   cachedGetTemplateFile <- newCache getTemplateFile
   let ?getTemplateFile = getTemplateFile
+  cachedGetRecipeMetadata <- newCache getRecipeMetadata
+  let ?getRecipeMetadata = cachedGetRecipeMetadata
 
   --------------------------------------------------------------------------------
   -- Agda link fixers
@@ -94,9 +98,11 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   alternatives $ do
     styleRules -- Style sheets
     assetRules -- Static assets
-  postRules -- Posts
 
-  -- Index page
+  -- Publications page
+  pubsRules
+
+  -- Posts
   outDir </> "index.html" %> \out -> do
     src <- routeSrc out
     postMetadata <- ?getPostMetadata ()
@@ -107,68 +113,28 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
 
-  -- RSS feed
   outDir </> "rss.xml" %> \out -> do
+      src <- routeSrc out
+      postMetadata <- ?getPostMetadata ()
+      (fileMetadata, rssXmlTemplate) <- ?getFileWithMetadata src
+      readFile' src
+        >>= applyAsTemplate (fileMetadata <> postMetadata)
+        >>= writeFile' out
+
+  postRules
+
+  -- Recipes
+  outDir </> "recipes" </> "index.html" %> \out -> do
     src <- routeSrc out
-    postMetadata <- ?getPostMetadata ()
-    (fileMetadata, rssXmlTemplate) <- ?getFileWithMetadata src
-    readFile' src
-      >>= applyAsTemplate (fileMetadata <> postMetadata)
-      >>= writeFile' out
-
-  -- Publications page
-  outDir </> "pubs" </> "index.html" %> \out -> do
-    src <- routeSrc out
-    (fileMetadata, pubsHtmlTemplate) <- ?getFileWithMetadata src
-
-    -- Get language and locale from 'site.lang'
-    (lang, locale) <- getLangAndLocale fileMetadata
-
-    -- Get citation style from 'citation-style'
-    csl <- getStyle fileMetadata
-
-    -- Get references from 'bibliography' and remove me from authors based on
-    -- 'site.author.name', then construct a map from reference ids to types
-    myName <- fileMetadata ^. "site.author.name"
-    refs <- map (removeAuthor myName) <$> getReferences locale fileMetadata
-    let refTypeByRefId = Map.fromList [(referenceId, referenceType) | Reference {..} <- refs]
-
-    -- Gather the citations used in the fields of the bibliography
-    let cits = Citeproc.getCitationsFromReferences refs
-
-    -- Process the references and citations using citeproc
-    let citeprocOptions = Citeproc.defaultCiteprocOptions {linkBibliography = True}
-    let Result {..} = Citeproc.citeproc citeprocOptions csl (Just lang) refs cits
-    forM_ resultWarnings (putWarn . Text.unpack)
-
-    -- NOTE: assumes that citeproc does not change the order of these citations
-    let citsByItemIds = Map.fromList $ zip (map Citeproc.getItemIds cits) resultCitations
-    let refsByRefType = MultiMap.fromList $ do
-          ref@(refId, refIls) <- resultBibliography
-          -- TODO: throw an error when lookup fails
-          refType <- maybeToList (Map.lookup (ItemId refId) refTypeByRefId)
-          return (refType, ref)
-
-    -- Render each section
-    sections <- forM pubSections $ \sec@Section {..} -> do
-      let refsForSection = concatMap (`MultiMap.lookup` refsByRefType) sectionReferenceTypes
-      let blocksForSection =
-            mconcat
-              [ Builder.headerWith (sectionAnchor sec, [], []) 3 (Builder.str sectionTitle),
-                Builder.bulletList [Builder.divWith (key, [], []) (Builder.plain item) | (key, item) <- refsForSection]
-              ]
-      let withResolvedCitations = fmap (Citeproc.insertCitations citsByItemIds) blocksForSection
-      return $ if null refsForSection then mempty else withResolvedCitations
-
-    let body = Builder.doc (fold sections)
-    body <- Pandoc.runPandoc (Pandoc.writeHtml5String def body)
-    let bodyFld = constField "body" body
-
-    applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
-      >>= applyTemplates ["page.html", "default.html"] fileMetadata
+    recipeMetadata <- ?getRecipeMetadata ()
+    (fileMetadata, recipesHtmlTemplate) <- ?getFileWithMetadata src
+    applyAsTemplate (recipeMetadata <> fileMetadata) recipesHtmlTemplate
+      >>= applyTemplate "default.html" fileMetadata
       <&> TagSoup.withUrls (relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
+
+  recipeRules
 
   -- 404.html
   outDir </> "404.html" %> \out -> do
@@ -179,61 +145,6 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
 
-  -- Compile {recipes} page to Markdown+HTML
-  return ()
-
---------------------------------------------------------------------------------
--- Pubs
-
-data Section = Section
-  { sectionReferenceTypes :: [Text],
-    sectionTitle :: Text
-  }
-
-sectionAnchor :: Section -> Text
-sectionAnchor Section {..} = Text.toLower (Text.replace " " "-" sectionTitle)
-
-pubSections :: [Section]
-pubSections =
-  [ Section ["manuscript"] "Drafts",
-    Section ["article-journal"] "Journal Articles",
-    Section ["book"] "Books",
-    Section ["chapter", "paper-conference"] "Conference and Workshop Papers",
-    Section ["thesis"] "Theses",
-    Section ["speech"] "Talks",
-    Section ["notype"] "Public Houses"
-  ]
-
--- Get citation style from 'citation-style'.
-getStyle :: Metadata -> Action (Style Inlines)
-getStyle metadata =
-  metadata ^. "citation-style"
-    >>= readFile'
-    >>= Citeproc.parseStyle (\_ -> return mempty)
-    >>= liftEither (Text.unpack . Citeproc.prettyCiteprocError)
-
--- Get references from 'bibliography', remove my name:
-getReferences :: Locale -> Metadata -> Action [Reference Inlines]
-getReferences locale metadata = do
-  bib <- readFile' =<< metadata ^. "bibliography"
-  Pandoc.runPandoc $
-    Citeproc.getReferences (Just locale) =<< Pandoc.readBibTeX def bib
-
--- Get lang and corresponding locale from 'site.lang'.
-getLangAndLocale :: Metadata -> Action (Lang, Locale)
-getLangAndLocale metadata = do
-  lang <- metadata ^. "site.lang"
-  lang <- liftEither id (Citeproc.parseLang lang)
-  locale <- liftEither (Text.unpack . Citeproc.prettyCiteprocError) (Citeproc.getLocale lang)
-  return (lang, locale)
-
--- | Remove an author from the reference author field.
-removeAuthor :: Name -> Reference Inlines -> Reference Inlines
-removeAuthor name ref@Reference {..} =
-  ref {referenceVariables = Map.adjust (removeAuthorFromVal name) "author" referenceVariables}
-  where
-    removeAuthorFromVal name (NamesVal names) = NamesVal (filter (/= name) names)
-    removeAuthorFromVal _name val = val
 
 --------------------------------------------------------------------------------
 -- Posts
@@ -292,6 +203,37 @@ postRules = do
     metadata <- fst <$> ?getFileWithMetadata src
     readFile' prev
       >>= applyTemplates ["post.html", "default.html"] metadata
+      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> Pandoc.postprocessHtml5
+      >>= writeFile' out
+
+--------------------------------------------------------------------------------
+-- Recipes
+
+recipeSrcDir, recipeOutDir :: FilePath
+recipeSrcDir = "recipes"
+recipeOutDir = outDir </> "recipes"
+
+isRecipeSrc :: FilePath -> Bool
+isRecipeSrc src = recipeSrcDir `isPrefixOf` src
+
+recipeRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Rules FilePath
+recipeRouter src =
+  return $ recipeOutDir </> dropExtension (makeRelative recipeSrcDir src) </> "index.html"
+
+recipeRules ::
+  ( ?routingTable :: RoutingTable,
+    ?getTemplateFile :: FilePath -> Action Template,
+    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
+  ) =>
+  Rules ()
+recipeRules = do
+  recipeOutDir <//> "*" %> \out -> do
+    src <- routeSrc out
+    metadata <- fst <$> ?getFileWithMetadata src
+    readFile' src
+      >>= markdownToHtml Nothing
+      >>= applyTemplates ["recipe.html", "default.html"] metadata
       <&> TagSoup.withUrls (relativizeUrl outDir out)
       <&> Pandoc.postprocessHtml5
       >>= writeFile' out
@@ -389,10 +331,11 @@ markdownToHtml maybeTransform markdown =
    in Pandoc.runPandoc $ do
         doc <- Pandoc.readMarkdown readerOpts markdown
         doc <- Citeproc.processCitations doc
-        let docFix = doc
-              & walk (shiftHeadersBy 2)
-              & fromMaybe id maybeTransform
-              & Pandoc.withUrls implicitIndexFile
+        let docFix =
+              doc
+                & walk (shiftHeadersBy 2)
+                & fromMaybe id maybeTransform
+                & Pandoc.withUrls implicitIndexFile
         Pandoc.writeHtml5String writerOpts docFix
 
 markdownDialect :: Extensions
@@ -474,9 +417,141 @@ getPostMetadata () = do
     return $ mconcat [fileMetadata, bodyHtmlFld, dateFld, dateRfc822Fld, teaserHtmlFld, teaserPlainFld]
   return $ constField "post" (reverse postsMetadata)
 
+-- | Get a metadata object representing all recipes.
+getRecipeMetadata ::
+  ( ?routingTable :: RoutingTable,
+    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
+  ) =>
+  () ->
+  Action Metadata
+getRecipeMetadata () = do
+  -- Get recipes from routing table
+  let recipeSrcs = filter isRecipeSrc (sources ?routingTable)
+  -- Gather metadata for each recipe
+  recipesMetadata <- forM recipeSrcs $ \src -> do
+    -- Get output file for URL and html-body anchor for teaser
+    out <- route src
+    let url = "/" <> makeRelative outDir out
+    metadata <- fst <$> ?getFileWithMetadata src
+    return metadata
+  return $ constField "recipe" recipesMetadata
+
 -- | Get a template from the @templates/@ directory.
 getTemplateFile :: FilePath -> Action Template
 getTemplateFile inputFile = do
   let inputPath = "templates" </> inputFile
   need [inputPath]
   compileTemplateFile inputPath
+
+--------------------------------------------------------------------------------
+-- Pubs
+
+pubsRules ::
+  ( ?routingTable :: RoutingTable,
+    ?getTemplateFile :: FilePath -> Action Template,
+    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
+  ) =>
+  Rules ()
+pubsRules = do
+  outDir </> "pubs" </> "index.html" %> \out -> do
+    src <- routeSrc out
+    (fileMetadata, pubsHtmlTemplate) <- ?getFileWithMetadata src
+
+    -- Get language and locale from 'site.lang'
+    (lang, locale) <- getLangAndLocale fileMetadata
+
+    -- Get citation style from 'citation-style'
+    csl <- getStyle fileMetadata
+
+    -- Get references from 'bibliography' and remove me from authors based on
+    -- 'site.author.name', then construct a map from reference ids to types
+    myName <- fileMetadata ^. "site.author.name"
+    refs <- map (removeAuthor myName) <$> getReferences locale fileMetadata
+    let refTypeByRefId = Map.fromList [(referenceId, referenceType) | Reference {..} <- refs]
+
+    -- Gather the citations used in the fields of the bibliography
+    let cits = Citeproc.getCitationsFromReferences refs
+
+    -- Process the references and citations using citeproc
+    let citeprocOptions = Citeproc.defaultCiteprocOptions {linkBibliography = True}
+    let Result {..} = Citeproc.citeproc citeprocOptions csl (Just lang) refs cits
+    forM_ resultWarnings (putWarn . Text.unpack)
+
+    -- NOTE: assumes that citeproc does not change the order of these citations
+    let citsByItemIds = Map.fromList $ zip (map Citeproc.getItemIds cits) resultCitations
+    let refsByRefType = MultiMap.fromList $ do
+          ref@(refId, refIls) <- resultBibliography
+          -- TODO: throw an error when lookup fails
+          refType <- maybeToList (Map.lookup (ItemId refId) refTypeByRefId)
+          return (refType, ref)
+
+    -- Render each section
+    sections <- forM pubSections $ \sec@Section {..} -> do
+      let refsForSection = concatMap (`MultiMap.lookup` refsByRefType) sectionReferenceTypes
+      let blocksForSection =
+            mconcat
+              [ Builder.headerWith (sectionAnchor sec, [], []) 3 (Builder.str sectionTitle),
+                Builder.bulletList [Builder.divWith (key, [], []) (Builder.plain item) | (key, item) <- refsForSection]
+              ]
+      let withResolvedCitations = fmap (Citeproc.insertCitations citsByItemIds) blocksForSection
+      return $ if null refsForSection then mempty else withResolvedCitations
+
+    let body = Builder.doc (fold sections)
+    body <- Pandoc.runPandoc (Pandoc.writeHtml5String def body)
+    let bodyFld = constField "body" body
+
+    applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
+      >>= applyTemplates ["page.html", "default.html"] fileMetadata
+      <&> TagSoup.withUrls (relativizeUrl outDir out)
+      <&> Pandoc.postprocessHtml5
+      >>= writeFile' out
+
+data Section = Section
+  { sectionReferenceTypes :: [Text],
+    sectionTitle :: Text
+  }
+
+sectionAnchor :: Section -> Text
+sectionAnchor Section {..} = Text.toLower (Text.replace " " "-" sectionTitle)
+
+pubSections :: [Section]
+pubSections =
+  [ Section ["manuscript"] "Drafts",
+    Section ["article-journal"] "Journal Articles",
+    Section ["book"] "Books",
+    Section ["chapter", "paper-conference"] "Conference and Workshop Papers",
+    Section ["thesis"] "Theses",
+    Section ["speech"] "Talks",
+    Section ["notype"] "Public Houses"
+  ]
+
+-- Get citation style from 'citation-style'.
+getStyle :: Metadata -> Action (Style Inlines)
+getStyle metadata =
+  metadata ^. "citation-style"
+    >>= readFile'
+    >>= Citeproc.parseStyle (\_ -> return mempty)
+    >>= liftEither (Text.unpack . Citeproc.prettyCiteprocError)
+
+-- Get references from 'bibliography', remove my name:
+getReferences :: Locale -> Metadata -> Action [Reference Inlines]
+getReferences locale metadata = do
+  bib <- readFile' =<< metadata ^. "bibliography"
+  Pandoc.runPandoc $
+    Citeproc.getReferences (Just locale) =<< Pandoc.readBibTeX def bib
+
+-- Get lang and corresponding locale from 'site.lang'.
+getLangAndLocale :: Metadata -> Action (Lang, Locale)
+getLangAndLocale metadata = do
+  lang <- metadata ^. "site.lang"
+  lang <- liftEither id (Citeproc.parseLang lang)
+  locale <- liftEither (Text.unpack . Citeproc.prettyCiteprocError) (Citeproc.getLocale lang)
+  return (lang, locale)
+
+-- | Remove an author from the reference author field.
+removeAuthor :: Name -> Reference Inlines -> Reference Inlines
+removeAuthor name ref@Reference {..} =
+  ref {referenceVariables = Map.adjust (removeAuthorFromVal name) "author" referenceVariables}
+  where
+    removeAuthorFromVal name (NamesVal names) = NamesVal (filter (/= name) names)
+    removeAuthorFromVal _name val = val

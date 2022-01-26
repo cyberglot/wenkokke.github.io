@@ -95,13 +95,12 @@ serve: check-browser-sync
 
 ########################################
 # Test site with:
-# - HTMLProofer
 # - html-validate
 # - feed-validator
 ########################################
 
 .PHONY: test
-test: build test-html-proofer test-html-validate test-feed-validator
+test: build test-html-validate test-feed-validator
 
 
 # HTMLProofer
@@ -159,31 +158,31 @@ test-feed-validator: build check-feed-validator
 # Deploy blog
 ########################################
 
-# .PHONY: deploy
-# deploy:
-# 	@echo "Cleaning up..."
-# 	MODE=production make clean
-# 	@echo "Building production site..."
-# 	MODE=production make build
-# 	@echo "Creating main branch..."
-# 	git fetch --all
-# 	git checkout -b main --track origin/main
-# 	rsync -a \
-# 		--filter='P _production/site/' \
-# 		--filter='P _production/cache/' \
-# 		--filter='P .git/' \
-# 		--filter='P .gitignore' \
-# 		--filter='P .stack-work' \
-# 		--filter='P CNAME' \
-# 		--delete-excluded \
-# 		_production/site/ .
-# 	git add -A
-# 	@echo "Publishing main branch..."
-# 	git commit -m "Publish."
-# 	git push origin main:main
-# 	@echo "Deleting main branch..."
-# 	git checkout dev
-# 	git branch -D main
+.PHONY: deploy
+deploy:
+	@echo "Cleaning up..."
+	make clobber
+	@echo "Building site..."
+	make build
+	@echo "Creating main branch..."
+	git fetch --all
+	git checkout -b main --track origin/main
+	rsync -a \
+		--filter='P _site/' \
+		--filter='P _cache/' \
+		--filter='P .git/' \
+		--filter='P .gitignore' \
+		--filter='P dist-newstyle/' \
+		--filter='P CNAME' \
+		--delete-excluded \
+		_site/ .
+	git add -A
+	@echo "Publishing main branch..."
+	git commit -m "Publish."
+	git push origin main:main
+	@echo "Deleting main branch..."
+	git checkout dev
+	git branch -D main
 
 
 ########################################
