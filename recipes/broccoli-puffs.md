@@ -13,7 +13,7 @@ The filling is about equal amounts of tofu and broccoli, a dash of oil, a genero
 
 What about the extras? The original recipe uses chunks of sun-dried tomatoes, and tops the quiche with toasted sliced almonds, rosemary, and roasted cherry tomatoes. Honestly, that all works great. Recently, I found some half-decent vegan chorizo, and I've started mixing in chunks of roasted chorizo and crunchy roasted broccoli.
 
-## Ingredients
+# Ingredients
 
 Pastry
 : I'd recommend buying some puff pastry. Most of them are accidentally vegan, so it should be easy to find a suitable brand.
@@ -38,7 +38,7 @@ Extras
 - pine seeds
 - sun-dried tomatoes
 
-## Instructions
+# Instructions
 
 1. Prepare the broccoli. You can cook it, steam it, roast it. Whatever you feel like. Just make sure it isn't raw anymore. If you don't wanna think too much, cut it into chunks and put it in boiling water for five minutes.
 2. Add the broccoli to a food processor together with the rest of the filling ingredients, and process until it's mostly smooth. If the mixture is too dry, you can add a small amount of soy milk to help it blend.

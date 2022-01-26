@@ -5,6 +5,7 @@
   "rules": {
     "void-style": ["error", { "style": "selfclosing" }],
     "wcag/h30": ["off"],
+    "wcag/h37": ["off"],
     "no-trailing-whitespace": ["off"],
     "no-deprecated-attr": ["off"],
     "long-title": ["off"],

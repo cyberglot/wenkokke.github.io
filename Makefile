@@ -159,11 +159,7 @@ test-feed-validator: build check-feed-validator
 ########################################
 
 .PHONY: deploy
-deploy:
-	@echo "Cleaning up..."
-	make clobber
-	@echo "Building site..."
-	make build
+deploy: test
 	@echo "Creating main branch..."
 	git fetch --all
 	git checkout -b main --track origin/main
