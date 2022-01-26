@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+    <head>
+        <meta charset="utf-8"/>
+        <link href="http://gmpg.org/xfn/11" rel="profile"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+
+        <title>
+                    Broccoli Puffs
+                </title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="../../assets/css/style.css"/>
+
+        <!-- RSS -->
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml"/>
+
+        <!-- Fix citations -->
+        <script>
+         document.addEventListener("DOMContentLoaded", function () {
+             const citations = document.querySelectorAll('.citation');
+             for (let citationSpan of citations) {
+                 const firstRefId = citationSpan.getAttribute('DATA-CITES').split(' ');
+                 const citationLink = document.createElement('A');
+                 citationLink.innerHTML = citationSpan.innerHTML;
+                 citationLink.setAttribute('href', '#'+firstRefId);
+                 citationSpan.replaceWith(citationLink);
+             }
+         });
+        </script>
+
+        <!-- Setup KaTeX -->
+        <script defer src="../../assets/js/katex.min.js"></script>
+        <script>
+         document.addEventListener("DOMContentLoaded", function () {
+             const mathElements = document.getElementsByClassName("math");
+             const macros = [];
+             for (var i = 0; i < mathElements.length; i++) {
+                 const texText = mathElements[i].firstChild;
+                 if (mathElements[i].tagName == "SPAN") {
+                     katex.render(texText.data, mathElements[i], {
+                         displayMode: mathElements[i].classList.contains('display'),
+                         throwOnError: false,
+                         macros: macros,
+                         fleqn: true
+                     });
+                 }
+             }
+         });
+        </script>
+    </head>
+    <body>
+        <header class="sidebar">
+            <div class="container sidebar-sticky">
+                <div class="sidebar-about">
+                    <img class="sidebar-about-photo" src="../../assets/images/me.png" alt="It&#39;s me!"/>
+                    <h1><a href="https://wen.works">All The Language</a></h1>
+                    <p class="lead">
+                        Hiya!
+                        I&#39;m <span class="tooltip" title="/wɛn/">Wen</span>.
+                        I study natural language, programming languages and logical languages.
+                        Basically, all the language…
+                    </p>
+                </div>
+                <nav class="sidebar-nav">
+                    <a class="sidebar-nav-item" href="../../">
+                        Blog
+                    </a>
+                    <a class="sidebar-nav-item" href="../../pubs/">
+                        Pubs
+                    </a>
+                </nav>
+                <nav class="sidebar-nav">
+                    <a class="sidebar-nav-item sidebar-nav-icon" href="mailto:me@wen.works">
+                        <i class="far fa-envelope"></i>
+                    </a>
+                    <a class="sidebar-nav-item sidebar-nav-icon" href="https://github.com/wenkokke">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a class="sidebar-nav-item sidebar-nav-icon" href="https://twitter.com/wenkokke">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="sidebar-nav-item sidebar-nav-icon" href="https://www.paypal.me/wenkokke">
+                        <i class="fab fa-paypal"></i>
+                    </a>
+                </nav>
+                <div class="sidebar-about">
+                    © 2020. All rights reserved.
+                </div>
+            </div>
+        </header>
+        <main class="content container">
+            <article class="recipe">
+                <header>
+                    <h2 class="recipe-title">Broccoli Puffs</h2>
+                </header>
+                <p>These broccoli puffs started out their life as a quiche by <a href="https://www.degroenemeisjes.nl/hartige-broccolitaart/">the Groene Meisjes</a>, but over time, they changed, became smaller, cuter, and puffier!</p>
+                <!--more-->
+                <figure>
+                <img src="../../assets/images/broccoli-puffs.jpg" alt="Puff pastry cups with a broccoli filling topped with rosemary and a roasted cherry tomato."/><figcaption aria-hidden="true">Puff pastry cups with a broccoli filling topped with rosemary and a roasted cherry tomato.</figcaption>
+                </figure>
+                <p>The filling is about equal amounts of tofu and broccoli, a dash of oil, a generous helping of nooch, and various herbs and spices. For me, there’s usually lots of rosemary, and I usually top the puffs with fresh rosemary for serving.</p>
+                <p>What about the extras? The original recipe uses chunks of sun-dried tomatoes, and tops the quiche with toasted sliced almonds, rosemary, and roasted cherry tomatoes. Honestly, that all works great. Recently, I found some half-decent vegan chorizo, and I’ve started mixing in chunks of roasted chorizo and crunchy roasted broccoli.</p>
+                <h4 id="ingredients">Ingredients</h4>
+                <dl>
+                <dt>Pastry</dt>
+                <dd>I’d recommend buying some puff pastry. Most of them are accidentally vegan, so it should be easy to find a suitable brand.
+                </dd>
+                <dt>Filling</dt>
+                <dd><ul>
+                <li>one head of broccoli</li>
+                <li>firm tofu (about 200g)</li>
+                <li>nutritional yeast (½ cup)</li>
+                <li>garlic (minced, 1 tbsp)</li>
+                <li>rosemary (2 tsp)</li>
+                <li>thyme (1 tsp)</li>
+                <li>chilli flakes (½ tsp)</li>
+                <li>olive oil (a dash)</li>
+                <li>pepper (a pinch)</li>
+                <li>salt (a pinch)</li>
+                </ul>
+                </dd>
+                <dt>Extras</dt>
+                <dd><ul>
+                <li>cherry tomatoes</li>
+                <li>roasted chorizo</li>
+                <li>roasted broccoli</li>
+                <li>sliced almonds</li>
+                <li>pine seeds</li>
+                <li>sun-dried tomatoes</li>
+                </ul>
+                </dd>
+                </dl>
+                <h4 id="instructions">Instructions</h4>
+                <ol type="1">
+                <li>Prepare the broccoli. You can cook it, steam it, roast it. Whatever you feel like. Just make sure it isn’t raw anymore. If you don’t wanna think too much, cut it into chunks and put it in boiling water for five minutes.</li>
+                <li>Add the broccoli to a food processor together with the rest of the filling ingredients, and process until it’s mostly smooth. If the mixture is too dry, you can add a small amount of soy milk to help it blend.</li>
+                <li>If you wish to add any extras, now’s the time! I like to stir roasted bits of broccoli and vegan chorizo into the mixture, and then add a single cherry tomato at the centre of each puff.</li>
+                <li>Roll out, cut, and shape, and fill the puff pastry. I like to use a muffin tin for this, but whatever floats your boat.</li>
+                <li>Bake according to the puff pastry’s instructions, usually 20 minutes at 220°C.</li>
+                </ol>
+            </article>
+        </main>
+    </body>
+</html>
