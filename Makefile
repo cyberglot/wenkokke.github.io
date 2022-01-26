@@ -10,6 +10,16 @@ CABAL ?= $(wildcard $(shell which cabal))
 NPX ?= $(wildcard $(shell which npx))
 RBENV ?= $(wildcard $(shell which rbenv))
 
+default: build
+
+########################################
+# Command-line arguments
+########################################
+
+# make test:
+#   - CHECK_EXTERNAL_LINKS:
+#     If set, external links are checked.
+
 
 ########################################
 # Initialize Git Hooks
@@ -86,36 +96,62 @@ serve: check-browser-sync
 ########################################
 # Test site with:
 # - HTMLProofer
+# - html-validate
 # - feed-validator
 ########################################
 
 .PHONY: test
-test: build test-html-proofer test-feed-validator
+test: build test-html-proofer test-html-validate test-feed-validator
+
+
+# HTMLProofer
 
 HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
 
 HTML_PROOFER_ARGS += --check-html
-HTML_PROOFER_ARGS += --report-invalid-tags
-HTML_PROOFER_ARGS += --report-missing-names
-HTML_PROOFER_ARGS += --report-script-embeds
-HTML_PROOFER_ARGS += --report-missing-doctype
-HTML_PROOFER_ARGS += --report-eof-tags
-HTML_PROOFER_ARGS += --report-mismatched-tags
 HTML_PROOFER_ARGS += --check-img-http
 HTML_PROOFER_ARGS += --check-opengraph
+ifeq (,$(CHECK_EXTERNAL_LINKS))
+HTML_PROOFER_ARGS += --disable-external
+endif
 HTML_PROOFER_ARGS += --file-ignore="/\.\/assets\/.*\.html/"
+HTML_PROOFER_ARGS += --report-eof-tags
+HTML_PROOFER_ARGS += --report-invalid-tags
+HTML_PROOFER_ARGS += --report-missing-names
+HTML_PROOFER_ARGS += --report-missing-doctype
+HTML_PROOFER_ARGS += --report-mismatched-tags
+HTML_PROOFER_ARGS += --report-script-embeds
 HTML_PROOFER_ARGS += .
 
 .PHONY: test-html-proofer
 test-html-proofer: build check-html-proofer
+	@echo "Checking HTML..."
 	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
+
+
+# html-validate
+
+HTML_VALIDATE ?= $(wildcard $(shell which html-validate))
+
+HTML_VALIDATE_ARGS += .
+
+.PHONY: test-html-validate
+test-html-validate: build check-html-validate
+	@echo "Checking HTML..."
+	@(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
+
+
+# feed-validator
 
 FEED_VALIDATOR ?= $(wildcard $(shell which feed-validator))
 
+FEED_VALIDATOR_ARGS += --config ../.feed-validator.config.js
+FEED_VALIDATOR_ARGS += --no-showfeed
 FEED_VALIDATOR_ARGS += rss.xml
 
 .PHONY: test-feed-validator
 test-feed-validator: build check-feed-validator
+	@echo "Checking rss.xml..."
 	@(cd $(OUT_DIR) && $(FEED_VALIDATOR) $(FEED_VALIDATOR_ARGS))
 
 
@@ -189,6 +225,12 @@ endif
 ifeq (,$(FEED_VALIDATOR))
 check-feed-validator: check-node
 	@$(eval FEED_VALIDATOR := npx feed-validator)
+endif
+
+.PHONY: check-html-validate
+ifeq (,$(HTML_VALIDATE))
+check-html-validate: check-node
+	@$(eval HTML_VALIDATE := npx html-validate)
 endif
 
 .PHONY: check-node

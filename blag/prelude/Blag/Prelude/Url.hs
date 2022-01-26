@@ -5,7 +5,7 @@ module Blag.Prelude.Url where
 import Blag.Prelude.FilePath
   ( joinPath,
     splitDirectories,
-    takeDirectory,
+    takeDirectory, makeRelative
   )
 import Data.Text (Text)
 import Data.Text qualified as Text
@@ -18,8 +18,8 @@ implicitIndexFile = Text.replace "index.html" ""
 -- | Make a Url relative to the site's root directory.
 --
 --   Adapted from hakyll's 'Hakyll.Web.Html.RelativizeUrls.relativizeUrls'
-relativizeUrl :: FilePath -> Url -> Url
-relativizeUrl out url
+relativizeUrl :: FilePath -> FilePath -> Url -> Url
+relativizeUrl outDir out url
   | "/" `Text.isPrefixOf` url && not ("//" `Text.isPrefixOf` url) = Text.pack (toRoot out) <> url
   | otherwise = url
   where
@@ -30,3 +30,4 @@ relativizeUrl out url
         . filter (`notElem` [".", "/", "./"])
         . splitDirectories
         . takeDirectory
+        . makeRelative outDir

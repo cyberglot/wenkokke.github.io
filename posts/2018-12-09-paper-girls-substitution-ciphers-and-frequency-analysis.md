@@ -77,7 +77,7 @@ I'll be using the first five issues of *Paper Girls* for this, because that's ho
 And then?
 
 
-### Frequency analysis
+## Frequency analysis
 
 Let's do a wee bit of counting, shall we?
 First off, we're gonna blindly assume that spaces mean spaces, apostrophe means apostrophe---I've only found one in the entire series so far---and comma means comma.
@@ -161,7 +161,7 @@ Those first peaks look pretty convincing, so let's assume '<span class="font-pap
 What else can we do?
 
 
-### Common words
+## Common words
 
 We can have a look at the single-letter words!
 Let's pretend we don't know English.
@@ -206,7 +206,7 @@ They seem like pretty likely candidates for 'to', 'it', and 'at', so it seems qu
 We could continue with this trick for quite a while, using three-letter words, four-letter words, bi-grams, tri-grams, etc. However, we could quite quickly run into the problem that the data we have is really quite sparse, and we can only really solve that by reading more *Paper Girls* and adding more phrases to our database… which… well, the first part of that sounds like fun. However, there is one trick which we can still quite easily exploit…
 
 
-### Double letters
+## Double letters
 
 Let's do some counting of *repeated letters*, such as the 'tt' in letters, and see how those patterns compare to those found in English. We do this by zipping the data with the data offset by one--e.g. from `"hello"` we would get `[('h','e'), ('e','l'), ('l','l'), ('l','o')]`---and then picking only the pairs where both letters are the same---in our example, `('l','l')`.
 
@@ -255,7 +255,7 @@ doubles_or_mirrored_counts = sorted(
 Ah, that makes *way* more sense.
 We can still probably assume that '<span class="font-papergirls">LL</span>' is 'll', and it probably makes sense to stick to our guns and say that '<span class="font-papergirls">Oo</span>' is 'oo' and '<span class="font-papergirls">Ee</span>' is 'ee'.
 
-### Too many characters
+## Too many characters
 
 Eek! So let's get to that whole "too many characters thing".
 See, if our hypothesis is true, and this is really English, then we'd kinda expect to see at most 26 characters.
@@ -272,7 +272,7 @@ Moreover, almost every speech bubble ends with one of these characters, the only
 We can assume that these are '.', '!', and '?', in order of frequency.
 Honestly, it doesn't hurt too much if we get these wrong, the only important thing is that---if these truly are punctuation---we don't try to assign letters to them.
 
-### Write down everything we've got!
+## Write down everything we've got!
 
 Right, so, we've made quite a few guesses by now, let's see if that gets us anywhere.
 First, let's write down everything we've got…
@@ -353,7 +353,7 @@ We can keep doing this, and eventually we'll manage to find guesses for most of 
 The authors have even included an 'x' and a 'q' in such natural words such as 'vertex' and 'tuplequad'.
 Honestly, that last one took me a while. The 'ua' and the fact that it was either gonna be a 'q' or a 'z' helped.
 
-### …and then you make a nice table
+## …and then you make a nice table
 
 Woo!
 We've done it!

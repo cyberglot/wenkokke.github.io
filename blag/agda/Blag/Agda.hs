@@ -12,6 +12,7 @@ module Blag.Agda
     getStandardLibrary,
     markdownOutputPath,
     latexOutputPath,
+    isAgdaFile,
   )
 where
 
@@ -23,6 +24,7 @@ import Data.List qualified as List
 import Data.Map (Map)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe)
+import Data.Text (Text)
 import Data.Text qualified as Text
 import Data.Text.ICU qualified as RE
 import Data.Text.ICU.Replace qualified as RE
@@ -44,7 +46,7 @@ data Library = Library
     -- | A canonical URL to which to redirect links.
     canonicalBaseUrl :: Url
   }
-  deriving (Show)
+  deriving (Eq, Show)
 
 fullIncludePaths :: Library -> [FilePath]
 fullIncludePaths lib@Library {..} = [libraryRoot </> includePath | includePath <- includePaths]
@@ -237,3 +239,7 @@ getAgdaFilesInDirectory :: MonadIO m => FilePath -> m [FilePath]
 getAgdaFilesInDirectory dir =
   liftIO $
     getDirectoryFilesIO dir ["//*.agda", "//*.lagda", "//*.lagda.md", "//*.lagda.org", "//*.lagda.rst", "//*.lagda.tex"]
+
+-- | Check if the path points to an Agda or literate Agda file.
+isAgdaFile :: FilePath -> Bool
+isAgdaFile src = any (?== src) ["//*.agda", "//*.lagda", "//*.lagda.md", "//*.lagda.org", "//*.lagda.rst", "//*.lagda.tex"]

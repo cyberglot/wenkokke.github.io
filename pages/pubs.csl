@@ -22,17 +22,17 @@
   <!-- Macros -->
   <macro name="issued">
     <date variable="issued">
-      <date-part name="month" form="long" suffix=" "/>
-      <date-part name="year" form="long"/>
+      <date-part name="month" form="long" suffix=" " />
+      <date-part name="year" form="long" />
     </date>
   </macro>
   <macro name="coauthor">
     <group delimiter=" ">
-      <text term="in collaboration with"/>
+      <text term="in collaboration with" />
       <names variable="author">
         <name delimiter=", " and="text">
-          <name-part name="given"/>
-          <name-part name="family"/>
+          <name-part name="given" />
+          <name-part name="family" />
         </name>
       </names>
     </group>
@@ -40,41 +40,32 @@
   <macro name="locators">
     <group delimiter=", ">
       <group delimiter=" ">
-        <text term="volume" form="short"/>
-        <number variable="volume" form="numeric"/>
+        <text term="volume" form="short" />
+        <number variable="volume" form="numeric" />
       </group>
       <group delimiter=" ">
-        <number variable="number-of-volumes" form="numeric"/>
-        <text term="volume" form="short" plural="true"/>
+        <number variable="number-of-volumes" form="numeric" />
+        <text term="volume" form="short" plural="true" />
       </group>
       <group delimiter=" ">
-        <text term="issue" form="short"/>
-        <number variable="issue" form="numeric"/>
+        <text term="issue" form="short" />
+        <number variable="issue" form="numeric" />
       </group>
     </group>
   </macro>
   <macro name="title">
-    <choose>
-      <if variable="URL">
-        <text prefix="{{html}}&lt;a name=&quot;{{/html}}" suffix="{{html}}&quot;{{/html}}" variable="ref-id"/>
-        <text prefix="{{html}}href=&quot;{{/html}}" suffix="{{html}}&quot;&gt;{{/html}}" variable="URL"/>
-        <text variable="title" font-style="italic" suffix="{{html}}&lt;/a&gt;{{/html}}"/>
-      </if>
-      <else>
-        <text variable="title" font-style="italic" />
-      </else>
-    </choose>
+    <text variable="title" font-style="italic" />
   </macro>
   <macro name="publisher">
     <group delimiter=" ">
-      <text variable="publisher"/>
-      <text variable="publisher-place"/>
+      <text variable="publisher" />
+      <text variable="publisher-place" />
     </group>
   </macro>
   <macro name="journal">
     <group delimiter=" ">
-      <text term="in"/>
-      <text variable="container-title" font-style="italic" form="short"/>
+      <text term="in" />
+      <text variable="container-title" font-style="italic" form="short" />
     </group>
   </macro>
   <macro name="event">
@@ -85,20 +76,20 @@
           <if variable="container-title">
             <group delimiter=", ">
               <group delimiter=" ">
-                <text term="in"/>
-                <text variable="container-title" font-style="italic"/>
+                <text term="in" />
+                <text variable="container-title" font-style="italic" />
               </group>
-              <text variable="event-place"/>
+              <text variable="event-place" />
             </group>
           </if>
           <!-- Unpublished Conference Paper -->
           <else>
             <group delimiter=", ">
               <group delimiter=" ">
-                <text term="presented at"/>
-                <text variable="event"/>
+                <text term="presented at" />
+                <text variable="event" />
               </group>
-              <text variable="event-place"/>
+              <text variable="event-place" />
             </group>
           </else>
         </choose>
@@ -106,13 +97,38 @@
       <else-if type="speech" match="any">
         <group delimiter=", ">
           <group delimiter=" ">
-            <text term="presented at"/>
-            <text variable="event" font-style="italic"/>
+            <text term="presented at" />
+            <text variable="event" font-style="italic" />
           </group>
-          <text variable="event-place"/>
-          <text macro="issued"/>
+          <text variable="event-place" />
+          <text macro="issued" />
         </group>
       </else-if>
+    </choose>
+  </macro>
+  <macro name="type">
+    <choose>
+      <if type="manuscript">
+        <text value="draft" />
+      </if>
+      <else-if type="article article-journal article-magazine article-newspaper" match="any">
+        <text value="article" />
+      </else-if>
+      <else-if type="book">
+        <text value="book" />
+      </else-if>
+      <else-if type="chapter paper-conference" match="any">
+        <text value="paper" />
+      </else-if>
+      <else-if type="thesis">
+        <text value="thesis" />
+      </else-if>
+      <else-if type="speech">
+        <text value="talk" />
+      </else-if>
+      <else>
+        <text value="pub" />
+      </else>
     </choose>
   </macro>
   <!-- Bibliography -->
@@ -122,65 +138,76 @@
         <!-- Drafts -->
         <if type="manuscript">
           <group delimiter=", " suffix=". ">
-            <text macro="title"/>
-            <text macro="coauthor"/>
-            <text macro="issued"/>
+            <text macro="title" />
+            <text macro="coauthor" />
+            <text macro="issued" />
           </group>
         </if>
         <!-- Journal Articles -->
         <else-if type="article-journal">
           <group delimiter=", " suffix=". ">
-            <text macro="title"/>
-            <text macro="coauthor"/>
-            <text macro="journal"/>
-            <text macro="issued"/>
+            <text macro="title" />
+            <text macro="coauthor" />
+            <text macro="journal" />
+            <text macro="issued" />
           </group>
         </else-if>
         <!-- Books -->
         <else-if type="book">
           <group delimiter=", " suffix=". ">
-            <text macro="title"/>
-            <text macro="coauthor"/>
-            <text macro="locators"/>
+            <text macro="title" />
+            <text macro="coauthor" />
+            <text macro="locators" />
           </group>
         </else-if>
         <!-- Conference and Workshop Papers -->
         <else-if type="chapter paper-conference" match="any">
           <group delimiter=", " suffix=". ">
-            <text macro="title"/>
-            <text macro="coauthor"/>
-            <text macro="event"/>
+            <text macro="title" />
+            <text macro="coauthor" />
+            <text macro="event" />
           </group>
         </else-if>
         <!-- Theses -->
         <else-if type="thesis">
           <group delimiter=", " suffix=". ">
-            <text macro="title"/>
-            <text macro="coauthor"/>
-            <text variable="genre"/>
-            <text macro="issued"/>
+            <text macro="title" />
+            <text macro="coauthor" />
+            <text variable="genre" />
+            <text macro="issued" />
           </group>
         </else-if>
         <!-- Talks -->
         <else-if type="speech">
           <group delimiter=", " suffix=". ">
-            <text macro="title"/>
-            <text macro="event"/>
+            <text macro="title" />
+            <text macro="event" />
           </group>
         </else-if>
         <!-- Public Houses -->
         <else>
           <group delimiter=", " suffix=". ">
-            <text macro="title"/>
-            <text variable="publisher-place"/>
+            <text macro="title" />
+            <text variable="publisher-place" />
           </group>
         </else>
       </choose>
       <choose>
         <if type="manuscript article-journal book chapter paper-conference thesis speech" match="any">
-          <text prefix="(" suffix=".)" font-style="italic" variable="note"/>
+          <text prefix="(" suffix=".)" font-style="italic" variable="note" />
         </if>
       </choose>
     </layout>
   </bibliography>
+  <citation>
+    <sort>
+      <key variable="citation-number" />
+    </sort>
+    <layout>
+      <group delimiter=" ">
+        <text value="this" />
+        <text macro="type" />
+      </group>
+    </layout>
+  </citation>
 </style>

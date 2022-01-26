@@ -7,6 +7,7 @@ import Data.Function (fix)
 import Data.Map qualified as Map
 import Data.Maybe (catMaybes, fromMaybe, mapMaybe)
 import Data.Set qualified as Set
+import Data.Text (Text)
 
 type Anchor = Text
 

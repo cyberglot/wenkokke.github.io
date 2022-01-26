@@ -1,7 +1,16 @@
-module Blag.TagSoup where
+module Blag.Template.TagSoup (stripTags, withUrls, module TagSoup) where
 
 import Blag.Prelude
 import Text.HTML.TagSoup qualified as TagSoup
+import Data.Text (Text)
+import Data.Maybe (mapMaybe)
+
+-- Strip HTML.
+stripTags :: Text  -> Text
+stripTags = mconcat . mapMaybe tag . TagSoup.parseTags
+  where
+    tag (TagSoup.TagText text) = Just text
+    tag _ = Nothing
 
 -- | Apply a function to each Url in a raw HTML document.
 --

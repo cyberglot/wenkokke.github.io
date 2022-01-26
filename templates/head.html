@@ -1,17 +1,22 @@
 <head>
-    <meta charset="utf-8">
-    <link href="http://gmpg.org/xfn/11" rel="profile">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="utf-8"/>
+    <link href="http://gmpg.org/xfn/11" rel="profile"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
 
-    <title>$site.title$</title>
+    <title>
+        $if(title)$
+        $title$
+        $else$
+        $site.title$
+        $endif$
+    </title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css"/>
 
     <!-- RSS -->
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml"/>
 
     <!-- Fix citations -->
     <script>
@@ -29,7 +34,7 @@
 
     <!-- Setup KaTeX -->
     <script defer src="/assets/js/katex.min.js"></script>
-    <script type="text/javascript">
+    <script>
      document.addEventListener("DOMContentLoaded", function () {
          const mathElements = document.getElementsByClassName("math");
          const macros = [];

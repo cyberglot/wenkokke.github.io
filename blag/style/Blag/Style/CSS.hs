@@ -1,32 +1,31 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Blag.Style.CSS
-  ( minifyCSS
-  , minifyCSSWith
-  , Hasmin.Config (..)
-  , Hasmin.ColorSettings (..)
-  , Hasmin.DimensionSettings (..)
-  , Hasmin.GradientSettings (..)
-  , Hasmin.FontWeightSettings (..)
-  , Hasmin.LetterCase (..)
-  , Hasmin.SortingMethod (..)
-  , Hasmin.RulesMergeSettings (..)
-  ) where
+  ( minifyCSS,
+    minifyCSSWith,
+    minifyCssDefaultConfig,
+    Hasmin.Config (..),
+    Hasmin.ColorSettings (..),
+    Hasmin.DimensionSettings (..),
+    Hasmin.GradientSettings (..),
+    Hasmin.FontWeightSettings (..),
+    Hasmin.LetterCase (..),
+    Hasmin.SortingMethod (..),
+    Hasmin.RulesMergeSettings (..),
+  )
+where
 
-import Blag.Prelude
+import Blag.Prelude (Action, liftEither)
+import Data.Text (Text)
 import Hasmin qualified
 
-instance Default Hasmin.Config where
-  def = Hasmin.defaultConfig
+minifyCssDefaultConfig :: Hasmin.Config
+minifyCssDefaultConfig = Hasmin.defaultConfig
 
 -- | Minify CSS using 'Hasmin'.
 minifyCSS :: Text -> Action Text
-minifyCSS = minifyCSSWith def
+minifyCSS = minifyCSSWith Hasmin.defaultConfig
 
 -- | Minify CSS with options.
 minifyCSSWith :: Hasmin.Config -> Text -> Action Text
-minifyCSSWith opts css = liftEither (Hasmin.minifyCSSWith opts css)
-
-liftEither :: MonadFail m => Either String a -> m a
-liftEither (Left  e) = fail e
-liftEither (Right a) = return a
+minifyCSSWith opts css = liftEither id (Hasmin.minifyCSSWith opts css)

@@ -17,7 +17,7 @@ I figured it would be more fun if, instead of rewriting the type checker example
 
 <!--more-->
 
-### Natural Deduction and the λ-Calculus
+# Natural Deduction and the λ-Calculus
 
 We'll start our discussion with the syntax of types. Usually, types are defined inductively over some set of atomic types. We don't really care what these atomic types will be, so we might as well abstract over them:
 
@@ -157,7 +157,7 @@ Weakening is so obvious to programmers that they don't really think of it, but w
 Passing <a class="Agda InductiveConstructor">there</a> to <a class="Agda Function">struct</a> simply moves every value by one: the first value becomes the second, the second becomes the third, etc… In the new antecedent, the first value will be our "irrelevant stuff".
 
 
-### Sequent Calculus and Natural Deduction
+# Sequent Calculus and Natural Deduction
 
 We've got enough to start talking about the sequent calculus now. The sequent calculus is a different way of writing down logical systems, and it has some pros and cons when compared to natural deduction. It's usual presentation is as follows:
 
@@ -218,7 +218,7 @@ Likewise, sequent calculus comes equipped with its own notion of computation: cu
 *Alas*! It may be too much effort for a single post to implement both of these logics *and* a procedure for cut elimination. However, there *is* a much simpler thing we can do. Agda itself has a pretty servicable implementation of β-reduction for Agda terms, and we can quite easily piggyback on that mechanism. In fact, most of the articles I linked to at the beginning do exactly this.
 
 
-### Interpretations in Agda
+# Interpretations in Agda
 
 As a first step, we write down what an interpretation is---and since we want to use the intepretation brackets in as many places as possible, we create a type class for it, and give <a class="Agda Field Operator">⟦_⟧</a> the least restrictive type possible:
 

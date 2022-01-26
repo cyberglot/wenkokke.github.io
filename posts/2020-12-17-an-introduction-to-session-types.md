@@ -9,7 +9,7 @@ Session types. Ostensibly, I’ve studied them for the past few years, so I shou
 
 Let’s start out with a *dramatis personæ*.
 
-## Dramatis Personæ
+# Dramatis Personæ
 
 Session types are about *channels*, which are like *tin can telephones*, in that you can use your tin to whisper sweet little nothings to every friend who has a tin connected to yours. I know, my love for tin can telephones is betraying my age a little—I’m an old Victorian lady.
 
@@ -40,7 +40,7 @@ Most of the literature on session types considers only the classic scenario, in 
 In this blog post, we I’ll focus on *binary session types*
 
 
-## Session Types *at a Glance*
+# Session Types *at a Glance*
 
 Let’s imagine for a moment that Ada were to take Briar up on her offer, and ask her to sample her famous milk puddings. Briar, a proper lady, only offers her milk puddings to those who make a *sufficiently polite* request—Ada must be polite and say “please”, but she must not overuse it, lest she comes off as begging!
 
@@ -101,7 +101,7 @@ ada chan = tryAll MayIHaveSomePudding chan
 But that’s not what the protocol says! Briar doesn’t have time for more than one request, so after the first one has run its course, Ada whispers her second request into the tin can, then waits forever, pining for a response from Briar which will never come!
 
 
-## A Bit of a Roadmap
+# A Bit of a Roadmap
 
 Only a few short years after Ada and Briar enjoyed sweet milk puddings, a man by the name of *Alonzo Church* was born in Washington, D.C., in the United States. Three decades later, in the 1930s, Alonzo developed [the λ-calculus][church1932], a foundational calculus which studies computation using *functions*. To this day, the λ-calculus underpins most theories of functional programming languages. Talk about influential!
 
@@ -114,7 +114,7 @@ Then, we’ll switch to discussing the π-calculus. It’s a wonderful little la
 Finally, we’ll talk about having the best of both worlds, in a concurrent λ-calculus, which is sorta what you get when you smash the λ-calculus and the π-calculus together at high speeds! The concurrent λ-calculus has the best of both worlds: higher-order functions and concurrency with message-passing communication!
 
 
-## The λ-calculus! *(So powerful, so scary…)*
+# The λ-calculus! *(So powerful, so scary…)*
 
 The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function applications to get rid of ’em:
 
@@ -340,7 +340,7 @@ All in all, we’ve identified *two* main problems with using the untyped λ-cal
 Specifically, for the second problem, we have the choice between programs which get stuck and programs which compute nonsense. If we want programs that misuse data to get stuck, we tag our data—by using, *e.g.*, a syntactically distinct $\text{zero}$ constructor—and check the types of our data at runtime. If we’re fine with the misuse of data, we encode everything as functions, and accept whatever results fall out of our encoding.
 
 
-## Taming the λ-calculus with types…
+# Taming the λ-calculus with types…
 
 So, we’ve got a lot of scary stuff going on, stuff we really rather wouldn’t have, like programs which uselessly loop forever, and programs which try to add numbers to functions. What can we do?
 
@@ -433,7 +433,7 @@ Queue the history of type theory, trying to wrangle with this, trying to make th
 It’s, *uh*, pretty hard to get *extactly* the bad looping stuff out, so some folks are like “eh, we’ll keep the looping stuff, but still use types to get rid of all that ‘adding functions to numbers’ nonsense”, whereas other folks are all hardcore and decide that “no it has to be terminating all the way even if it becomes pretty hard to use!”
 
 
-## A detour into linearity!
+# A detour into linearity!
 
 Let’s briefly talk about another type system for the λ-calculus—but only because it’ll turn out to be highly relevant to session types, I haven’t forgotten what I promised to write about! Let’s talk about [the linear λ-calculus][wadler1993].
 
@@ -484,7 +484,7 @@ Notice that $A \multimap B$ being a linear function isn’t something that follo
 As a type system, this is *highly restrictive*. Essentially, what we’re left with is a calculus of permutations. Think of lists… if you’re writing a function from lists to lists, but you *have to* use every element in the list exactly once, what kinds of programs can you write? Permutations. That’s it.
 
 
-## The π-calculus! *(Is even scarier…)*
+# The π-calculus! *(Is even scarier…)*
 
 Oof, that was a bit of a detour, wasn’t it? Wanna talk about *session types*, the thing that I promised I’d talk about? Okay, let’s do it! The π-calculus is pretty young—it didn’t show up until 1992, though it’s heavily influenced by ideas dating back to the 1980s. Unlike with the λ-calculus, there’s not really a *canonical* π-calculus that everyone agrees on, so the one I’m presenting here is just kinda the version that I felt like presenting.
 
@@ -707,7 +707,7 @@ To be fair, it’s not surprising that race conditions and deadlocks show up in 
 4. it has *deadlocks*.
 
 
-## Taming the π-calculus with types…
+# Taming the π-calculus with types…
 
 Oh dear, so many problems to solve. Where do we begin?
 
@@ -954,7 +954,7 @@ Anyway, we’ve now got a *mostly* safe foundation for session types! You don’
 Once we’ve got this foundation, we can get to work extending it! With a little bit of effort we could add branching, replication, recursion, several forms of shared state, polymorphism, higher-order processes, *etc.* However, figuring out how all this stuff works in the context of the π-calculus seems like a bit of a waste, especially when we already know how they work within the context of the λ-calculus. Plus, doesn’t that “adding higher-order processes” thing sound suspiciously like adding higher-order functions?
 
 
-## Concurrent λ-calculus *(λ and π, together forever)*
+# Concurrent λ-calculus *(λ and π, together forever)*
 
 Okay, this will be the *final* computational model I’m introducing in this by now rather long blog post, I promise! The point of concurrent λ-calculus, in short, is this: the π-calculus is great for modelling concurrency, but it’s a rather, *uh*, unpleasant language to actually write programs in, and instead of figuring out how to make it a nice language, why not just smash it together with a thing that we already know and love!
 
@@ -1164,7 +1164,7 @@ $\begin{array}{l}
 Oof, we’ve done it! We’ve got the whole reduction system!
 
 
-## Two Victorian Ladies *(More Formal, Somehow?)*
+# Two Victorian Ladies *(More Formal, Somehow?)*
 
 Our formal concurrent λ-calculus is getting pretty close to being able to encode the interaction between [Ada and Briar](#Ada-and-Briar)! Remember that, like a billion words ago? There’s two problems left, if we want to encode our example:
 
@@ -1628,7 +1628,7 @@ $$
 *Yes*, we’ve shown that our program is correct! It makes Ada happy! What more could you want?
 
 
-## Taming the concurrent λ-calculus with types…
+# Taming the concurrent λ-calculus with types…
 
 Types? Is it types? It *should be!* Just because our happy example works out, doesn’t mean the calculus as a whole is well-behaved. See, we can still encode <a name="formal-cheeky-Ada"></a> [cheeky Ada](#cheeky-Ada), who’ll do anything for that sweet, sweet pudding:
 
@@ -1854,21 +1854,21 @@ Phew, I think that’s it! We’ve got typing rules! Specifically, we’ve now g
 Unfortunately, this type system for the concurrent λ-calculus has similar problems to the type system we showed for the π-calculus… it’s really very restrictive, and yet it still has deadlocks if you start mixing multiple sessions. Fortunately, the same solutions we gave for the π-calculus can be used here. [Philip Wadler][wadler2014] has an example of the first solution, where you glue together ν-binders and parallel composition, in a calculus he calls *Good Variation*. [Luca Padovani and Luca Novara][padovani2015] have an example of the second solution, where you do a global check to see if you have any cyclic dependencies.
 
 
-## Session End
+# Session End
 
 Whew, that sure was quite a number of words! Let’s look back on what we learned:
 
-#### The λ-calculus
+# The λ-calculus
 
 - The untyped λ-calculus is a really neat model of computation, but it’s got some problems, namely programs which do nothing forever, and programs which do silly things like adding numbers to functions.
 - There’s several approaches to mitigate these problems via type systems, but it’s always a struggle between how many bad programs you rule out versus how many good programs you rule out with them—and how unwieldy your type system gets.
 
-#### The π-calculus
+# The π-calculus
 
 - The untyped π-calculus is, like the λ-calculus, a really neat model of computation, and it’s even more expressive, in that it can model concurrency. However, this comes with all the problems of concurrency. Suddenly, we find ourselves facing deadlocks and race conditions!
 - There’s several approaches to mitigate these problems via type systems, but again, it’s always a struggle between how many bad programs you rule out versus how many good programs you rule out with them—and how unwieldy your type system gets.
 
-#### The concurrent λ-calculus
+# The concurrent λ-calculus
 
 - We can smash together the λ-calculus and the π-calculus to get the concurrent λ-calculus, with the best of both worlds—it has higher-order functions *and* can model concurrency—and the worst of both worlds—now you’ve got to reason about higher-order functions *and* concurrency!
 - Unsurprisingly, the semantics and type systems for the concurrent λ-calculus look a lot like what you’d get if you smashed the semantics and type systems for the λ-calculus and the π-calculus together, but there’s some tiny tweaks we need to make to get them to behave like we want to.

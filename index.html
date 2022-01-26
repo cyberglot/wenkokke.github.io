@@ -1,17 +1,13 @@
----
-title: All The Language
----
-
 <div class="posts">
     $for(post)$
     <article class="post">
         <header>
-            <h1 class="post-title"><a href="$post.url$">$post.title$</a></h1>
+            <h2 class="post-title"><a href="$post.url$">$post.title$</a></h2>
             <span class="post-date">$post.date$</span>
         </header>
-        $if(post.teaser)$
+        $if(post.teaser_html)$
         <section>
-            $post.teaser$
+            $post.teaser_html$
         </section>
         $endif$
     </article>

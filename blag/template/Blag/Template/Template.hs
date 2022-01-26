@@ -1,42 +1,14 @@
-module Blag.Pandoc
-  ( module Pandoc,
-    runPandocIO,
-    Template,
-    compileTemplate,
-    compileTemplateFile,
-    renderTemplate,
-    applyAsTemplate,
-    applyTemplate,
-    applyTemplates,
-    module Metadata,
-    module Url,
-    module Postprocess,
-  )
-where
+module Blag.Template.Template where
 
-import Blag.Pandoc.Metadata (Metadata (..))
-import Blag.Pandoc.Metadata as Metadata
-import Blag.Pandoc.Url as Url
-import Blag.Pandoc.Postprocess as Postprocess
-import Blag.Prelude
-import Control.Exception (displayException)
-import Control.Monad (foldM)
-import Data.Aeson.Types (Value (Object))
+import Blag.Template.Metadata (Metadata (Metadata), constField)
+import Blag.Prelude (Action, liftIO, readFile', liftEither)
 import Text.DocLayout as Doc (render)
-import Text.Pandoc (PandocIO (..), runIO)
-import Text.Pandoc as Pandoc hiding (Format, Template, compileTemplate, getTemplateFile, renderTemplate)
-import Text.Pandoc.App as Pandoc
-import Text.Pandoc.Citeproc as Pandoc (processCitations)
-import Text.Pandoc.Readers.BibTeX as Pandoc (readBibTeX)
 import Text.Pandoc.Templates qualified as Template
-import Text.Pandoc.Writers.HTML as Pandoc (writeHtmlStringForEPUB)
+import Control.Monad (foldM)
+import Data.Aeson (Value(Object))
+import Data.Text (Text)
 
 type Template = Template.Template Text
-
-runPandocIO :: PandocIO a -> Action a
-runPandocIO act = do
-  resultOrError <- liftIO (runIO act)
-  liftEither displayException resultOrError
 
 compileTemplate :: FilePath -> Text -> Action Template
 compileTemplate filepath contents = do
@@ -53,10 +25,10 @@ renderTemplate template (Metadata obj) =
   Doc.render Nothing (Template.renderTemplate template (Object obj))
 
 applyAsTemplate ::
-  Text ->
   Metadata ->
+  Text ->
   Action Text
-applyAsTemplate template metadata = do
+applyAsTemplate metadata template = do
   tpl <- compileTemplate "" template
   return $ renderTemplate tpl metadata
 
@@ -80,7 +52,3 @@ applyTemplates ::
   Action Text
 applyTemplates templateFiles metadata body =
   foldM (\body templateFile -> applyTemplate templateFile metadata body) body templateFiles
-
-liftEither :: MonadFail m => (e -> String) -> Either e a -> m a
-liftEither pretty (Left e) = fail (pretty e)
-liftEither _ (Right a) = return a

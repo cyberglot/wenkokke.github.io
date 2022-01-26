@@ -11,7 +11,7 @@ I've had a bunch of discussions about this game over the years, most of which we
 I'll get back to that later in this post, though if you're familiar with the game, you may as well [skip the next section](#an-ai-playground).
 
 
-## The Rules
+# The Rules
 
 Before I get to showcasing my playground, it's probably prudent to at least briefly talk about the game. The rules of the game are fairly simple, so I'll summarise them here:
 
@@ -32,7 +32,7 @@ Each variant of the game adds their own rules to this, but this much is shared b
   - **Revolution**: Before the taxation, there is a check. If any player has *both* jokers in their hand, they may cry "Revolution!" If this happens, the taxation phase is skipped; if the lowest ranking player cries "Revolution!", instead of skipping the taxation, there is an actual revolution---the lowest ranking player changes places with the highest ranking player, and the second lowest ranking player changes places with the second highest ranking player.
 
 
-## An AI Playground
+# An AI Playground
 
 As I mentioned above, I feel that a very simple, rule-based AI could already competently play The Great Dalmuti. As a first step in demonstrating this, I've written a small playground where AIs can compete with one another. Below, you should see a number of tabs, the first of which is labelled 'Console'. In it, there should be a button that looks like this: <span class="runmain">&#9654;</span>. If you click it, the AIs in the other tabs will be pitted against one another in a game of The Great Dalmuti. Try it!
 
@@ -45,7 +45,7 @@ The default AIs---for now---are a little disappointing. There are some functions
 Much worse are `playBestCards` and `giveBestCards`, which make up Neil's AI, eager as he is to show how great his cards are, even if it means giving them to other players. And then finally, there's Ruth. She's just very nice, and wants to give other players a chance, so she's been written to pass every turn, even if she's starting a round. And when it comes to giving away cards, she just gives away the cards that she would be happiest receiving. So, you know, obviously there's some room for improvement in the department. At least, if competitive play is your goal.
 
 
-## Write your own AI
+# Write your own AI
 
 I'd love to make it easy for you, and tell you that you can write your AI in *any* language you want, but the matter of the fact is that you're reading this on what is basically a huge JavaScript interpreter. So AIs are written in JavaScript.
 
@@ -81,7 +81,7 @@ The second function, `give` is much simpler. You're given your hand of cards, an
 As a final tip for this section: there's a function built into my implementation of The Great Dalmuti, `allPlays(allowSplit,game)`, which returns all legal moves. The second argument, `game`, is simply the game state that you've been passed. The first argument, `allowSplit`, is a boolean flag. If `allowSplit` is set to true, then the returned moves will include moves which break up sets. Otherwise, well, it won't.
 
 
-## Join in on the fun!
+# Join in on the fun!
 
 Let me leave you with a small snippet of JavaScript. The below code, if copied into one of the AI slots above---I recommend Ruth---will allow you to join in on the fun! It will prompt you, ever time it's your move, with a request as to which move you'd like to make:
 

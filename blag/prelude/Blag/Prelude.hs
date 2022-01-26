@@ -1,13 +1,12 @@
 module Blag.Prelude
-  ( Text,
-    readFile',
+  ( readFile',
     writeFile',
     hasExecutable,
     isRunningOnCI,
+    liftEither,
     module Export
   ) where
 
-import Data.Default.Class as Export
 import Development.Shake as Export hiding (readFile', writeFile')
 import Data.Text (Text)
 import Data.Text qualified as T
@@ -28,11 +27,13 @@ writeFile' fp content = liftIO $ do
   removeFile_ fp
   T.writeFile fp content
 
--- forEach :: (Monad m, Traversable m, Applicative f) => m a -> (a -> f (m b)) -> f (m b)
--- forEach t f = join <$> traverse f t
-
 hasExecutable :: String -> Action Bool
 hasExecutable prog = isJust <$> liftIO (findExecutable prog)
 
 isRunningOnCI :: Action Bool
 isRunningOnCI = liftIO $ (Just "true" ==) <$> lookupEnv "CI"
+
+{-# INLINE liftEither #-}
+liftEither :: MonadFail m => (e -> String) -> Either e a -> m a
+liftEither pretty (Left e) = fail (pretty e)
+liftEither _ (Right a) = return a

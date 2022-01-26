@@ -39,7 +39,7 @@ example = parseWith Tim "(stupid bob) likes him"
 ```
 
 
-## AB Grammars in Haskell
+# AB Grammars in Haskell
 
 Well, first off, don't let this scare you off… but we are going to do this in Haskell, and we're going to need a LOT of language extensions. This is because we're basically going to parse strings to Haskell functions:
 
@@ -293,7 +293,7 @@ parseWith lex str a1 = do
 
 
 
-## Interpretations in Haskell
+# Interpretations in Haskell
 
 Now comes the part where all this mucking about with singleton types really pays off. Because our expressions are typed, and sound with respect to Haskell's type system, we can choose Haskell to be our semantic language. That means that we now have the ability to parse strings to valid Haskell functions.
 

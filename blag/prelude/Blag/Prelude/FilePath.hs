@@ -1,10 +1,5 @@
 module Blag.Prelude.FilePath
   ( removeFile_,
-    regularFile,
-    (~~*?),
-    (==*?),
-    extensions,
-    module Find,
     module FilePath,
   )
 where
@@ -37,19 +32,3 @@ catchIO = catch
 
 handleIO :: (IOException -> IO a) -> IO a -> IO a
 handleIO = handle
-
---------------------------------------------------------------------------------
--- Find files
---------------------------------------------------------------------------------
-
-regularFile :: FilterPredicate
-regularFile = fileType ==? RegularFile
-
-(~~*?) :: FindClause FilePath -> [GlobPattern] -> FilterPredicate
-file ~~*? globPatterns = foldr (\globPattern -> (file ~~? globPattern ||?)) (return False) globPatterns
-
-(==*?) :: FindClause FilePath -> [GlobPattern] -> FilterPredicate
-file ==*? globPatterns = foldr (\globPattern -> (file ==? globPattern ||?)) (return False) globPatterns
-
-extensions :: FindClause FilePath
-extensions = takeExtensions <$> fileName

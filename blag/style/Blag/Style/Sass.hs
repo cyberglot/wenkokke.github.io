@@ -13,6 +13,7 @@ import Data.Bitraversable (Bitraversable (..))
 import Data.Maybe (fromMaybe)
 import System.Directory as System (doesFileExist, makeAbsolute)
 import Text.Sass
+import Data.Text (Text)
 
 -- * Sass
 
@@ -42,7 +43,7 @@ compileSassWith opts filePath = do
     -- Compile @filePath@ from Sass/SCSS to CSS
     resultOrError <- liftIO $ compileFile filePath opts
     resultOrErrorMsg <- liftIO $ bitraverse errorMessage return resultOrError
-    result <- liftIO (liftEither resultOrErrorMsg)
+    result <- liftIO (liftEither id resultOrErrorMsg)
     -- Extract generated CSS source and included files
     css <- BS.toText (resultString result)
     includes <- resultIncludes result
@@ -52,7 +53,3 @@ compileSassWith opts filePath = do
   trackRead includes
 
   return css
-
-liftEither :: MonadFail m => Either String a -> m a
-liftEither (Left e) = fail e
-liftEither (Right a) = return a

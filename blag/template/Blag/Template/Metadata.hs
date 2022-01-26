@@ -1,4 +1,4 @@
-module Blag.Pandoc.Metadata
+module Blag.Template.Metadata
   ( Metadata (..),
     readYaml',
     readYaml,
@@ -19,31 +19,38 @@ module Blag.Pandoc.Metadata
     textTeaserField,
     addTitleVariants,
     resolveIncludes,
-    module Time,
+    rfc822DateFormat,
+    permalinkRouter,
   )
 where
 
 import Blag.PostInfo qualified as PostInfo
-import Blag.Prelude (Action, Url, liftIO, need, takeFileName)
-import Blag.Prelude.ByteString qualified as BS
-import Blag.TagSoup qualified as TagSoup
-import Data.Aeson (encode)
+import Blag.Prelude
+import Blag.Prelude.ByteString qualified as ByteString
+import Blag.Template.Pandoc.Builder qualified as Builder
+import Blag.Template.TagSoup qualified as TagSoup
+import Control.Monad.IO.Class (MonadIO)
+import Data.Aeson (encode, encodeFile)
 import Data.Aeson.Key qualified as Key
 import Data.Aeson.KeyMap qualified as KeyMap
-import Data.Aeson.Types
+import Data.Aeson.Types as Aeson
 import Data.ByteString (ByteString)
-import Data.ByteString qualified as B
-import Data.Frontmatter as Frontmatter (IResult (..), parseYamlFrontmatter)
+import Data.ByteString qualified as ByteString
+import Data.Frontmatter qualified as Frontmatter
 import Data.Function ((&))
+import Data.List qualified as List
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Time
-import Data.Time.Format as Time (iso8601DateFormat, rfc822DateFormat)
+import Data.Time (LocalTime (LocalTime), UTCTime, defaultTimeLocale, formatTime, fromGregorian, getCurrentTime, localTimeToUTC, midday, utc)
 import Data.Time.Format.ISO8601 (iso8601Show)
-import Data.Yaml qualified as Y
+import Data.Vector qualified as Vector (fromList)
+import Data.Yaml qualified as Yaml
 import System.Directory (getModificationTime)
 import System.IO.Unsafe (unsafePerformIO)
-import Blag.Pandoc.Postprocess (stripTags)
+import Text.Printf
+import Text.Pandoc.Citeproc qualified as Citeproc (getReferences)
+import Data.Foldable (foldrM, foldlM)
 
 --------------------------------------------------------------------------------
 -- Metadata
@@ -61,12 +68,26 @@ infixl 8 ^.
 
 -- | Get a value from a metadata object.
 (^.) :: (MonadFail m, FromJSON a) => Metadata -> Text -> m a
-metadata@(Metadata obj) ^. key = do
-  let msg = "Key '" <> Text.unpack key <> "' not found in metadata:\n" <> show metadata
-  v <- maybe (fail msg) return $ KeyMap.lookup (Key.fromText key) obj
-  case fromJSON v of
-    Error msg -> fail msg
-    Success a -> return a
+Metadata obj ^. keyOrKeys = do
+  let keys = Text.splitOn "." keyOrKeys
+  val <- foldlM getOrFail (Object obj) keys
+  liftAesonResult (fromJSON val)
+  where
+    get :: (MonadFail m, FromJSON a) => Metadata -> Text -> m a
+    get metadata@(Metadata obj) key =
+      case KeyMap.lookup (Key.fromText key) obj of
+        Nothing -> fail $ printf "Key '%s' not found in:\n%s" (Text.unpack key) (show metadata)
+        Just val -> liftAesonResult (fromJSON val)
+
+    getOrFail :: MonadFail m => Value -> Text -> m Value
+    getOrFail val key = case val of
+      Object obj -> get (Metadata obj) key
+      val -> fail $ printf "Cannot lookup key '%s' in:\n" (Text.unpack key) (show val)
+
+    liftAesonResult :: (MonadFail m) => Aeson.Result a -> m a
+    liftAesonResult = \case
+      Aeson.Error msg -> fail msg
+      Aeson.Success a -> return a
 
 --------------------------------------------------------------------------------
 -- Reading and writing
@@ -80,46 +101,59 @@ readYaml' inputFile = do
 
 -- | Read a YAML file.
 readYaml :: FromJSON a => FilePath -> IO a
-readYaml = Y.decodeFileThrow
+readYaml = Yaml.decodeFileThrow
 
 -- | Read the YAML frontmatter from a file as a Shake action.
-readYamlFrontmatter' :: FromJSON a => FilePath -> Action a
+readYamlFrontmatter' :: FilePath -> Action Metadata
 readYamlFrontmatter' inputFile = do
   need [inputFile]
-  liftIO $ readYamlFrontmatter inputFile
+  readYamlFrontmatter inputFile
 
 -- | Read the YAML frontmatter from a file.
-readYamlFrontmatter :: FromJSON a => FilePath -> IO a
+readYamlFrontmatter :: MonadIO m => FilePath -> m Metadata
 readYamlFrontmatter inputFile =
-  fst <$> readFileWithMetadata inputFile
+  liftIO $
+    fst <$> readFileWithMetadata inputFile
 
 -- | Read a file with its YAML frontmatter and return both as a Shake action.
-readFileWithMetadata' :: FromJSON a => FilePath -> Action (a, Text)
+readFileWithMetadata' :: FilePath -> Action (Metadata, Text)
 readFileWithMetadata' inputFile = do
   need [inputFile]
-  liftIO $ readFileWithMetadata inputFile
+  readFileWithMetadata inputFile
 
 -- | Read a file with its YAML frontmatter and return both.
-readFileWithMetadata :: FromJSON a => FilePath -> IO (a, Text)
-readFileWithMetadata inputFile = do
-  contents <- B.readFile inputFile
-  withResult (parseYamlFrontmatter contents)
+readFileWithMetadata :: MonadIO m => FilePath -> m (Metadata, Text)
+readFileWithMetadata inputFile = liftIO $ do
+  contents <- ByteString.readFile inputFile
+  case liftFrontmatterResult (Frontmatter.parseYamlFrontmatter contents) of
+    -- Parse succeeded
+    Right (metadata, body) -> do
+      body <- ByteString.toText body
+      return (metadata, body)
+    -- Parse failed; is there a header?
+    Left errorMessage -> do
+      body <- ByteString.toText contents
+      let hasHeader = "---" `Text.isPrefixOf` body
+      if hasHeader
+        then fail $ unlines ["Parse error in header: " <> inputFile, errorMessage]
+        else return (mempty, body)
   where
-    withResult :: (FromJSON a) => IResult ByteString a -> IO (a, Text)
-    withResult (Done body metadata) = do tbody <- BS.toText body; return (metadata, tbody)
-    withResult (Fail _ _ message) = fail message
-    withResult (Partial k) = withResult (k "")
+    liftFrontmatterResult :: (FromJSON a) => Frontmatter.Result a -> Either String (a, ByteString)
+    liftFrontmatterResult (Frontmatter.Done body metadata) = Right (metadata, body)
+    liftFrontmatterResult (Frontmatter.Fail _ [] errorMessage) = Left errorMessage
+    liftFrontmatterResult (Frontmatter.Fail _ contexts errorMessage) = Left (List.intercalate " > " contexts ++ ": " ++ errorMessage)
+    liftFrontmatterResult _ = Left "incomplete input"
 
 writeYaml' :: ToJSON a => FilePath -> a -> Action ()
-writeYaml' outputFile a = liftIO $ Y.encodeFile outputFile a
+writeYaml' outputFile a = liftIO $ Yaml.encodeFile outputFile a
 
 writeYaml :: ToJSON a => FilePath -> a -> IO ()
-writeYaml = Y.encodeFile
+writeYaml = Yaml.encodeFile
 
 -- * Instances
 
 instance Show Metadata where
-  show (Metadata obj) = Text.unpack $ unsafePerformIO $ BS.toTextLazy $ encode obj
+  show (Metadata obj) = Text.unpack $ unsafePerformIO $ ByteString.toTextLazy $ encode obj
 
 instance ToJSON Metadata where
   toJSON (Metadata obj) = Object obj
@@ -136,6 +170,10 @@ instance Monoid Metadata where
 --------------------------------------------------------------------------------
 -- Metadata fields
 --------------------------------------------------------------------------------
+
+-- | Variant of 'Data.Time.rfc822DateFormat' which actually conforms to RFC-822.
+rfc822DateFormat :: String
+rfc822DateFormat = "%a, %d %b %Y %H:%M:%S %z"
 
 -- | Create a metadata object containing the file modification time.
 --
@@ -173,12 +211,19 @@ dateFromPostFileName postFile = do
 constField :: ToJSON a => Text -> a -> Metadata
 constField key a = mempty & key .~ a
 
--- | Create a metadata object containing a teaser constructed from the first argument.
+-- | Create a metadata object containing an HTML teaser constructed from the first argument.
 htmlTeaserField :: MonadFail m => FilePath -> Text -> Text -> m Metadata
 htmlTeaserField teaserUrl htmlBody key = do
   let htmlBodyWithAbsoluteUrls = htmlTeaserFixUrl teaserUrl htmlBody
-  htmlTeaserBody <-  htmlTeaserBody htmlBodyWithAbsoluteUrls
+  htmlTeaserBody <- htmlTeaserBody htmlBodyWithAbsoluteUrls
   return $ constField key htmlTeaserBody
+
+-- | Create a metadata object containing a plain-text teaser constructed from the first argument.
+textTeaserField :: MonadFail m => Text -> Text -> m Metadata
+textTeaserField htmlBody key = do
+  htmlTeaser <- htmlTeaserBody htmlBody
+  let teaser = TagSoup.stripTags htmlTeaser
+  return $ constField key teaser
 
 htmlTeaserFixUrl :: FilePath -> Text -> Text
 htmlTeaserFixUrl teaserUrl = TagSoup.withUrls $ \url ->
@@ -189,16 +234,9 @@ htmlTeaserFixUrl teaserUrl = TagSoup.withUrls $ \url ->
 htmlTeaserBody :: MonadFail m => Text -> m Text
 htmlTeaserBody body
   | Text.null rest = fail "Delimiter '<!--more-->' not found"
-  | otherwise      = return teaser
+  | otherwise = return teaser
   where
     (teaser, rest) = Text.breakOn "<!--more-->" body
-
-textTeaserField :: MonadFail m => Text -> Text -> m Metadata
-textTeaserField htmlBody key = do
-  htmlTeaser <- htmlTeaserBody htmlBody
-  let teaser = stripTags htmlTeaser
-  return $ constField key teaser
-
 
 -- | Add running title and subtitle, if title contains a colon.
 addTitleVariants :: Metadata -> Metadata
@@ -209,8 +247,26 @@ addTitleVariants metadata = case metadata ^. "title" of
      in if Text.null subtitle
           then metadata -- No titlerunning/subtitle distinction
           else
-            metadata & "titlerunning" .~ Text.strip titlerunning
+            metadata
+              & "titlerunning" .~ Text.strip titlerunning
               & "subtitle" .~ Text.strip (Text.drop 1 subtitle)
+
+-- | Route files based on their permalink.
+permalinkRouter :: FilePath -> [(String, String)] -> FilePath -> Rules FilePath
+permalinkRouter outDir extAssoc src = do
+  yamlFrontmatter <- liftIO $ readYamlFrontmatter src
+  permalink <- yamlFrontmatter ^. "permalink"
+  let out = outDir </> removeLeadingSlash (Text.unpack permalink)
+  let srcExt = takeExtension src
+  liftIO $ print srcExt
+  let indexFile = "index" <.> fromMaybe srcExt (List.lookup srcExt extAssoc)
+  let outIsDir = "/" `List.isSuffixOf` out
+  return $ if outIsDir then out </> indexFile else out
+
+removeLeadingSlash :: FilePath -> FilePath
+removeLeadingSlash path
+  | "/" `List.isPrefixOf` path = tail path
+  | otherwise = path
 
 -- | Resolve 'include' fields by including metadata from files.
 resolveIncludes :: (FilePath -> Action Metadata) -> Metadata -> Action Metadata

@@ -1,10 +1,10 @@
-module Blag.Pandoc.Url where
+module Blag.Template.Pandoc.Url where
 
 import Blag.Prelude
-import Blag.TagSoup qualified as TagSoup
+import Blag.Template.TagSoup qualified as TagSoup
+import Text.Pandoc.Walk (walk)
+import Text.Pandoc.Definition (Pandoc, Format (..), Block (..), Inline (..))
 import Data.Function ((&))
-import Text.Pandoc (Block (..), Format (..), Inline (..), Pandoc)
-import Text.Pandoc.Walk (Walkable (..))
 
 -- | Apply a function to each Url in a Pandoc document.
 withUrls :: (Url -> Url) -> Pandoc -> Pandoc
