@@ -185,7 +185,7 @@ RSYNC_ARGS += .
 
 .PHONY: deploy
 deploy: test
-	mv -r agda-stdlib/_build _cache/agda-stdlib/_build
+	mv -r agda-stdlib/_build $(TMP_DIR)/agda-stdlib/_build
 	git fetch --all
 	git checkout -b main --track origin/main
 	rsync $(RSYNC_ARGS)
