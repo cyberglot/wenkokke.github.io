@@ -114,6 +114,7 @@ serve: check-browser-sync
 
 ########################################
 # Test site with:
+# - HTMLProofer
 # - html-validate
 # - feed-validator
 ########################################
@@ -197,8 +198,8 @@ deploy: test
 	git commit -m "Publish"
 	git push origin main:main
 	git checkout dev
-	git submodule update --init
 	git branch -D main
+	git submodule update --init
 
 
 
