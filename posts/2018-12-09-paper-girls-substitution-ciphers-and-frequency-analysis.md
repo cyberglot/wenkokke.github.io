@@ -1,10 +1,9 @@
 ---
-title      : "Paper Girls, Substitution Ciphers, and Frequency Analysis"
-date       : 2018-12-09 12:00:00
-tags       : [linguistics, cryptography, python]
+title: "Paper Girls, Substitution Ciphers, and Frequency Analysis"
+css-include: ["/assets/css/highlight.css","/assets/css/paper-girls-substitution-ciphers-and-frequency-analysis.css"]
 ---
 
-<span class="font-papergirls">
+::: font-papergirls
 WARNING!
 IF YOU'RE READING THIS, YOU'RE DOING IT WRONG.
 CLICK THE LINK, READ IT ON MY BLOG.
@@ -14,7 +13,7 @@ THIS WEeKEND, I PICKED UP A COPY OF PAPER GIRLS, A MYSTERY/SCIENCE FICTION COMIC
 WAIT, YOU CAN'T UNDERSTAND ME?
 OH, FUCK, DOESN'T LOoK LIKE IT.
 SORrY, LET ME ADJUST.
-</span>
+:::
 
 <!--more-->
 
@@ -361,7 +360,7 @@ We can read the bizzare glyphs in *Paper Girls* now!
 And the only letter we're missing is the 'z'.
 Hope I'll find one of those in one of the later books.
 
-<table style="font-size:xx-large;">
+<table class="xx-large">
 <tbody>
 <tr>
 <td><span class="font-papergirls">A</span></td>

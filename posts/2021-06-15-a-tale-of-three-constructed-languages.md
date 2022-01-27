@@ -1,6 +1,6 @@
 ---
-title: A Tale of Three Constructed Languages
-bibliography: posts/2021-06-15-a-tale-of-three-constructed-languages.bib
+title: "A Tale of Three Constructed Languages"
+bibliography: "posts/2021-06-15-a-tale-of-three-constructed-languages.bib"
 twitter: true
 ---
 
@@ -210,7 +210,7 @@ First, we combine *telo* and *nasa* to get "silly water", or alcohol. In Toki Po
 
 Next, we combine *tomo* and *telo nasa* to get "alcohol house", but---*oh no!*---in Toki Pona, everything that comes after a noun is taken to be an adjective modifying *that noun*, so if we say *tomo telo nasa*, both *telo* and *nasa* independently modify *tomo*, and we end up saying "a silly water-house":
 
-<a name="silly-water-house"><img alt="A monochrome photo of a caravan on floaters." src="/assets/images/silly-water-house.jpg" /></a>
+<a id="silly-water-house"><img alt="A monochrome photo of a caravan on floaters." src="/assets/images/silly-water-house.jpg" /></a>
 
 That's where *pi* comes in! It's a particle which says "actually, the next bit is another noun phrase, which we'll use as a modifier," so *tomo pi telo nasa* means "silly-water house", "house of silly water", or "pub"!
 

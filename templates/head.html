@@ -14,10 +14,10 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/assets/css/style.css"/>
-    $if(highlight-css)$
-    <style>
-    $^$$highlight-css$
-    </style>
+    $if(css-include)$
+    $for(css-include)$
+    <link rel="stylesheet" href="$css-include$"/>
+    $endfor$
     $endif$
 
     <!-- RSS -->

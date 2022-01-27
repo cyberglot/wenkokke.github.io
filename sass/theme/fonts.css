@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'Tengwar';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/webfonts/Tengwar-Regular.ttf') format("truetype");
+}
+.font-tengwar {
+  font-family: 'Tengwar';
+}
+@font-face {
+  font-family: 'TokiTengwar';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/webfonts/TokiTengwar-Regular.ttf') format("truetype");
+}
+.font-toki-tengwar {
+  font-family: 'TokiTengwar';
+}
+@font-face {
+  font-family: 'LitteraeIgnotae';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/webfonts/LitteraeIgnotae-Regular.ttf');
+}
+.font-litterae-ignotae {
+  font-family: 'LitteraeIgnotae';
+}
+@font-face {
+  font-family: 'PaperGirls';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/webfonts/Papergirls-Regular.ttf');
+}
+.font-papergirls {
+  font-family: 'PaperGirls';
+}

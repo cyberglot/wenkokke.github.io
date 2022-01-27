@@ -1,5 +1,5 @@
 ---
-title: Insertion sort in Agda
+title: "Insertion sort in Agda"
 ---
 
 <!--

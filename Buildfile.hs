@@ -296,18 +296,20 @@ styleRouter src =
   return $
     styleOutDir </> makeRelative styleSrcDir src -<.> "css"
 
+sassOptions :: SassOptions
+sassOptions = def {sassIncludePaths = Just [styleSrcDir], sassImporters = Just [minCssImporter styleSrcDir 1]}
+
 styleRules :: (?routingTable :: RoutingTable) => Rules ()
-styleRules =
-  let sassOptions =
-        def
-          { sassIncludePaths = Just [styleSrcDir],
-            sassImporters = Just [minCssImporter styleSrcDir 1]
-          }
-   in styleOutDir </> "*.css" %> \out -> do
-        src <- routeSrc out
-        compileSassWith sassOptions src
-          >>= minifyCSS
-          >>= writeFile' out
+styleRules = do
+  want [styleOutDir </> "highlight.css"]
+
+  styleOutDir </> "highlight.css" %> \out -> do
+    writeFile' out (Text.pack $ Pandoc.styleToCss highlightStyle)
+
+  styleOutDir </> "style.css" %> \out -> do
+    src <- routeSrc out
+    compileSassWith sassOptions src
+      >>= writeFile' out
 
 --------------------------------------------------------------------------------
 -- Assets
@@ -352,16 +354,14 @@ processCitations =
 postprocessHtml5 :: FilePath -> FilePath -> Text -> Text
 postprocessHtml5 outDir out html5 =
   html5 & TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
+    & TagSoup.addDefaultTableHeaderScope "col"
     & Pandoc.postprocessHtml5
 
 markdownDialect :: Extensions
 markdownDialect = Pandoc.pandocExtensions
 
 readerOpts :: ReaderOptions
-readerOpts =
-  def
-    { readerExtensions = markdownDialect
-    }
+readerOpts = def {readerExtensions = markdownDialect}
 
 writerOpts :: WriterOptions
 writerOpts =
@@ -408,10 +408,7 @@ getFileWithMetadata src = do
   let bodyFld = constField "body" body
   let sourceFld = constField "source" src
   modifiedDateFld <- lastModifiedISO8601Field src "modified_date"
-  let maybeHighlightCssFld = case fileMetadata ^. "highlight" of
-        Just True -> constField "highlight-css" (Pandoc.styleToCss highlightStyle)
-        _ -> mempty
-  let metadata = mconcat [siteMetadata, fileMetadata, urlFld, bodyFld, sourceFld, modifiedDateFld, maybeHighlightCssFld]
+  let metadata = mconcat [siteMetadata, fileMetadata, urlFld, bodyFld, sourceFld, modifiedDateFld]
   return (metadata, body)
 
 -- | Get a metadata object representing all posts.

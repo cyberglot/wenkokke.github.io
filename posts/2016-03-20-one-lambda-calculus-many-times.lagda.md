@@ -27,7 +27,7 @@ module Syntax (Atom : Set) where
 
 But, if it makes you feel better, we can pretend that they'll be some like this:
 
-<pre class="Agda Spec">  <a name="511" class="Keyword">data</a><a name="515"> </a><a name="516" href="#289" class="Module">Atom</a><a name="521"> </a><a name="522" class="Symbol">:</a><a name="523"> </a><a name="524" class="PrimitiveType">Set</a><a name="527"> </a><a name="528" class="Keyword">where</a><a name="533"><br />    </a><a name="538" href="#538" class="InductiveConstructor">Int</a><a name="542">    </a><a name="543" class="Symbol">:</a><a name="544"> </a><a name="545" href="#516" class="Datatype">Atom</a><a name="550"><br />    </a><a name="555" href="#555" class="InductiveConstructor">String</a><a name="562"> </a><a name="563" class="Symbol">:</a><a name="564"> </a><a name="565" href="#516" class="Datatype">Atom</a></pre>
+<pre class="Agda Spec">  <a class="Keyword">data</a>↓515"> </a><a href="#289" class="Module">Atom</a><a> </a><a class="Symbol">:</a><a> </a><a class="PrimitiveType">Set</a><a> </a><a class="Keyword">where</a><a><br />    </a><a href="#538" class="InductiveConstructor">Int</a><a>    </a><a class="Symbol">:</a><a> </a><a href="#516" class="Datatype">Atom</a><a><br />    </a><a href="#555" class="InductiveConstructor">String</a><a> </a><a class="Symbol">:</a><a> </a><a href="#516" class="Datatype">Atom</a></pre>
 
 Next, we defined our types. Since we're talking about minimal propositional logic, a type is either atomic (marked by <a class="Agda InductiveConstructor">El</a>) or an implication:
 

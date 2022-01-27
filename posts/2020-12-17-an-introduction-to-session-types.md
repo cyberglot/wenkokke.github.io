@@ -1,7 +1,7 @@
 ---
 title: An Introduction to Session Types
 katex: true
-highlight: true
+css-include: ["/assets/css/highlight.css"]
 ---
 
 Session types. Ostensibly, I’ve studied them for the past few years, so I should know something about them, right? I am gonna try and explain the *foundations* of session types, and along the way, there will be programs which crash, Victorian ladies having milk puddings, and tin can telephones.
@@ -45,7 +45,7 @@ In this blog post, we I’ll focus on *binary session types*
 
 Let’s imagine for a moment that Ada were to take Briar up on her offer, and ask her to sample her famous milk puddings. Briar, a proper lady, only offers her milk puddings to those who make a *sufficiently polite* request—Ada must be polite and say “please”, but she must not overuse it, lest she comes off as begging!
 
-We <a name="Ada-and-Briar"></a>encode the interaction between Ada and Briar using *session types* in Haskell:
+We <a id="Ada-and-Briar"></a>encode the interaction between Ada and Briar using *session types* in Haskell:
 
 - Ada’s requests are represented using the `Request` datatype, which allows us to prefix a request for pudding with any number of uses of `Please`.
 - Briar’s response is represented using the `Response` datatype, in which she can either grant permission, in which case Briar sends an `Allow` with a sample of pudding attached, or refuse Ada’s request, in which case she sends a `Deny` with a reason.
@@ -85,7 +85,7 @@ Firstly, session types are *communication protocols.* If you glance at the types
 
 Secondly, the types of the endpoints of a binary channel must be *dual*. When Ada’s endpoint says she must send, Briar’s endpoint says she must receive. For classical multiparty session types, the equivalent notion is called *coherence*, but the principle remains the same.
 
-Finally, each endpoint must be used *exactly once* if we want to be sure to stick to the protocol. For instance, in the code above, each channel endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a <a name="cheeky-Ada"></a>cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding:
+Finally, each endpoint must be used *exactly once* if we want to be sure to stick to the protocol. For instance, in the code above, each channel endpoint is only used once, and each send or receive returns a new channel on which to continue the communication. If we didn’t, we would be able to write a <a id="cheeky-Ada"></a>cheeky variant of Ada, who simply tries any number of pleases until she gets that sweet, sweet pudding:
 
 ```haskell
 ada :: Send Request (Recv Response End) -> IO ()
@@ -230,7 +230,7 @@ That’s scary, I’d prefer not to have that! Programs which run forever, but n
 
 Most functional languages don’t just implement the core λ-calculus, but rather extend the λ-calculus with various constructs—numbers, addition, multiplication, pairs, sums, *etc.* *Technically speaking*, these can all be encoded using just functions—see, *e.g.*, Church encodings—but it tends to be *a lot* more practical and faster to use, *e.g.*, machine numbers.
 
-For example, we can extend the untyped λ-calculus with <a name="peano"></a>Peano numbers. First, we extend the term language with the number *zero*, written $\text{zero}$, the successor, written $\text{suc}$, and a pattern matching construct for numbers, written $\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}$:
+For example, we can extend the untyped λ-calculus with <a id="peano"></a>Peano numbers. First, we extend the term language with the number *zero*, written $\text{zero}$, the successor, written $\text{suc}$, and a pattern matching construct for numbers, written $\text{case}\;L\;\text{of}\;\{\text{zero}\mapsto{M};\text{suc}\;{x}\mapsto{N}\}$:
 
 $$
 \begin{array}{l}
@@ -651,7 +651,7 @@ But *what fun*! There’s new problems as well! If we’ve got two *pairs* of pr
 
 $$
 \begin{array}{l}
-  (\nu x)%
+  (\nu x)
   \left(
   \begin{array}{l}
   x\langle{y_1}\rangle.{P_1}\parallel x(z_1).{Q_1}\parallel
@@ -1212,7 +1212,7 @@ $$
 \end{array}
 $$
 
-Great! <a name="formal-Ada-and-Briar"></a> Now we can encode our example!
+Great! <a id="formal-Ada-and-Briar"></a> Now we can encode our example!
 
 $$
 \begin{array}{l}
@@ -1631,7 +1631,7 @@ $$
 
 # Taming the concurrent λ-calculus with types…
 
-Types? Is it types? It *should be!* Just because our happy example works out, doesn’t mean the calculus as a whole is well-behaved. See, we can still encode <a name="formal-cheeky-Ada"></a> [cheeky Ada](#cheeky-Ada), who’ll do anything for that sweet, sweet pudding:
+Types? Is it types? It *should be!* Just because our happy example works out, doesn’t mean the calculus as a whole is well-behaved. See, we can still encode <a id="formal-cheeky-Ada"></a> [cheeky Ada](#cheeky-Ada), who’ll do anything for that sweet, sweet pudding:
 
 $$
 \begin{array}{l}

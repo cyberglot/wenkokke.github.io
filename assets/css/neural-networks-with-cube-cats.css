@@ -14,5 +14,5 @@
     width: 40%;
 }
 .cube-pets > p > img.flip {
-    transform:scaleX(-1);
+    transform: scaleX(-1);
 }

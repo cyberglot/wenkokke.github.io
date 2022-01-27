@@ -49,6 +49,25 @@ clobber: check-haskell
 	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clobber
 
 
+# html-minifier
+
+HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
+
+HTML_MINIFIER_ARGS += --collapse-whitespace
+HTML_MINIFIER_ARGS += --collapse-boolean-attributes
+HTML_MINIFIER_ARGS += --minify-css
+HTML_MINIFIER_ARGS += --minify-js
+HTML_MINIFIER_ARGS += --minify-urls
+HTML_MINIFIER_ARGS += --remove-comments
+HTML_MINIFIER_ARGS += --input-dir=$(OUT_DIR)
+HTML_MINIFIER_ARGS += --output-dir=$(OUT_DIR)
+HTML_MINIFIER_ARGS += --file-ext=html
+
+.PHONY: build-html-minifier
+build-html-minifier: build check-html-minifier
+	@echo "Minifying HTML..."
+	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
+
 ########################################
 # Watch for changes with fswatch
 ########################################
@@ -100,7 +119,7 @@ serve: check-browser-sync
 ########################################
 
 .PHONY: test
-test: build test-html-validate test-feed-validator
+test: test-html-validate test-feed-validator
 
 
 # HTMLProofer
@@ -123,7 +142,7 @@ HTML_PROOFER_ARGS += --report-script-embeds
 HTML_PROOFER_ARGS += .
 
 .PHONY: test-html-proofer
-test-html-proofer: build check-html-proofer
+test-html-proofer: check-html-proofer
 	@echo "Checking HTML..."
 	@(cd $(OUT_DIR) && $(HTML_PROOFER) $(HTML_PROOFER_ARGS))
 
@@ -135,7 +154,7 @@ HTML_VALIDATE ?= $(wildcard $(shell which html-validate))
 HTML_VALIDATE_ARGS += .
 
 .PHONY: test-html-validate
-test-html-validate: build check-html-validate
+test-html-validate: check-html-validate
 	@echo "Checking HTML..."
 	@(cd $(OUT_DIR) && $(HTML_VALIDATE) $(HTML_VALIDATE_ARGS))
 
@@ -149,7 +168,7 @@ FEED_VALIDATOR_ARGS += --no-showfeed
 FEED_VALIDATOR_ARGS += rss.xml
 
 .PHONY: test-feed-validator
-test-feed-validator: build check-feed-validator
+test-feed-validator: check-feed-validator
 	@echo "Checking rss.xml..."
 	@(cd $(OUT_DIR) && $(FEED_VALIDATOR) $(FEED_VALIDATOR_ARGS))
 
@@ -216,6 +235,12 @@ endif
 ifeq (,$(BROWSER_SYNC))
 check-browser-sync: check-node
 	@$(eval BROWSER_SYNC := npx browser-sync)
+endif
+
+.PHONY: check-html-minifier
+ifeq (,$(HTML-MINIFIER))
+check-html-minifier: check-node
+	@$(eval HTML_MINIFIER := npx html-minifier)
 endif
 
 .PHONY: check-feed-validator

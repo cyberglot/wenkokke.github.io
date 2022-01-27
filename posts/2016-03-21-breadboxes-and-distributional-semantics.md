@@ -1,7 +1,6 @@
 ---
-title        : "Breadboxes, Plenty Questions and Distributional Semantics"
-date         : 2016-03-21 12:00:00
-tags         : [games, linguistics, python]
+title: "Breadboxes, Plenty Questions and Distributional Semantics"
+css-include: ["/assets/css/highlight.css"]
 ---
 
 Quite a while ago, [UnicornPower](https://github.com/UnicornPower) introduced me to a game called *Breadbox*. It's an experimental cousin of *20 Questions*, also known as *Plenty Questions*, which is played by two players---or more, really---who we'll name Allie and Blake:
@@ -14,11 +13,11 @@ From there on out, all Blake's questions have to be of the form…
 
   - *“Is it more like a breadbox, or more like…?”*
 
-…where *breadbox* is replaced by whatever the current guess is, and the dots are filled in with whatever Blake wants. Let’s see if we can write an AI for playing this game!
+…where *breadbox* is replaced by whatever the current guess is, and the dots are filled in with whatever Blake wants. Let’s see if we can write an AI for playing this game!
 
 <!--more-->
 
-Okay, before we get started, let’s look at an example of a quick game:
+Okay, before we get started, let’s look at an example of a quick game:
 
 Allie
 : I'm thinking of something…
@@ -104,7 +103,7 @@ If you're upset because Breadbox is hard, or because you think that the choices 
 
 ---
 
-> *Hiya! It’s Wen from the future, here to tell you that I used to have a copy of Breadbox running on OpenShift, where you could try it out for yourself. Unfortunately, that died with the deprecation of OpenShift 2, and I haven’t been able to find anywhere else that would let me host a 2GB web app for free…*[^source]
+> *Hiya! It’s Wen from the future, here to tell you that I used to have a copy of Breadbox running on OpenShift, where you could try it out for yourself. Unfortunately, that died with the deprecation of OpenShift 2, and I haven’t been able to find anywhere else that would let me host a 2GB web app for free…*[^source]
 
 ---
 
@@ -123,28 +122,28 @@ While you've probably never read the word wampimuk before, it's likely that eith
 
 So if you want to know what a word (e.g. "bear") means, you take a *huge* corpus, and you look for all the occurances of that word…[^webcorp]
 
-<pre style="margin-left: 3em;">
-       over the mountains. A <a style="color:dark-orange;">bear</a> also features prominentl
-    rnejakt" (An Unfortunate <a style="color:dark-orange;">Bear</a> Hunt) by Theodor Kittels
-       to his hagiography, a <a style="color:dark-orange;">bear</a> killed Saint Corbinian's
-         however, he let the <a style="color:dark-orange;">bear</a> go. The saddled "bear
-       bear go. The saddled "<a style="color:dark-orange;">bear</a> of St. Corbinian" the
-    tails on this topic, see <a style="color:dark-orange;">Bear</a> in heraldry. The British
-         Cat and the Russian <a style="color:dark-orange;">Bear</a> (see The Great Game)
-     Great Game) The Russian <a style="color:dark-orange;">bear</a> is a common national
-    Soviet Union). The brown <a style="color:dark-orange;">bear</a> is also Finland's nation
-    animals and had the same <a style="color:dark-orange;">bear</a> carry him from his hermi
-         thus Christianised, <a style="color:dark-orange;">bear</a> clasping each gable
-     evidence of prehistoric <a style="color:dark-orange;">bear</a> worship. Anthropologists
-     peoples, considered the <a style="color:dark-orange;">bear</a> as the spirit of one's
-    fathers. This is why the <a style="color:dark-orange;">bear</a> (karhu) was a greatly
-    ikämmen and kontio). The <a style="color:dark-orange;">bear</a> is the national animal
-      tries to kill a mother <a style="color:dark-orange;">bear</a> and her cubs—and is
-         society. "The Brown <a style="color:dark-orange;">Bear</a> of Norway" is a Scottish
-     magically turned into a <a style="color:dark-orange;">bear</a>, and who managed to get
-     television. Evidence of <a style="color:dark-orange;">bear</a> worship has been found
-      mythology identify the <a style="color:dark-orange;">bear</a> as their ancestor and
-    shopric of Freising, the <a style="color:dark-orange;">bear</a> is the dangerous totem
+<pre class="highlight">
+       over the mountains. A <span class="s">bear</span> also features prominentl
+    rnejakt" (An Unfortunate <span class="s">Bear</span> Hunt) by Theodor Kittels
+       to his hagiography, a <span class="s">bear</span> killed Saint Corbinian's
+         however, he let the <span class="s">bear</span> go. The saddled "bear
+       bear go. The saddled "<span class="s">bear</span> of St. Corbinian" the
+    tails on this topic, see <span class="s">Bear</span> in heraldry. The British
+         Cat and the Russian <span class="s">Bear</span> (see The Great Game)
+     Great Game) The Russian <span class="s">bear</span> is a common national
+    Soviet Union). The brown <span class="s">bear</span> is also Finland's nation
+    animals and had the same <span class="s">bear</span> carry him from his hermi
+         thus Christianised, <span class="s">bear</span> clasping each gable
+     evidence of prehistoric <span class="s">bear</span> worship. Anthropologists
+     peoples, considered the <span class="s">bear</span> as the spirit of one's
+    fathers. This is why the <span class="s">bear</span> (karhu) was a greatly
+    ikämmen and kontio). The <span class="s">bear</span> is the national animal
+      tries to kill a mother <span class="s">bear</span> and her cubs—and is
+         society. "The Brown <span class="s">Bear</span> of Norway" is a Scottish
+     magically turned into a <span class="s">bear</span>, and who managed to get
+     television. Evidence of <span class="s">bear</span> worship has been found
+      mythology identify the <span class="s">bear</span> as their ancestor and
+    shopric of Freising, the <span class="s">bear</span> is the dangerous totem
 </pre>
 
 …and then you count, for every other word, how often it occurs together with your word. The above text, for instance, gives us a number of obvious co-occurances for bear: mountain, kill, hunt, brown, animal and cub. The idea is that, given a large enough corpus, these co-occurances will drown out the noisier ones.
@@ -170,7 +169,7 @@ If you wish to read more about distributional semantics, there's a pretty good o
 
 ---
 
-[^source]: You can still try to run it [from source][breadbox], but be warned… I did not future-proof it.
+[^source]: You can still try to run it [from source][breadbox], but be warned… I did not future-proof it.
 [DontCountPredict]: http://clic.cimec.unitn.it/marco/assetsations/acl2014/baroni-etal-countpredict-acl2014.pdf
 [word2vec]: http://deeplearning4j.org/word2vec
 [slides]: https://www.cs.utexas.edu/~mooney/cs388/slides/dist-sem-intro-NLP-class-UT.pdf

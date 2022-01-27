@@ -1,7 +1,5 @@
 ---
-title      : "VISL CG-3 is the new assembler"
-date       : 2017-05-15 12:00:00
-tags       : [formal language theory]
+title: "VISL CG-3 is the new assembler"
 ---
 
 This post is a continuation of *[Constraint Grammar can count!](/2016/03/16/constraint-grammar-can-count/)*, in which I talked a bunch about how expressive constraint grammar is. Now, for most of that post, what I actually meant was the fragment of constraint grammar where you only use the `REMOVE` rule.[^ext] However, I always had the suspicion that I'd be pretty easy to simulate a Turing machine using only the `ADDCOHORT` and `REMCOHORT` commands, treating the list of cohorts as the Turing machine's tape---and I don't think I was the only one to feel that way.
