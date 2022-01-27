@@ -36,21 +36,6 @@ init:
 
 CABAL_RUN_ARGS += --verbose=0
 
-.PHONY: build
-build: check-haskell
-	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- build
-
-.PHONY: clean
-clean: check-haskell
-	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clean
-
-.PHONY: clobber
-clobber: check-haskell
-	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clobber
-
-
-# html-minifier
-
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
 
 HTML_MINIFIER_ARGS += --collapse-whitespace
@@ -63,10 +48,20 @@ HTML_MINIFIER_ARGS += --input-dir=$(OUT_DIR)
 HTML_MINIFIER_ARGS += --output-dir=$(OUT_DIR)
 HTML_MINIFIER_ARGS += --file-ext=html
 
-.PHONY: build-html-minifier
-build-html-minifier: build check-html-minifier
+.PHONY: build
+build: check-haskell check-html-minifier
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- build
 	@echo "Minifying HTML..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
+
+.PHONY: clean
+clean: check-haskell
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clean
+
+.PHONY: clobber
+clobber: check-haskell
+	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clobber
+
 
 ########################################
 # Watch for changes with fswatch
@@ -190,9 +185,9 @@ RSYNC_ARGS += .
 
 .PHONY: deploy
 deploy: test
+	mv -r agda-stdlib/_build _cache/agda-stdlib/_build
 	git fetch --all
 	git checkout -b main --track origin/main
-	rm -rf agda-stdlib/
 	rsync $(RSYNC_ARGS)
 	git add -A
 	git commit -m "Publish"
@@ -200,6 +195,7 @@ deploy: test
 	git checkout dev
 	git branch -D main
 	git submodule update --init
+	mv -r agda-stdlib/_build _cache/agda-stdlib/_build
 
 
 
