@@ -8,7 +8,7 @@ css-include: ["/assets/css/recipes.css"]
     <article class="recipe">
         <header>
             $if(recipe.banner)$
-            <img class="recipe-banner" src="$recipe.banner$" />
+            <img class="recipe-banner" src="$recipe.banner$" alt="A picture of $recipe.title$" />
             $endif$
             <h2 class="recipe-title"><a href="$if(recipe.external_link)$$recipe.external_link$$else$$recipe.url$$endif$">$recipe.title$</a></h2>
         </header>
