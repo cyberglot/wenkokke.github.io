@@ -186,7 +186,7 @@ RSYNC_ARGS += .
 .PHONY: deploy
 deploy: test
 	mkdir -p $(TMP_DIR)/agda-stdlib
-	mv agda-stdlib/_build $(TMP_DIR)/agda-stdlib/_build
+	[ -d "agda-stdlib/_build" ] && mv agda-stdlib/_build $(TMP_DIR)/agda-stdlib/_build
 	git fetch --all
 	git checkout -b main --track origin/main
 	rsync $(RSYNC_ARGS)
@@ -196,7 +196,7 @@ deploy: test
 	git checkout dev
 	git branch -D main
 	git submodule update --init
-	mv $(TMP_DIR)/agda-stdlib/_build agda-stdlib/_build
+	[ -d "$(TMP_DIR)/agda-stdlib/_build" ] && mv $(TMP_DIR)/agda-stdlib/_build agda-stdlib/_build
 
 
 
