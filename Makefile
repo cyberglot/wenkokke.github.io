@@ -159,20 +159,27 @@ test-feed-validator: build check-feed-validator
 ########################################
 
 RSYNC_ARGS += -a
-RSYNC_ARGS += --filter='P _site/'
-RSYNC_ARGS += --filter='P _cache/'
+RSYNC_ARGS += --filter='P $(OUT_DIR)'
+RSYNC_ARGS += --filter='P $(TMP_DIR)/'
 RSYNC_ARGS += --filter='P .git/'
 RSYNC_ARGS += --filter='P .gitignore'
 RSYNC_ARGS += --filter='P CNAME'
 RSYNC_ARGS += --delete-excluded
-RSYNC_ARGS += _site/
+RSYNC_ARGS += $(OUT_DIR)
 RSYNC_ARGS += .
 
 .PHONY: deploy
 deploy: test
 	git fetch --all
 	git checkout -b main --track origin/main
+	rm -rf agda-stdlib/
 	rsync $(RSYNC_ARGS)
+	git add -A
+	git commit -m "Publish"
+	git push origin main:main
+	git checkout dev
+	git submodule update --init
+	git branch -D main
 
 
 
