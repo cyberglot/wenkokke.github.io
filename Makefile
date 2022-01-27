@@ -158,27 +158,22 @@ test-feed-validator: build check-feed-validator
 # Deploy blog
 ########################################
 
+RSYNC_ARGS += -a
+RSYNC_ARGS += --filter='P _site/'
+RSYNC_ARGS += --filter='P _cache/'
+RSYNC_ARGS += --filter='P .git/'
+RSYNC_ARGS += --filter='P .gitignore'
+RSYNC_ARGS += --filter='P CNAME'
+RSYNC_ARGS += --delete-excluded
+RSYNC_ARGS += _site/
+RSYNC_ARGS += .
+
 .PHONY: deploy
 deploy: test
-	@echo "Creating main branch..."
 	git fetch --all
 	git checkout -b main --track origin/main
-	rsync -a \
-		--filter='P _site/' \
-		--filter='P _cache/' \
-		--filter='P .git/' \
-		--filter='P .gitignore' \
-		--filter='P dist-newstyle/' \
-		--filter='P CNAME' \
-		--delete-excluded \
-		_site/ .
-	git add -A
-	@echo "Publishing main branch..."
-	git commit -m "Publish."
-	git push origin main:main
-	@echo "Deleting main branch..."
-	git checkout dev
-	git branch -D main
+	rsync $(RSYNC_ARGS)
+
 
 
 ########################################

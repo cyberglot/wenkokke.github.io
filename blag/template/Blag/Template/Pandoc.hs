@@ -3,6 +3,8 @@ module Blag.Template.Pandoc
     module Pandoc,
     module PandocBuilderTypes,
     module PandocCiteprocTypes,
+    HighlightStyle,
+    module PandocHighlighting,
     module PandocPostprocess,
     module PandocUrl,
   )
@@ -132,10 +134,23 @@ import Text.Pandoc as Pandoc hiding
     getTemplateFile,
     renderTemplate,
   )
+import Text.Pandoc.Highlighting as PandocHighlighting
+    ( styleToCss,
+      pygments,
+      breezeDark,
+      espresso,
+      haddock,
+      kate,
+      monochrome,
+      tango,
+      zenburn )
+import Text.Pandoc.Highlighting qualified as PandocRenamed
 import Text.Pandoc.Class (PandocIO, runIO)
 import Text.Pandoc.Readers as Pandoc
 import Text.Pandoc.Walk as Pandoc
 import Text.Pandoc.Writers as Pandoc
+
+type HighlightStyle = PandocRenamed.Style
 
 runPandoc :: PandocIO a -> Action a
 runPandoc act = do

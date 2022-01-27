@@ -1,4 +1,4 @@
 ---
 title: Spaghetti alla Puttanesca
-external: https://cookieandkate.com/vegan-spaghetti-alla-puttanesca/
+external_link: https://cookieandkate.com/vegan-spaghetti-alla-puttanesca/
 ---

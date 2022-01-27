@@ -6,19 +6,20 @@ import Blag.Prelude
 import Blag.Routing
 import Blag.Style
 import Blag.Template
-import Blag.Template.Pandoc as Pandoc
+import Blag.Template.Pandoc qualified as Pandoc
 import Blag.Template.Pandoc.Builder qualified as Builder
 import Blag.Template.Pandoc.Citeproc qualified as Citeproc
 import Blag.Template.TagSoup qualified as TagSoup
 import Control.Concurrent (threadDelay)
 import Control.Monad (forM, forM_, forever, join)
 import Control.Monad.IO.Class (MonadIO)
+import Data.Default.Class
 import Data.Foldable (Foldable (fold))
 import Data.Function ((&))
 import Data.Functor ((<&>))
 import Data.List (isPrefixOf)
 import Data.Map qualified as Map
-import Data.Maybe (fromMaybe, isNothing, mapMaybe, maybeToList)
+import Data.Maybe (fromMaybe, isJust, isNothing, mapMaybe, maybeToList)
 import Data.Monoid (Endo (Endo, appEndo))
 import Data.MultiMap qualified as MultiMap
 import Data.Sequence qualified as Seq
@@ -109,8 +110,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     (fileMetadata, indexHtmlTemplate) <- ?getFileWithMetadata src
     applyAsTemplate (postMetadata <> fileMetadata) indexHtmlTemplate
       >>= applyTemplate "default.html" fileMetadata
-      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
-      <&> Pandoc.postprocessHtml5
+      <&> postprocessHtml5 outDir out
       >>= writeFile' out
 
   outDir </> "rss.xml" %> \out -> do
@@ -130,8 +130,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     (fileMetadata, recipesHtmlTemplate) <- ?getFileWithMetadata src
     applyAsTemplate (recipeMetadata <> fileMetadata) recipesHtmlTemplate
       >>= applyTemplate "default.html" fileMetadata
-      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
-      <&> Pandoc.postprocessHtml5
+      <&> postprocessHtml5 outDir out
       >>= writeFile' out
 
   recipeRules
@@ -141,8 +140,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     metadata <- ?getSiteMetadata ()
     readFile' "404.html"
       >>= applyTemplate "default.html" metadata
-      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
-      <&> Pandoc.postprocessHtml5
+      <&> postprocessHtml5 outDir out
       >>= writeFile' out
 
 --------------------------------------------------------------------------------
@@ -193,7 +191,11 @@ postRules = do
     (out, prev, src) <- (,,) <$> route next <*> routePrev next <*> routeSrc next
     let maybeAgdaLinkFixer = if Agda.isAgdaFile src then Just (Pandoc.withUrls ?agdaLinkFixer) else Nothing
     readFile' prev
-      >>= markdownToHtml maybeAgdaLinkFixer
+      >>= markdownToPandoc
+      >>= processCitations
+      <&> walk (shiftHeadersBy 2)
+      <&> fromMaybe id maybeAgdaLinkFixer
+      >>= pandocToHtml5 -- postprocessHtml5 in next rule
       >>= writeFile' next
 
   -- Apply templates
@@ -202,8 +204,7 @@ postRules = do
     metadata <- fst <$> ?getFileWithMetadata src
     readFile' prev
       >>= applyTemplates ["post.html", "default.html"] metadata
-      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
-      <&> Pandoc.postprocessHtml5
+      <&> postprocessHtml5 outDir out
       >>= writeFile' out
 
 --------------------------------------------------------------------------------
@@ -231,10 +232,12 @@ recipeRules = do
     src <- routeSrc out
     metadata <- fst <$> ?getFileWithMetadata src
     readFile' src
-      >>= markdownToHtml Nothing
+      >>= markdownToPandoc
+      >>= processCitations
+      <&> walk (shiftHeadersBy 2)
+      >>= pandocToHtml5
       >>= applyTemplates ["recipe.html", "default.html"] metadata
-      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
-      <&> Pandoc.postprocessHtml5
+      <&> postprocessHtml5 outDir out
       >>= writeFile' out
 
 --------------------------------------------------------------------------------
@@ -302,9 +305,9 @@ styleRules =
           }
    in styleOutDir </> "*.css" %> \out -> do
         src <- routeSrc out
-        css <- compileSassWith sassOptions src
-        cssMin <- minifyCSS css
-        writeFile' out cssMin
+        compileSassWith sassOptions src
+          >>= minifyCSS
+          >>= writeFile' out
 
 --------------------------------------------------------------------------------
 -- Assets
@@ -331,24 +334,42 @@ shiftHeadersBy :: Int -> Block -> Block
 shiftHeadersBy n (Header l attr body) = Header (l + n) attr body
 shiftHeadersBy n x = x
 
-markdownToHtml :: Maybe (Pandoc -> Pandoc) -> Text -> Action Text
-markdownToHtml maybeTransform markdown =
-  let readerOpts = def {readerExtensions = markdownDialect}
-      writerOpts = def
-   in Pandoc.runPandoc $ do
-        doc <- Pandoc.readMarkdown readerOpts markdown
-        doc <- Citeproc.processCitations doc
-        let docFix =
-              doc
-                & walk (shiftHeadersBy 2)
-                & fromMaybe id maybeTransform
-        Pandoc.writeHtml5String writerOpts docFix
+highlightStyle :: Pandoc.HighlightStyle
+highlightStyle = Pandoc.pygments
+
+markdownToPandoc :: Text -> Action Pandoc
+markdownToPandoc =
+  Pandoc.runPandoc . Pandoc.readMarkdown readerOpts
+
+pandocToHtml5 :: Pandoc -> Action Text
+pandocToHtml5 =
+  Pandoc.runPandoc . Pandoc.writeHtml5String writerOpts
+
+processCitations :: Pandoc -> Action Pandoc
+processCitations =
+  Pandoc.runPandoc . Citeproc.processCitations
+
+postprocessHtml5 :: FilePath -> FilePath -> Text -> Text
+postprocessHtml5 outDir out html5 =
+  html5 & TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
+    & Pandoc.postprocessHtml5
 
 markdownDialect :: Extensions
-markdownDialect =
-  Pandoc.pandocExtensions
-    & Pandoc.disableExtension Ext_tex_math_dollars
-    & Pandoc.disableExtension Ext_latex_macros
+markdownDialect = Pandoc.pandocExtensions
+
+readerOpts :: ReaderOptions
+readerOpts =
+  def
+    { readerExtensions = markdownDialect
+    }
+
+writerOpts :: WriterOptions
+writerOpts =
+  def
+    { writerHTMLMathMethod = KaTeX "https://wen.works/",
+      writerEmailObfuscation = JavascriptObfuscation,
+      writerHighlightStyle = Just highlightStyle
+    }
 
 --------------------------------------------------------------------------------
 -- Metadata
@@ -371,6 +392,7 @@ getSiteMetadata () = do
 --     - @source@: The path to the source file.
 --     - @modified_date@: The date at which the file was last modified, in the ISO8601 format.
 --     - @build_date@: The date at which the is website was last built, in the RFC822 format.
+--     - @highlight-css@: The CSS for syntax highlighting, if the original file specifies 'highlight'.
 getFileWithMetadata ::
   ( ?routingTable :: RoutingTable,
     ?getSiteMetadata :: () -> Action Metadata
@@ -386,7 +408,10 @@ getFileWithMetadata src = do
   let bodyFld = constField "body" body
   let sourceFld = constField "source" src
   modifiedDateFld <- lastModifiedISO8601Field src "modified_date"
-  let metadata = mconcat [siteMetadata, fileMetadata, urlFld, bodyFld, sourceFld, modifiedDateFld]
+  let maybeHighlightCssFld = case fileMetadata ^. "highlight" of
+        Just True -> constField "highlight-css" (Pandoc.styleToCss highlightStyle)
+        _ -> mempty
+  let metadata = mconcat [siteMetadata, fileMetadata, urlFld, bodyFld, sourceFld, modifiedDateFld, maybeHighlightCssFld]
   return (metadata, body)
 
 -- | Get a metadata object representing all posts.
@@ -502,13 +527,12 @@ pubsRules = do
       return $ if null refsForSection then mempty else withResolvedCitations
 
     let body = Builder.doc (fold sections)
-    body <- Pandoc.runPandoc (Pandoc.writeHtml5String def body)
+    body <- Pandoc.runPandoc (Pandoc.writeHtml5String writerOpts body)
     let bodyFld = constField "body" body
 
     applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
       >>= applyTemplates ["page.html", "default.html"] fileMetadata
-      <&> TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
-      <&> Pandoc.postprocessHtml5
+      <&> postprocessHtml5 outDir out
       >>= writeFile' out
 
 data Section = Section

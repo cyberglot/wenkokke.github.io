@@ -14,6 +14,11 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/assets/css/style.css"/>
+    $if(highlight-css)$
+    <style>
+    $^$$highlight-css$
+    </style>
+    $endif$
 
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml"/>

@@ -41,6 +41,7 @@ executable builder
     , blag-template
     , citeproc
     , containers
+    , data-default-class
     , multimap
     , process
     , shake

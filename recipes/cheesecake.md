@@ -1,4 +1,4 @@
 ---
 title: Cheesecake
-external: https://avirtualvegan.com/vegan-new-york-cheesecake/
+external_link: https://avirtualvegan.com/vegan-new-york-cheesecake/
 ---

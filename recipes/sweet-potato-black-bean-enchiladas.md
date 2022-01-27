@@ -1,4 +1,4 @@
 ---
 title: Sweet Potato Black Bean Enchiladas
-external: https://minimalistbaker.com/sweet-potato-black-bean-enchiladas/
+external_link: https://minimalistbaker.com/sweet-potato-black-bean-enchiladas/
 ---

@@ -1,6 +1,7 @@
 ---
 title: An Introduction to Session Types
 katex: true
+highlight: true
 ---
 
 Session types. Ostensibly, I’ve studied them for the past few years, so I should know something about them, right? I am gonna try and explain the *foundations* of session types, and along the way, there will be programs which crash, Victorian ladies having milk puddings, and tin can telephones.
@@ -116,7 +117,7 @@ Finally, we’ll talk about having the best of both worlds, in a concurrent λ-c
 
 # The λ-calculus! *(So powerful, so scary…)*
 
-The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function applications to get rid of ’em:
+The untyped λ-calculus celebrated its 89th birthday last November, so to say that it’s been around for a while undersells it a bit. It’s a pretty small system—it has only three things—there’s variables, λ-abstractions to make functions, and function applications to get rid of 'em:
 
 $$
 \begin{array}{l}

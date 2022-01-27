@@ -1,8 +1,5 @@
 ---
-title        : "Insertion sort in Agda"
-date         : 2016-03-01 12:00:00
-tags         : [agda]
-extra-script : [agda-extra-script.html]
+title: Insertion sort in Agda
 ---
 
 <!--
