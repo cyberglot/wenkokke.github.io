@@ -1,8 +1,7 @@
-_cache/
-_site/
-node_modules/
-dist-newstyle/
-agda-stdlib/
+_cache
+_site
+node_modules
+dist-newstyle
+agda-stdlib
 Gemfile.lock
 package-lock.json
-Makefile
