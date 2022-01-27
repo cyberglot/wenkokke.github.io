@@ -173,30 +173,23 @@ test-feed-validator: check-feed-validator
 # Deploy blog
 ########################################
 
-RSYNC_ARGS += -a
-RSYNC_ARGS += --filter='P $(OUT_DIR)'
-RSYNC_ARGS += --filter='P $(TMP_DIR)/'
-RSYNC_ARGS += --filter='P .git/'
-RSYNC_ARGS += --filter='P .gitignore'
-RSYNC_ARGS += --filter='P CNAME'
-RSYNC_ARGS += --delete-excluded
-RSYNC_ARGS += $(OUT_DIR)
-RSYNC_ARGS += .
-
 .PHONY: deploy
-deploy: test
+deploy:
+	@if [[ `git status --porcelain` ]]; then echo "Uncommited changes!"; exit 1; fi
+	make test
 	mkdir -p $(TMP_DIR)/agda-stdlib
-	if [ -d "agda-stdlib/_build" ]; then mv agda-stdlib/_build $(TMP_DIR)/agda-stdlib/_build; fi
+	if [ -d "agda-stdlib/_build" ]; then mv agda-stdlib/_build $(TMP_DIR)/agda-stdlib/; fi
 	git fetch --all
 	git checkout -b main --track origin/main
-	rsync $(RSYNC_ARGS)
+	rsync -r --delete --exclude=$(OUT_DIR) --exclude=$(TMP_DIR) --exclude=.git --exclude=.gitignore --exclude=CNAME $(OUT_DIR) .
 	git add -A
 	git commit -m "Publish"
 	git push origin main:main
 	git checkout dev
 	git branch -D main
 	git submodule update --init
-	if [ -d "$(TMP_DIR)/agda-stdlib/_build" ]; then mv $(TMP_DIR)/agda-stdlib/_build agda-stdlib/_build; fi
+	if [ -d "$(TMP_DIR)/agda-stdlib/_build" ]; then mv $(TMP_DIR)/agda-stdlib/_build agda-stdlib/; fi
+
 
 
 
