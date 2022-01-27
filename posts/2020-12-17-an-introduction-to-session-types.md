@@ -1,7 +1,9 @@
 ---
 title: An Introduction to Session Types
 katex: true
-css-include: ["/assets/css/highlight.css"]
+css-include:
+- "/assets/css/highlight.css"
+- "/assets/css/mathpar.css"
 ---
 
 Session types. Ostensibly, I’ve studied them for the past few years, so I should know something about them, right? I am gonna try and explain the *foundations* of session types, and along the way, there will be programs which crash, Victorian ladies having milk puddings, and tin can telephones.

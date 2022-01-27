@@ -1,7 +1,8 @@
 ---
 title: "Side-effects in English"
 katex: true
-css-include: ["/assets/css/highlight.css"]
+css-include:
+- "/assets/css/highlight.css"
 ---
 
 Back when I wrote this, I had just discovered ["Extensible Effects: an alternative to Monad Transformers"][eff] by Oleg Kiselyov, Amr Sabry, Cameron Swords, and Hiromi Ishii, and I've always had a penchant for mucking about with linguistics and Haskell… so… let's have a little fun with this library and some basic AB grammars in Haskell, see how far we can get within the universally well-defined maximum length of a blog post!

@@ -1,6 +1,7 @@
 ---
 title: "Neural Networks with Cube Cats"
-css-include: ["/assets/css/neural-networks-with-cube-cats.css"]
+css-include:
+- "/assets/css/neural-networks-with-cube-cats.css"
 ---
 
 Neural Networks. They’re, uh, pretty pervasive by now, so you’ve probably heard of them, telling you which of your friends is in that picture, and that they know what you wanna text better than you do. But what do they know? Do they know things? *Let’s find out!*

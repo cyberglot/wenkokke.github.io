@@ -1,5 +1,7 @@
 ---
 title: "Insertion sort in Agda"
+css-include:
+- "/assets/css/agda.css"
 ---
 
 <!--

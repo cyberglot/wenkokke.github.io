@@ -1,6 +1,8 @@
 ---
 title : One λ-calculus, many times…
 katex : true
+css-include:
+- "/assets/css/agda.css"
 ---
 
 <!--

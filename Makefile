@@ -119,7 +119,7 @@ serve: check-browser-sync
 ########################################
 
 .PHONY: test
-test: test-html-validate test-feed-validator
+test: test-html-proofer test-html-validate test-feed-validator
 
 
 # HTMLProofer

@@ -1,6 +1,7 @@
 ---
 title: "Paper Girls, Substitution Ciphers, and Frequency Analysis"
-css-include: ["/assets/css/highlight.css","/assets/css/paper-girls-substitution-ciphers-and-frequency-analysis.css"]
+css-include:
+- "/assets/css/highlight.css"
 ---
 
 ::: font-papergirls

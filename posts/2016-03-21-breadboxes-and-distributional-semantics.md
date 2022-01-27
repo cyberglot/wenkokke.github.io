@@ -1,6 +1,7 @@
 ---
 title: "Breadboxes, Plenty Questions and Distributional Semantics"
-css-include: ["/assets/css/highlight.css"]
+css-include:
+- "/assets/css/highlight.css"
 ---
 
 Quite a while ago, [UnicornPower](https://github.com/UnicornPower) introduced me to a game called *Breadbox*. It's an experimental cousin of *20 Questions*, also known as *Plenty Questions*, which is played by two players---or more, really---who we'll name Allie and Blake:

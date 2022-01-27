@@ -2,9 +2,7 @@
 @import
   "theme/poole",
   "theme/hyde",
-  "theme/highlight",
-  "theme/fonts",
-  "theme/agda";
+  "theme/fonts";
 
 /* Fontawesome */
 @import
@@ -12,8 +10,3 @@
   "fontawesome/regular",
   "fontawesome/solid",
   "fontawesome/brands";
-
-/* KaTeX */
-@import
-  "katex/katex",
-  "katex/mathpar";

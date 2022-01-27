@@ -4,13 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
 
-    <title>
-        $if(title)$
-        $title$
-        $else$
-        $site.title$
-        $endif$
-    </title>
+    <title>$if(title)$$title$$else$$site.title$$endif$</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="/assets/css/style.css"/>
@@ -38,6 +32,8 @@
     </script>
 
     <!-- Setup KaTeX -->
+    $if(katex)$
+    <link rel="stylesheet" href="/assets/css/katex.min.css"/>
     <script defer src="/assets/js/katex.min.js"></script>
     <script>
      document.addEventListener("DOMContentLoaded", function () {
@@ -56,4 +52,5 @@
          }
      });
     </script>
+    $endif$
 </head>

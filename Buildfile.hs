@@ -84,6 +84,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   -- Phony targets
 
   "build" ~> do
+    need [styleOutDir </> "highlight.css"]
     need (outputs ?routingTable)
 
   "clean" ~> do
@@ -300,15 +301,22 @@ sassOptions :: SassOptions
 sassOptions = def {sassIncludePaths = Just [styleSrcDir], sassImporters = Just [minCssImporter styleSrcDir 1]}
 
 styleRules :: (?routingTable :: RoutingTable) => Rules ()
-styleRules = do
-  want [styleOutDir </> "highlight.css"]
-
-  styleOutDir </> "highlight.css" %> \out -> do
-    writeFile' out (Text.pack $ Pandoc.styleToCss highlightStyle)
-
+styleRules = alternatives $ do
   styleOutDir </> "style.css" %> \out -> do
     src <- routeSrc out
     compileSassWith sassOptions src
+      >>= minifyCSS
+      >>= writeFile' out
+
+  styleOutDir </> "highlight.css" %> \out -> do
+    let css = Text.pack $ Pandoc.styleToCss highlightStyle
+    minCss <- minifyCSS css
+    writeFile' out minCss
+
+  styleOutDir </> "*.css" %> \out -> do
+    src <- routeSrc out
+    readFile' src
+      >>= minifyCSS
       >>= writeFile' out
 
 --------------------------------------------------------------------------------
