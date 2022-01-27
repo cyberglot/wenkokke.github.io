@@ -176,9 +176,12 @@ test-feed-validator: check-feed-validator
 .PHONY: deploy
 deploy:
 	@if [[ `git status --porcelain` ]]; then echo "Uncommited changes!"; exit 1; fi
-	make test
-	mkdir -p $(TMP_DIR)/agda-stdlib
-	if [ -d "agda-stdlib/_build" ]; then mv agda-stdlib/_build $(TMP_DIR)/agda-stdlib/; fi
+	@echo "Running tests..."
+	@make test
+	@echo "Backing up Agda interfaces..."
+	@mkdir -p $(TMP_DIR)/agda-stdlib
+	@if [ -d "agda-stdlib/_build" ]; then mv agda-stdlib/_build $(TMP_DIR)/agda-stdlib/; fi
+	@echo "Deploying site..."
 	git fetch --all
 	git checkout -b main --track origin/main
 	rsync -r --delete --exclude=$(OUT_DIR) --exclude=$(TMP_DIR) --exclude=.git --exclude=.gitignore --exclude=CNAME $(OUT_DIR) .
