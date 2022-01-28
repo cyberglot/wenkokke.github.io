@@ -47,26 +47,18 @@ executable builder
     , shake
     , temporary
     , text
-    , text-icu       ^>=0.7.1.0
-
-library blag-agda
-  import:          language-haskell
-  hs-source-dirs:  blag/agda
-  exposed-modules: Blag.Agda
-  build-depends:
-    , blag-prelude
-    , blag-routing
-    , containers
-    , directory
-    , filemanip           ^>=0.3
-    , text
     , text-icu            ^>=0.7.1.0
-    , text-regex-replace
 
-library blag-template
+library blag
   import:          language-haskell
-  hs-source-dirs:  blag/template
+  hs-source-dirs:  blag
   exposed-modules:
+    Blag.Agda
+    Blag.PostInfo
+    Blag.Prelude
+    Blag.Prelude.ByteString
+    Blag.Routing
+    Blag.Style
     Blag.Template
     Blag.Template.Pandoc
     Blag.Template.Pandoc.Builder
@@ -74,24 +66,36 @@ library blag-template
     Blag.Template.TagSoup
 
   other-modules:
+    Blag.Prelude.FilePath
+    Blag.Prelude.Url
+    Blag.Style.CSS
+    Blag.Style.Sass
     Blag.Template.Metadata
-    Blag.Template.Template
-    Blag.Template.Pandoc.Url
     Blag.Template.Pandoc.Postprocess
+    Blag.Template.Pandoc.Url
+    Blag.Template.Template
 
   build-depends:
     , aeson
+    , bimap
     , blag-postinfo
     , blag-prelude
+    , blag-routing
     , bytestring
+    , charsetdetect
     , citeproc
     , containers
     , directory
     , doclayout
+    , filemanip             ^>=0.3
+    , filepath
     , frontmatter
+    , hasmin
+    , hsass                 >=0.3.0
     , mtl
     , pandoc
     , pandoc-types
+    , shake
     , tagsoup
     , text
     , text-icu              ^>=0.7.1.0
@@ -100,55 +104,3 @@ library blag-template
     , unordered-containers
     , vector
     , yaml
-
-library blag-postinfo
-  import:          language-haskell
-  hs-source-dirs:  blag/postinfo
-  exposed-modules: Blag.PostInfo
-
-library blag-prelude
-  import:          language-haskell
-  hs-source-dirs:  blag/prelude
-  exposed-modules:
-    Blag.Prelude
-    Blag.Prelude.ByteString
-  other-modules:
-    Blag.Prelude.FilePath
-    Blag.Prelude.Url
-
-  build-depends:
-    , bytestring
-    , charsetdetect
-    , directory
-    , filemanip
-    , filepath
-    , shake
-    , text
-    , text-icu       >=0.7.1.0
-
-library blag-routing
-  import:          language-haskell
-  hs-source-dirs:  blag/routing
-  exposed-modules: Blag.Routing
-  build-depends:
-    , bimap
-    , blag-prelude
-    , containers
-    , text
-
-library blag-style
-  import:          language-haskell
-  hs-source-dirs:  blag/style
-  exposed-modules:
-    Blag.Style
-  other-modules:
-    Blag.Style.CSS
-    Blag.Style.Sass
-
-  build-depends:
-    , blag-prelude
-    , directory
-    , hasmin
-    , hsass         >=0.3.0
-    , shake
-    , text
