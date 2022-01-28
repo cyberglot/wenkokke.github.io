@@ -822,7 +822,7 @@ So, did it work? Are we safe from the bad programs? Yes and no. Which, *uh*, kin
 
 $$
 \begin{array}{c}
-  (\nu x x')(\nu y y')%
+  (\nu x x')(\nu y y')
   \left(
   x(z).y\langle{z}\rangle.0 \parallel y'(w).x'\langle{w}\rangle.0
   \right)
