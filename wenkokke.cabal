@@ -33,12 +33,7 @@ executable builder
   import:        language-haskell
   main-is:       Buildfile.hs
   build-depends:
-    , blag-agda
-    , blag-postinfo
-    , blag-prelude
-    , blag-routing
-    , blag-style
-    , blag-template
+    , blag
     , citeproc
     , containers
     , data-default-class
@@ -78,9 +73,6 @@ library blag
   build-depends:
     , aeson
     , bimap
-    , blag-postinfo
-    , blag-prelude
-    , blag-routing
     , bytestring
     , charsetdetect
     , citeproc

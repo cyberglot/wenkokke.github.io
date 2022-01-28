@@ -67,12 +67,14 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   let ?getSiteMetadata = cachedGetSiteMetadata
   cachedGetFileWithMetadata <- newCache getFileWithMetadata
   let ?getFileWithMetadata = cachedGetFileWithMetadata
-  cachedGetPostMetadata <- newCache getPostMetadata
-  let ?getPostMetadata = cachedGetPostMetadata
+  cachedGetPostWithMetadata <- newCache getPostWithMetadata
+  let ?getPostWithMetadata = cachedGetPostWithMetadata
+  cachedGetPostsMetadata <- newCache getPostsMetadata
+  let ?getPostsMetadata = cachedGetPostsMetadata
   cachedGetTemplateFile <- newCache getTemplateFile
   let ?getTemplateFile = getTemplateFile
-  cachedGetRecipeMetadata <- newCache getRecipeMetadata
-  let ?getRecipeMetadata = cachedGetRecipeMetadata
+  cachedGetRecipesMetadata <- newCache getRecipesMetadata
+  let ?getRecipesMetadata = cachedGetRecipesMetadata
 
   --------------------------------------------------------------------------------
   -- Agda link fixers
@@ -107,7 +109,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   -- Posts
   outDir </> "index.html" %> \out -> do
     src <- routeSrc out
-    postMetadata <- ?getPostMetadata ()
+    postMetadata <- ?getPostsMetadata ()
     (fileMetadata, indexHtmlTemplate) <- ?getFileWithMetadata src
     applyAsTemplate (postMetadata <> fileMetadata) indexHtmlTemplate
       >>= applyTemplate "default.html" fileMetadata
@@ -116,7 +118,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
 
   outDir </> "rss.xml" %> \out -> do
     src <- routeSrc out
-    postMetadata <- ?getPostMetadata ()
+    postMetadata <- ?getPostsMetadata ()
     (fileMetadata, rssXmlTemplate) <- ?getFileWithMetadata src
     readFile' src
       >>= applyAsTemplate (fileMetadata <> postMetadata)
@@ -127,7 +129,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   -- Recipes
   outDir </> "recipes" </> "index.html" %> \out -> do
     src <- routeSrc out
-    recipeMetadata <- ?getRecipeMetadata ()
+    recipeMetadata <- ?getRecipesMetadata ()
     (fileMetadata, recipesHtmlTemplate) <- ?getFileWithMetadata src
     applyAsTemplate (recipeMetadata <> fileMetadata) recipesHtmlTemplate
       >>= applyTemplate "default.html" fileMetadata
@@ -176,7 +178,7 @@ isPostOut out = isNothing (routeNext out) && maybe False isPostSrc (routeSrc out
 postRules ::
   ( ?routingTable :: RoutingTable,
     ?getTemplateFile :: FilePath -> Action Template,
-    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text),
+    ?getPostWithMetadata :: FilePath -> Action (Metadata, Text),
     ?agdaLibraries :: [Agda.Library],
     ?agdaLinkFixer :: Url -> Url
   ) =>
@@ -202,7 +204,7 @@ postRules = do
   -- Apply templates
   isPostOut ?> \out -> do
     (prev, src) <- (,) <$> routePrev out <*> routeSrc out
-    metadata <- fst <$> ?getFileWithMetadata src
+    metadata <- fst <$> ?getPostWithMetadata src
     readFile' prev
       >>= applyTemplates ["post.html", "default.html"] metadata
       <&> postprocessHtml5 outDir out
@@ -424,18 +426,36 @@ getFileWithMetadata src = do
 --   This function adds the following metadata fields for each post,
 --   in addition to the metadata added by 'getFileWithMetadata':
 --
---   - @body_html@: The rendered HTML body of the source file.
 --   - @date@: The date of the post, in a human readable format.
 --   - @date_rfc822@: The date of the post, in the RFC822 date format.
---   - @teaser_html@: The rendered HTML teaser for the post.
---   - @teaser_plain@: The plain text teaser for the post.
-getPostMetadata ::
+getPostWithMetadata ::
   ( ?routingTable :: RoutingTable,
     ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
   ) =>
+  FilePath ->
+  Action (Metadata, Text)
+getPostWithMetadata src = do
+  (fileMetadata, body) <- ?getFileWithMetadata src
+  dateFld <- postDateField "%a %-d %b, %Y" src "date"
+  dateRfc822Fld <- postDateField rfc822DateFormat src "date_rfc822"
+  let metadata = mconcat [fileMetadata, dateFld, dateRfc822Fld ]
+  return  $ (metadata, body)
+
+-- | Get a metadata object representing all posts.
+--
+--   This function adds the following metadata fields for each post,
+--   in addition to the metadata added by 'getFileWithMetadata':
+--
+--   - @body_html@: The rendered HTML body of the source file.
+--   - @teaser_html@: The rendered HTML teaser for the post.
+--   - @teaser_plain@: The plain text teaser for the post.
+getPostsMetadata ::
+  ( ?routingTable :: RoutingTable,
+    ?getPostWithMetadata :: FilePath -> Action (Metadata, Text)
+  ) =>
   () ->
   Action Metadata
-getPostMetadata () = do
+getPostsMetadata () = do
   -- Get posts from routing table
   let postSrcs = filter isPostSrc (sources ?routingTable)
   -- Gather metadata for each post
@@ -443,24 +463,22 @@ getPostMetadata () = do
     -- Get output file for URL and html-body anchor for teaser
     (out, ankHtmlBody) <- (,) <$> route src <*> routeAnchor "html-body" src
     let url = "/" <> makeRelative outDir out
-    fileMetadata <- fst <$> ?getFileWithMetadata src
+    postMetadata <- fst <$> ?getPostWithMetadata src
     bodyHtml <- readFile' ankHtmlBody
     let bodyHtmlFld = constField "body_html" bodyHtml
-    dateFld <- postDateField "%a %-d %b, %Y" src "date"
-    dateRfc822Fld <- postDateField rfc822DateFormat src "date_rfc822"
     teaserHtmlFld <- htmlTeaserField url bodyHtml "teaser_html"
     teaserPlainFld <- textTeaserField bodyHtml "teaser_plain"
-    return $ mconcat [fileMetadata, bodyHtmlFld, dateFld, dateRfc822Fld, teaserHtmlFld, teaserPlainFld]
+    return $ mconcat [postMetadata, bodyHtmlFld, teaserHtmlFld, teaserPlainFld]
   return $ constField "post" (reverse postsMetadata)
 
 -- | Get a metadata object representing all recipes.
-getRecipeMetadata ::
+getRecipesMetadata ::
   ( ?routingTable :: RoutingTable,
     ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
   ) =>
   () ->
   Action Metadata
-getRecipeMetadata () = do
+getRecipesMetadata () = do
   -- Get recipes from routing table
   let recipeSrcs = filter isRecipeSrc (sources ?routingTable)
   -- Gather metadata for each recipe
