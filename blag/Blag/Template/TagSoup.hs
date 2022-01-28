@@ -2,6 +2,7 @@ module Blag.Template.TagSoup
   ( stripTags,
     withUrls,
     addDefaultTableHeaderScope,
+    removeFootnoteAnchorId,
     module TagSoup,
   )
 where
@@ -9,6 +10,7 @@ where
 import Blag.Prelude ( Url )
 import Data.Maybe (mapMaybe)
 import Data.Text (Text)
+import Data.Text qualified as Text
 import Text.HTML.TagSoup qualified as TagSoup
 
 -- Strip HTML.
@@ -29,8 +31,18 @@ withUrls f = TagSoup.renderTags . map tag . TagSoup.parseTags
     attr (k, v) = (k, if k `elem` refs then f v else v)
     refs = ["src", "href", "xlink:href"]
 
+-- | Pandoc does not include scope tags for table header elements.
 addDefaultTableHeaderScope :: Text -> Text -> Text
 addDefaultTableHeaderScope defaultScope = TagSoup.renderTags . map tag . TagSoup.parseTags
   where
     tag (TagSoup.TagOpen s a) | s == "th" && "scope" `notElem` map fst a = TagSoup.TagOpen s (("scope", defaultScope) : a)
     tag x = x
+
+
+-- | Pandoc automatically adds anchors to footnotes, and sometimes it is useful to remove these.
+removeFootnoteAnchorId :: Text  -> Text
+removeFootnoteAnchorId = TagSoup.renderTags . map tag . TagSoup.parseTags
+  where
+    tag (TagSoup.TagOpen s a) = TagSoup.TagOpen s (filter (not . isFootnoteAnchorId) a)
+    tag x = x
+    isFootnoteAnchorId (k,v) = k == "id" && "fnref" `Text.isPrefixOf` v

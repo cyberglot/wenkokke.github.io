@@ -6,7 +6,6 @@
     "wcag/h30": ["off"],
     "wcag/h37": ["warn"],
     "require-sri": ["off"],
-    "no-dup-id": ["warn"],
     "no-inline-style": ["off"]
   }
 }

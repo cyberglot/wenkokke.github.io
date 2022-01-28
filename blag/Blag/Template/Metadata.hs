@@ -215,7 +215,8 @@ constField key a = mempty & key .~ a
 htmlTeaserField :: MonadFail m => FilePath -> Text -> Text -> m Metadata
 htmlTeaserField teaserUrl htmlBody key = do
   let htmlBodyWithAbsoluteUrls = htmlTeaserFixUrl teaserUrl htmlBody
-  htmlTeaserBody <- htmlTeaserBody htmlBodyWithAbsoluteUrls
+  let htmlBodyWithoutFootnoteAnchorIds = TagSoup.removeFootnoteAnchorId htmlBodyWithAbsoluteUrls
+  htmlTeaserBody <- htmlTeaserBody htmlBodyWithoutFootnoteAnchorIds
   return $ constField key htmlTeaserBody
 
 -- | Create a metadata object containing a plain-text teaser constructed from the first argument.
