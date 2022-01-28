@@ -587,6 +587,7 @@ $$
   \\
   (\nu x)0
   & \equiv
+  & 0
   & \text{if}\;{x}\not\in{P}
   \\
   (\nu x)(\nu y)P
