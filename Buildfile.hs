@@ -438,8 +438,8 @@ getPostWithMetadata src = do
   (fileMetadata, body) <- ?getFileWithMetadata src
   dateFld <- postDateField "%a %-d %b, %Y" src "date"
   dateRfc822Fld <- postDateField rfc822DateFormat src "date_rfc822"
-  let metadata = mconcat [fileMetadata, dateFld, dateRfc822Fld ]
-  return  $ (metadata, body)
+  let metadata = mconcat [fileMetadata, dateFld, dateRfc822Fld]
+  return (metadata, body)
 
 -- | Get a metadata object representing all posts.
 --
