@@ -184,7 +184,7 @@ deploy:
 	@echo "Deploying site..."
 	git fetch --all
 	git checkout -b main --track origin/main
-	rsync -r --delete --exclude=$(OUT_DIR) --exclude=$(TMP_DIR) --exclude=.git --exclude=.gitignore --exclude=CNAME $(OUT_DIR) .
+	rsync -r --delete --exclude=$(OUT_DIR) --exclude=$(TMP_DIR) --exclude=.git --exclude=.gitignore --exclude=CNAME $(OUT_DIR)/ .
 	git add -A
 	git commit -m "Publish"
 	git push origin main:main
