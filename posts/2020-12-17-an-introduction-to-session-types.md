@@ -666,7 +666,7 @@ $$
   \quad
   \begin{array}{rl}
   \longrightarrow
-  & (\nu x)%
+  & (\nu x)
     \left(
     \begin{array}{l}
     {P_1}\parallel {Q_1}\{y_1/z_1\}\parallel
@@ -678,7 +678,7 @@ $$
   \mathit{or}
   \\
   \longrightarrow
-  & (\nu x)%
+  & (\nu x)
     \left(
     \begin{array}{l}
     {P_1}\parallel {Q_1}\{y_2/z_1\}\parallel
@@ -694,7 +694,7 @@ Another *fun* thing we can do is write two processes which echo a message on $x$
 
 $$
 \begin{array}{c}
-  (\nu x)%
+  (\nu x)
   \left(
   x(y).x\langle{y}\rangle.0 \parallel x(z).x\langle{z}\rangle.0
   \right)
