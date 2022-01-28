@@ -1333,7 +1333,7 @@ $$
   \begin{array}{l}
   \bullet\;
     \begin{array}{l}
-    \mathbf{let} \; () = \mathbf{spawn} \; () \; \mathbf{in}
+    \mathbf{let} \; () = () \; \mathbf{in}
     \\
     \text{ada} \; a
     \end{array}
