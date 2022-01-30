@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macOS-latest, ubuntu-latest, windows-latest]
+        os: [macOS-latest]
         ghc: ["8.10.7"]
         agda: ["2.6.2.1"]
         node: ["14"]
