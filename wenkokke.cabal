@@ -5,7 +5,7 @@ description:        Personal website of Wen Kokke
 homepage:           https://wenkokke.github.io
 author:             Wen Kokke
 maintainer:         wenkokke@users.noreply.github.com
-copyright:          © 2020 Wen Kokke
+copyright:          © 2016—2022 Wen Kokke
 category:           Web
 build-type:         Simple
 extra-source-files: CHANGELOG.md
@@ -53,7 +53,7 @@ library blag
     Blag.Prelude
     Blag.Prelude.ByteString
     Blag.Routing
-    Blag.Style
+    Blag.Style.Sass
     Blag.Template
     Blag.Template.Pandoc
     Blag.Template.Pandoc.Builder
@@ -63,8 +63,6 @@ library blag
   other-modules:
     Blag.Prelude.FilePath
     Blag.Prelude.Url
-    Blag.Style.CSS
-    Blag.Style.Sass
     Blag.Template.Metadata
     Blag.Template.Pandoc.Postprocess
     Blag.Template.Pandoc.Url
@@ -82,7 +80,6 @@ library blag
     , filemanip             ^>=0.3
     , filepath
     , frontmatter
-    , hasmin
     , hsass                 >=0.3.0
     , mtl
     , pandoc
