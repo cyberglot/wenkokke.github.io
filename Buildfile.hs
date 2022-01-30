@@ -4,7 +4,7 @@ import Blag.Agda qualified as Agda
 import Blag.PostInfo
 import Blag.Prelude
 import Blag.Routing
-import Blag.Style
+import Blag.Style.Sass
 import Blag.Template
 import Blag.Template.Pandoc qualified as Pandoc
 import Blag.Template.Pandoc.Builder qualified as Builder
@@ -307,18 +307,15 @@ styleRules = alternatives $ do
   styleOutDir </> "style.css" %> \out -> do
     src <- routeSrc out
     compileSassWith sassOptions src
-      >>= minifyCSS
       >>= writeFile' out
 
   styleOutDir </> "highlight.css" %> \out -> do
     let css = Text.pack $ Pandoc.styleToCss highlightStyle
-    minCss <- minifyCSS css
     writeFile' out minCss
 
   styleOutDir </> "*.css" %> \out -> do
     src <- routeSrc out
     readFile' src
-      >>= minifyCSS
       >>= writeFile' out
 
 --------------------------------------------------------------------------------
@@ -376,7 +373,7 @@ readerOpts = def {readerExtensions = markdownDialect}
 writerOpts :: WriterOptions
 writerOpts =
   def
-    { writerHTMLMathMethod = KaTeX "https://wen.works/",
+    { writerHTMLMathMethod = KaTeX "",
       writerEmailObfuscation = JavascriptObfuscation,
       writerHighlightStyle = Just highlightStyle
     }
