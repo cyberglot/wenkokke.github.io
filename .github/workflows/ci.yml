@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  build:
+    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }} / Agda ${{ matrix.agda }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest, windows-latest]
+        ghc: ["8.10.7"]
+        agda: ["v2.6.2"]
+        node: ["14"]
+        cabal: ["3.6"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup Haskell
+        uses: haskell/actions/setup@v1
+        id: setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: ${{ matrix.cabal }}
+
+      - name: Cabal freeze
+        run: |
+          cabal v2-update
+          cabal v2-freeze --enable-tests --enable-benchmarks
+
+      - name: Cache ~/.cabal/store and dist-newstyle
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ steps.setup-haskell.outputs.cabal-store }}
+            dist-newstyle
+          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-
+
+      - name: Add Cabal installdir to path (Unix)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: echo "${HOME}/.cabal/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Add Cabal installdir to path (Windows)
+        if: runner.os == 'Windows'
+        run: echo "$env:APPDATA\cabal\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: powershell
+
+      - name: Cache Agda
+        uses: actions/cache@v2
+        with:
+          path: agda
+          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-Agda-${{ matrix.agda }}
+
+      - name: Checkout Agda
+        uses: actions/checkout@v2
+        if: steps.cache-agda.outputs.cache-hit != 'true'
+        with:
+          repository: agda/agda
+          path: agda
+          ref: ${{ matrix.agda }}
+
+      - name: Compile Agda
+        if: steps.cache-agda.outputs.cache-hit != 'true'
+        run: |
+          cd agda
+          touch doc/user-manual.pdf
+          cabal install
+        shell: bash
+
+      - name: Build shakefile
+        run: cabal build exe:builder
+
+      - name: Build website
+        run: make build
+
+      - name: Test website
+        run: make test
