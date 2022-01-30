@@ -17,8 +17,8 @@
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml"/>
 
-    <!-- Fix citations -->
-    <script>
+    <!-- Add anchors to citations: -->
+    <!-- <script>
      document.addEventListener("DOMContentLoaded", function () {
          const citations = document.querySelectorAll('.citation');
          for (let citationSpan of citations) {
@@ -29,12 +29,12 @@
              citationSpan.replaceWith(citationLink);
          }
      });
-    </script>
+    </script> -->
 
-    <!-- Setup KaTeX -->
+    <!-- Setup KaTeX (optional) -->
     $if(katex)$
-    <link rel="stylesheet" href="/assets/css/katex.min.css"/>
-    <script defer src="/assets/js/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
     <script>
      document.addEventListener("DOMContentLoaded", function () {
          const mathElements = document.getElementsByClassName("math");

@@ -9,7 +9,8 @@ copyright:          © 2016—2022 Wen Kokke
 category:           Web
 build-type:         Simple
 extra-source-files: CHANGELOG.md
-tested-with:        GHC ==8.10.7
+tested-with:
+  GHC ==8.10.7n
 
 common language-haskell
   default-language:   Haskell2010
@@ -53,6 +54,7 @@ library blag
     Blag.Prelude
     Blag.Prelude.ByteString
     Blag.Routing
+    Blag.Style.CSS
     Blag.Style.Sass
     Blag.Template
     Blag.Template.Pandoc
@@ -80,6 +82,7 @@ library blag
     , filemanip             ^>=0.3
     , filepath
     , frontmatter
+    , hasmin
     , hsass                 >=0.3.0
     , mtl
     , pandoc

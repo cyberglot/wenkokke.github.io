@@ -4,6 +4,7 @@ import Blag.Agda qualified as Agda
 import Blag.PostInfo
 import Blag.Prelude
 import Blag.Routing
+import Blag.Style.CSS
 import Blag.Style.Sass
 import Blag.Template
 import Blag.Template.Pandoc qualified as Pandoc
@@ -300,22 +301,28 @@ styleRouter src =
     styleOutDir </> makeRelative styleSrcDir src -<.> "css"
 
 sassOptions :: SassOptions
-sassOptions = def {sassIncludePaths = Just [styleSrcDir], sassImporters = Just [minCssImporter styleSrcDir 1]}
+sassOptions =
+  def
+    { sassIncludePaths = Just [styleSrcDir],
+      sassImporters = Just [minCssImporter styleSrcDir 1]
+    }
 
 styleRules :: (?routingTable :: RoutingTable) => Rules ()
 styleRules = alternatives $ do
   styleOutDir </> "style.css" %> \out -> do
     src <- routeSrc out
     compileSassWith sassOptions src
+      >>= minifyCSS
       >>= writeFile' out
 
   styleOutDir </> "highlight.css" %> \out -> do
     let css = Text.pack $ Pandoc.styleToCss highlightStyle
-    writeFile' out minCss
+    writeFile' out =<< minifyCSS css
 
   styleOutDir </> "*.css" %> \out -> do
     src <- routeSrc out
     readFile' src
+      >>= minifyCSS
       >>= writeFile' out
 
 --------------------------------------------------------------------------------

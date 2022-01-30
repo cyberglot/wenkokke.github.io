@@ -1,0 +1,4 @@
+constraints:
+  hslua-module-text ==1.0.0,
+  hslua-module-system ==1.0.0
+ignore-project: False
