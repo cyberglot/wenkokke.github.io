@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
         ghc: ["8.10.7"]
-        agda: ["v2.6.2"]
+        agda: ["2.6.2.1"]
         node: ["14"]
         cabal: ["3.6"]
 
@@ -36,6 +36,10 @@ jobs:
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: ${{ matrix.cabal }}
+          
+      - name: Setup Agda
+        run:
+          cabal v2-install --global Agda-${{ matrix.agda }}
 
       - name: Cabal freeze
         run: |
@@ -60,28 +64,6 @@ jobs:
         if: runner.os == 'Windows'
         run: echo "$env:APPDATA\cabal\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         shell: powershell
-
-      - name: Cache Agda
-        uses: actions/cache@v2
-        with:
-          path: agda
-          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-Agda-${{ matrix.agda }}
-
-      - name: Checkout Agda
-        uses: actions/checkout@v2
-        if: steps.cache-agda.outputs.cache-hit != 'true'
-        with:
-          repository: agda/agda
-          path: agda
-          ref: ${{ matrix.agda }}
-
-      - name: Compile Agda
-        if: steps.cache-agda.outputs.cache-hit != 'true'
-        run: |
-          cd agda
-          touch doc/user-manual.pdf
-          cabal install
-        shell: bash
 
       - name: Build shakefile
         run: cabal build exe:builder
