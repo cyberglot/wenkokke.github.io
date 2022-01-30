@@ -39,7 +39,7 @@ jobs:
           
       - name: Setup Agda
         run:
-          cabal v2-install --global Agda-${{ matrix.agda }}
+          cabal v2-install --global --ignore-project Agda-${{ matrix.agda }}
 
       - name: Cabal freeze
         run: |
