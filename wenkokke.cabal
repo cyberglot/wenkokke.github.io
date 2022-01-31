@@ -19,7 +19,7 @@ flag install-agda
 
 common install-agda
   if flag(install-agda)
-    build-depends: agda ==2.6.2.1
+    build-depends: Agda ==2.6.2.1
     cpp-options:   -DinstallAgda
 
 common language-haskell
