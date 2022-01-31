@@ -2,5 +2,7 @@ _cache
 _site
 dist-newstyle
 node_modules
+cabal.project.local
+cabal.project.freeze
 package-lock.json
 Gemfile.lock

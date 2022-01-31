@@ -3,7 +3,8 @@
 {-# LANGUAGE CPP #-}
 
 module Blag.Agda
-  ( compileToHtml,
+  ( compileTo,
+    Format (..),
     Library (..),
     makeLocalLinkFixer,
     makeLibraryLinkFixer,
@@ -17,12 +18,9 @@ where
 
 #if installAgda
 import Agda.Main qualified as Agda
-import Agda.Compiler.Backend qualified as Agda (Backend, parseBackendOptions, backendInteraction)
-import Agda.Interaction.Options  qualified as Agda(defaultOptions)
-import Agda.Interaction.Highlighting.HTML qualified as Agda (htmlBackend)
-import Agda.Utils.FileName qualified as Agda (absolute)
-import Control.Exception
-import System.Exit
+import Control.Exception (handle, throwIO)
+import System.Environment (withArgs, withProgName)
+import System.Exit (ExitCode (..))
 #endif
 
 import Blag.Prelude
@@ -40,32 +38,29 @@ import Data.Text.ICU.Replace qualified as RE
 import Data.Text.IO qualified as Text
 import System.Directory qualified as System (doesFileExist)
 
-#if installAgda
-runAgdaWith :: [Agda.Backend] -> [String] -> FilePath -> Action ()
-runAgdaWith backends args src = liftIO $ do
-  (configuredBackends, agdaOpts) <-
-    Agda.parseBackendOptions backends args Agda.defaultOptions
-  absSrc <- Agda.absolute src
-  let interactor = Agda.backendInteraction absSrc configuredBackends
-  swallowExitSuccess $
-    Agda.runTCMPrettyErrors $
-      Agda.runAgdaWithOptions interactor "agda" agdaOpts
-#else
-runAgdaWith :: [String] -> FilePath -> Action ()
-runAgdaWith args src = command_ [] "agda" (args ++ [src])
-#endif
-
-
-compileToHtml :: [Library] -> FilePath -> FilePath -> Action ()
-compileToHtml libs outDir src = do
+compileTo :: Format -> [Library] -> FilePath -> FilePath -> Action ()
+compileTo fmt libs outDir src = do
   need [src]
-  let args = concat [ ["--verbose=0"], htmlArgs outDir, libraryArgs libs ]
-#if installAgda
-  runAgdaWith [Agda.htmlBackend] args src
-#else
-  runAgdaWith args src
-#endif
+  runAgdaWith $ concat 
+    [ ["--verbose=0"], 
+      formatArgs fmt outDir, 
+      libraryArgs libs, 
+      [ src ] 
+    ]
 
+
+#if installAgda
+runAgdaWith :: [String] -> Action ()
+runAgdaWith args =
+  liftIO (withProgName "agda" (withArgs args (handle handleExitSuccess (Agda.runAgda []))))
+  where
+    handleExitSuccess :: ExitCode -> IO ()
+    handleExitSuccess ExitSuccess = return ()
+    handleExitSuccess exitCode    = throwIO exitCode
+#else
+runAgdaWith :: [String] -> Action ()
+runAgdaWith args = command_ [] "agda" args
+#endif
 
 type ModuleName = Text
 
@@ -280,12 +275,3 @@ getAgdaFilesInDirectory dir =
 isAgdaFile :: FilePath -> Bool
 isAgdaFile src = any (?== src) ["//*.agda", "//*.lagda", "//*.lagda.md", "//*.lagda.org", "//*.lagda.rst", "//*.lagda.tex"]
 
-#if installAgda
--- | If the passed action throws an 'ExitSuccess', catch it and swallow it.
-swallowExitSuccess :: IO () -> IO ()
-swallowExitSuccess act = handle handler act
-  where
-    handler :: ExitCode -> IO ()
-    handler ExitSuccess = return ()
-    handler exitCode    = throwIO exitCode
-#endif
