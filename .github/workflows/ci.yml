@@ -38,6 +38,8 @@ jobs:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: ${{ matrix.cabal }}
 
+      - run: echo ${CI}
+
       - name: Cabal freeze
         run: |
           cabal v2-update
