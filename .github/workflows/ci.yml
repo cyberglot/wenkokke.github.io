@@ -63,8 +63,8 @@ jobs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-Agda-${{ matrix.agda }}-${{ hashFiles('cabal.project.freeze') }}
-          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-Agda-${{ matrix.agda }}-
+          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-
 
       - name: Build website
         run: make build
