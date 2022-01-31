@@ -17,7 +17,6 @@ jobs:
       matrix:
         os: [macOS-latest]
         ghc: ["8.10.7"]
-        agda: ["2.6.2.1"]
         node: ["14"]
         cabal: ["3.6"]
 
@@ -38,10 +37,6 @@ jobs:
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: ${{ matrix.cabal }}
-          
-      - name: Setup Agda
-        run:
-          cabal v2-install --global --ignore-project Agda-${{ matrix.agda }}
 
       - name: Cabal freeze
         run: |
@@ -66,9 +61,6 @@ jobs:
         if: runner.os == 'Windows'
         run: echo "$env:APPDATA\cabal\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         shell: powershell
-
-      - name: Build shakefile
-        run: cabal build exe:builder
 
       - name: Build website
         run: make build
