@@ -1,0 +1,39 @@
+cabal-version: 2.4
+name:          normalization-by-evaluation
+version:       0.1.0.0
+description:   Normalization by Evaluation
+author:        Wen Kokke
+homepage:      https://wen.works/2022/01/31/normalization-by-evaluation/
+maintainer:    wenkokke@users.noreply.github.com
+copyright:     © 2016—2022 Wen Kokke
+category:      Web
+tested-with:   GHC ==8.10.7
+
+test-suite normalization-by-evaluation
+  type:               exitcode-stdio-1.0
+  main-is:            ../2022-01-31-normalization-by-evaluation.lhs
+  hs-source-dirs:     .. .
+  build-depends:
+    , base         >=4.7     && <5
+    , lazy-search  ==0.1.2.1
+    , size-based   ==0.1.2.1
+    , tasty
+    , tasty-hunit
+
+  default-extensions:
+    DeriveFunctor
+    EmptyCase
+    EmptyDataDeriving
+    FlexibleContexts
+    FlexibleInstances
+    GADTs
+    LambdaCase
+    PatternSynonyms
+    RankNTypes
+    ScopedTypeVariables
+    StandaloneDeriving
+    TypeApplications
+
+  default-language:   Haskell2010
+  ghc-options:        -pgmL markdown-unlit
+  build-tool-depends: markdown-unlit:markdown-unlit >=0.5.1 && <0.6

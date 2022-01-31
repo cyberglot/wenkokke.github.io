@@ -116,7 +116,8 @@ serve: check-browser-sync
 
 .PHONY: test
 test: test-html-validate test-feed-validator
-	@$(CABAL) $(CABAL_ARGS) v2-test
+	@$(CABAL) $(CABAL_ARGS) v2-test side-effects-in-english
+	@$(CABAL) $(CABAL_ARGS) v2-test normalization-by-evaluation
 
 
 # HTMLProofer
