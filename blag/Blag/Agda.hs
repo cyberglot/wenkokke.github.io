@@ -3,7 +3,8 @@
 {-# LANGUAGE CPP #-}
 
 module Blag.Agda
-  ( compileToHtml,
+  ( compileTo,
+    Format (..),
     Library (..),
     makeLocalLinkFixer,
     makeLibraryLinkFixer,

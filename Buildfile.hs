@@ -188,7 +188,7 @@ postRules = do
   -- Compile literate Agda to Markdown & HTML
   isPostTmp1 ?> \next -> do
     prev <- routePrev next
-    Agda.compileToHtml ?agdaLibraries postTmp1Dir prev
+    Agda.compileTo Agda.Html ?agdaLibraries postTmp1Dir prev
 
   -- Compile Markdown to HTML
   isPostTmp2 ?> \next -> do
