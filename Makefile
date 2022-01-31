@@ -35,9 +35,6 @@ init:
 ########################################
 
 CABAL_ARGS += --verbose=0
-ifneq (,$(CI))
-CABAL_ARGS += -finstall-agda
-endif
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
 
