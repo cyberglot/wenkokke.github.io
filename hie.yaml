@@ -4,3 +4,5 @@ cradle:
       component: "exe:builder"
     - path: "./blag/"
       component: "lib:blag"
+    - path: "./posts/2016-03-09-side-effects-in-english/"
+      component: "lib:2016-03-09-side-effects-in-english"

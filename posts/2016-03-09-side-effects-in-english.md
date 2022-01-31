@@ -21,7 +21,7 @@ In (1), the word "I" is non-compositional: it's a word which you can always use,
 
 So this is why I got excited when I saw the latest library for extensible effects. If you don't know what extensible effects are, I'd recommend [the paper linked above][eff]. But anyway, what I'm going to do in this post is: develop a parser, which parses Haskell strings, looks up the words in a dictionary of *effectful* Haskell functions, and composes these to get some meaning for the sentence. Here's an example that you'll see again at the end of the post, except then it'll actually work!
 
-```haskell
+```haskell ignore
 lex :: String -> [SomeEffectfulFunction]
 lex "tim"    = [ NP , Tim             ]
 lex "bob"    = [ NP , Bob             ]
@@ -41,15 +41,10 @@ example = parseWith Tim "(stupid bob) likes him"
 
 # AB Grammars in Haskell
 
-Well, first off, don't let this scare you off… but we are going to do this in Haskell, and we're going to need a LOT of language extensions. This is because we're basically going to parse strings to Haskell functions:
+Well, first off, don't let this scare you off… but we are going to do this in Haskell, and we're going to need a LOT of language extensions. This is because we're basically going to parse strings to Haskell functions. Here's some crucial ones—if you'd like to see the full list, check the Cabal file:
 
 ```haskell
-{-# LANGUAGE
-    TemplateHaskell, QuasiQuotes, FlexibleInstances, 
-    FlexibleContexts, TypeFamilies, GADTs, TypeOperators, 
-    DataKinds, PolyKinds, RankNTypes, KindSignatures, 
-    UndecidableInstances, StandaloneDeriving, RecordWildCards, 
-    DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
+{-# LANGUAGE TypeFamilies, GADTs, DataKinds, UndecidableInstances #-}
 ```
 
 <!--
@@ -65,14 +60,9 @@ import Text.Parsec (char,letter,spaces,many1,chainr1,parse)
 ```
 -->
 
-In addition, we're going to use the following packages:
+In addition, we're going to use [singletons](https://hackage.haskell.org/package/singletons), [extensible effects](http://okmij.org/ftp/Haskell/extensible/), [parsec](https://hackage.haskell.org/package/parsec) for parsers, and [markdown-unlit](https://hackage.haskell.org/package/markdown-unlit) to compile the source code for this blog post.
 
-  - [singletons](https://hackage.haskell.org/package/singletons);
-  - [extensible effects](http://okmij.org/ftp/Haskell/extensible/);
-  - [parsec](https://hackage.haskell.org/package/parsec);
-  - [markdown-unlit](https://hackage.haskell.org/package/markdown-unlit).
-
-I've included a copy the extensible effects code in [the repository](https://github.com/wenkokke/side-effects-in-english/).
+I've included a copy the extensible effects code in the repository.
 
 Before we start off, let's review some basic AB-grammar knowledge. In general, a categorial grammar---of which AB-grammars are an instance---consist of three things:
 
@@ -129,7 +119,7 @@ singletons [d|
 
 The `singletons` function that we're using here is important. It's a template Haskell function which, given some datatype, defines its "singleton". A "singleton" is a Haskell data type which has the same structure on the value level and on the type level. For the type `SynT` above, that means that the `singletons` function generates a second data type:
 
-```haskell
+```haskell ignore
 data SSynT (ty :: SynT) where
   SS    :: SSynT S
   SN    :: SSynT N
@@ -173,7 +163,7 @@ type family Tr (ty :: SynT) :: SemT where
 
 Let's assume for now that we have some sort of data type that we wish to use to represent our semantic terms, for instance:
 
-```haskell
+```haskell ignore
 data Expr (ty :: SemT) where
   John :: Expr E
   Mary :: Expr E
@@ -371,6 +361,13 @@ example = runExt Tim <$> parseWith lex "(stupid bob) likes him" SS
 ```
 
 Which evaluates to: `[(Like Bob Tim,[Stupid Bob])]`
+
+<!--
+```haskell
+main :: IO ()
+main = print example
+```
+-->
 
 ---
 

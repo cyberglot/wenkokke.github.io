@@ -1,0 +1,52 @@
+cabal-version: 2.4
+name:          side-effects-in-english
+version:       0.1.0.0
+description:   Side-effects in English
+homepage:      https://wen.works/2016/03/09/side-effects-in-english/
+author:        Wen Kokke
+maintainer:    wenkokke@users.noreply.github.com
+copyright:     © 2016—2022 Wen Kokke
+category:      Web
+build-type:    Simple
+tested-with:   GHC ==8.10.7
+
+executable side-effects-in-english
+  main-is:            2016-03-09-side-effects-in-english.lhs
+  hs-source-dirs:     2016-03-09-side-effects-in-english .
+  other-modules:
+    Eff1
+    FTCQueue1
+    OpenUnion41
+
+  build-depends:
+    , base
+    , parsec      >=3.1.5 && <4
+    , singletons  >=2.1   && <3
+
+  default-language:   Haskell2010
+  default-extensions:
+    DataKinds
+    DeriveFoldable
+    DeriveFunctor
+    DeriveTraversable
+    EmptyCase
+    FlexibleContexts
+    FlexibleInstances
+    GADTs
+    InstanceSigs
+    KindSignatures
+    PolyKinds
+    QuasiQuotes
+    RankNTypes
+    RecordWildCards
+    ScopedTypeVariables
+    StandaloneDeriving
+    StandaloneKindSignatures
+    TemplateHaskell
+    TypeApplications
+    TypeFamilies
+    TypeOperators
+    UndecidableInstances
+
+  ghc-options:        -pgmL markdown-unlit
+  build-tool-depends: markdown-unlit:markdown-unlit >=0.5.1 && <0.6
