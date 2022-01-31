@@ -37,11 +37,15 @@ import Data.Text.ICU.Replace qualified as RE
 import Data.Text.IO qualified as Text
 import System.Directory qualified as System (doesFileExist)
 
-compileToHtml :: [Library] -> FilePath -> FilePath -> Action ()
-compileToHtml libs outDir src = do
+compileTo :: Format -> [Library] -> FilePath -> FilePath -> Action ()
+compileTo fmt libs outDir src = do
   need [src]
-  let args = concat [ ["--verbose=0"], htmlArgs outDir, libraryArgs libs, [ src ] ]
-  runAgdaWith args
+  runAgdaWith $ concat 
+    [ ["--verbose=0"], 
+      formatArgs fmt outDir, 
+      libraryArgs libs, 
+      [ src ] 
+    ]
 
 
 #if installAgda
