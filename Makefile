@@ -51,17 +51,17 @@ HTML_MINIFIER_ARGS += --file-ext=html
 
 .PHONY: build
 build: check-haskell check-html-minifier
-	@$(CABAL) $(CABAL_ARGS) run builder -- build
+	@$(CABAL) $(CABAL_ARGS) v2-run builder -- build
 	@echo "Minifying HTML..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
 
 .PHONY: clean
 clean: check-haskell
-	@$(CABAL) $(CABAL_ARGS) run builder -- clean
+	@$(CABAL) $(CABAL_ARGS) v2-run builder -- clean
 
 .PHONY: clobber
 clobber: check-haskell
-	@$(CABAL) $(CABAL_ARGS) run builder -- clobber
+	@$(CABAL) $(CABAL_ARGS) v2-run builder -- clobber
 
 
 ########################################
@@ -116,7 +116,7 @@ serve: check-browser-sync
 
 .PHONY: test
 test: test-html-validate test-feed-validator
-	@$(CABAL) $(CABAL_ARGS) test
+	@$(CABAL) $(CABAL_ARGS) v2-test
 
 
 # HTMLProofer
