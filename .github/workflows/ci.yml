@@ -11,12 +11,13 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
+    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }} / Agda ${{ matrix.agda }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macOS-latest]
         ghc: ["8.10.7"]
+        agda: ["2.6.2.1"]
         node: ["14"]
         cabal: ["3.6"]
 
@@ -38,12 +39,14 @@ jobs:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: ${{ matrix.cabal }}
 
-      - run: echo ${CI}
+      - name: Setup Agda
+        run:
+          cabal v2-install --global --ignore-project Agda-${{ matrix.agda }}
 
       - name: Cabal freeze
         run: |
           cabal v2-update
-          cabal v2-freeze -finstall-agda --enable-tests --enable-benchmarks
+          cabal v2-freeze --enable-tests --enable-benchmarks
 
       - name: Add Cabal installdir to path (Unix)
         if: runner.os == 'Linux' || runner.os == 'macOS'
@@ -61,8 +64,8 @@ jobs:
           path: |
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
-          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
-          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-
+          key: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-Agda-${{ matrix.agda }}-${{ hashFiles('cabal.project.freeze') }}
+          restore-keys: ${{ matrix.os }}-GHC-${{ matrix.ghc }}-Agda-${{ matrix.agda }}-
 
       - name: Build website
         run: make build
