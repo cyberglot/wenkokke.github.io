@@ -14,12 +14,14 @@
     {
       "label": "Test",
       "type": "shell",
-      "command": "make test"
+      "command": "make test",
+      "problemMatcher": []
     },
     {
       "label": "Start Server",
       "type": "shell",
-      "command": "make serve"
+      "command": "make serve",
+      "problemMatcher": []
     }
   ]
 }
