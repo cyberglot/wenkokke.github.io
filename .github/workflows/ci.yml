@@ -40,8 +40,8 @@ jobs:
 
       - name: Cabal freeze
         run: |
-          cabal v2-update
-          cabal v2-freeze --enable-tests --enable-benchmarks
+          cabal -finstall-agda v2-update
+          cabal -finstall-agda v2-freeze --enable-tests --enable-benchmarks
 
       - name: Cache ~/.cabal/store and dist-newstyle
         uses: actions/cache@v2

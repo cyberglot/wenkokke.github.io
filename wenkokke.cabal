@@ -14,8 +14,8 @@ tested-with:   GHC ==8.10.7
 
 flag install-agda
   description: Install Agda using Cabal
-  manual:      true
-  default:     false
+  manual:      True
+  default:     False
 
 common install-agda
   if flag(install-agda)
