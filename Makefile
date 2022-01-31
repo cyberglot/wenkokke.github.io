@@ -35,7 +35,7 @@ init:
 ########################################
 
 CABAL_ARGS += --verbose=0
-ifneq (,$(CI)
+ifneq (,$(CI))
 CABAL_ARGS += -finstall-agda
 endif
 
