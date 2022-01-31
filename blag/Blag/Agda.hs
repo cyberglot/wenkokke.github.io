@@ -21,6 +21,7 @@ import Agda.Compiler.Backend qualified as Agda (Backend, parseBackendOptions, ba
 import Agda.Interaction.Options  qualified as Agda(defaultOptions)
 import Agda.Interaction.Highlighting.HTML qualified as Agda (htmlBackend)
 import Agda.Utils.FileName qualified as Agda (absolute)
+import System.Exit
 #endif
 
 import Blag.Prelude
