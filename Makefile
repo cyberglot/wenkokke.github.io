@@ -34,7 +34,7 @@ init:
 # Build site with Shake
 ########################################
 
-CABAL_RUN_ARGS += --verbose=0
+CABAL_ARGS += --verbose=0
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
 
@@ -50,17 +50,17 @@ HTML_MINIFIER_ARGS += --file-ext=html
 
 .PHONY: build
 build: check-haskell check-html-minifier
-	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- build
+	@$(CABAL) $(CABAL_ARGS) run builder -- build
 	@echo "Minifying HTML..."
 	@$(HTML_MINIFIER) $(HTML_MINIFIER_ARGS)
 
 .PHONY: clean
 clean: check-haskell
-	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clean
+	@$(CABAL) $(CABAL_ARGS) run builder -- clean
 
 .PHONY: clobber
 clobber: check-haskell
-	@$(CABAL) $(CABAL_RUN_ARGS) run builder -- clobber
+	@$(CABAL) $(CABAL_ARGS) run builder -- clobber
 
 
 ########################################
@@ -109,13 +109,13 @@ serve: check-browser-sync
 
 ########################################
 # Test site with:
-# - HTMLProofer
 # - html-validate
 # - feed-validator
 ########################################
 
 .PHONY: test
 test: test-html-validate test-feed-validator
+	@$(CABAL) $(CABAL_ARGS) test
 
 
 # HTMLProofer

@@ -56,6 +56,8 @@ import Data.Singletons.Decide (Decision(..),(:~:)(..),(%~))
 import Data.Singletons.Prelude
 import Data.Singletons.TH (singletons)
 import Eff1 (Eff,run,Reader,runReader,ask,Writer,tell,runWriter)
+import Test.Tasty
+import Test.Tasty.HUnit
 import Text.Parsec (char,letter,spaces,many1,chainr1,parse)
 ```
 -->
@@ -213,7 +215,7 @@ What we've implemented above is just a *check* to see if some given pair of expr
 
 ```haskell
 data Tree a = Leaf a | Node (Tree a) (Tree a)
-            deriving (Show, Functor, Foldable, Traversable)
+            deriving (Eq, Show, Functor, Foldable, Traversable)
 ```
 
 However, since we don't actually want to write these horribly verbose things, we're going to use parser combinators to implement a tiny parser which parses sentences of the form "(the unicorn) (found jack) first":
@@ -294,11 +296,11 @@ data Entity = Tim -- ^ Tim is a carpenter and an introvert, likes
                   --   holding hands and long walks on the beach.
             | Bob -- ^ Bob is an aspiring actor, and a social media
                   --   junkie. Likes travelling, beer, and Tim.
-            deriving (Show)
+            deriving (Eq, Show)
 
 data Pred = Like Entity Entity -- ^ Is it 'like' or 'like like'?
           | Stupid Entity      -- ^ This is definitely not 'like like'.
-          deriving (Show)
+          deriving (Eq, Show)
 ```
 
 Secondly, we could turn our expressions into plain Haskell expressions, but that would be dull. Language isn't side-effect free---there's all kinds of stuff going on! So, we're going to use a library for [extensible effects](http://okmij.org/ftp/Haskell/extensible/) written by Oleg Kiselyov, Amr Sabry, Cameron Swords, and Hiromi Ishii.
@@ -365,7 +367,9 @@ Which evaluates to: `[(Like Bob Tim,[Stupid Bob])]`
 <!--
 ```haskell
 main :: IO ()
-main = print example
+main = defaultMain $
+  testCase "Test example" $ do
+    example @?= [(Like Bob Tim,[Stupid Bob])]
 ```
 -->
 

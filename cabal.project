@@ -1,3 +1,3 @@
 packages:
   wenkokke.cabal
-  posts/2016-03-09-side-effects-in-english.cabal
+  posts/*.cabal
