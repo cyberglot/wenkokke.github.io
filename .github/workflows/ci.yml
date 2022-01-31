@@ -10,7 +10,7 @@ on:
       - synchronize
 
 env:
-  CABAL_FLAGS: "-finstall-agda"
+  CABAL_ARGS: "--project-file=cabal.project.ci"
 
 jobs:
   build:
@@ -19,8 +19,7 @@ jobs:
     strategy:
       matrix:
         os: [macOS-latest]
-        ghc: ["8.10.7"]
-        agda: ["2.6.2.1"]
+        ghc: ["8.10.7"]b
         node: ["14"]
         cabal: ["3.6"]
 
@@ -45,7 +44,7 @@ jobs:
       - name: Cabal freeze
         run: |
           cabal v2-update
-          cabal v2-freeze $CABAL_FLAGS --enable-tests --enable-benchmarks
+          cabal v2-freeze $CABAL_ARGS --enable-tests --enable-benchmarks
 
       - name: Add Cabal installdir to path (Unix)
         if: runner.os == 'Linux' || runner.os == 'macOS'
