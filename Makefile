@@ -34,6 +34,7 @@ init:
 # Build site with Shake
 ########################################
 
+CABAL_ARGS ?= $(CABAL_FLAGS)
 CABAL_ARGS += --verbose=0
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))

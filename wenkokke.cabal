@@ -56,7 +56,7 @@ executable builder
     , text-icu            ^>=0.7.1.0
 
 library blag
-  import:          language-haskell
+  import:          language-haskell, install-agda
   hs-source-dirs:  blag
   exposed-modules:
     Blag.Agda

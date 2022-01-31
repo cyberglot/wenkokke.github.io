@@ -9,6 +9,9 @@ on:
       - opened
       - synchronize
 
+env:
+  CABAL_FLAGS: "-finstall-agda"
+
 jobs:
   build:
     name: ${{ matrix.os }} / GHC ${{ matrix.ghc }} / Agda ${{ matrix.agda }}
@@ -39,14 +42,10 @@ jobs:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: ${{ matrix.cabal }}
 
-      - name: Setup Agda
-        run:
-          cabal v2-install --global --ignore-project Agda-${{ matrix.agda }}
-
       - name: Cabal freeze
         run: |
           cabal v2-update
-          cabal v2-freeze --enable-tests --enable-benchmarks
+          cabal v2-freeze $CABAL_FLAGS --enable-tests --enable-benchmarks
 
       - name: Add Cabal installdir to path (Unix)
         if: runner.os == 'Linux' || runner.os == 'macOS'
