@@ -4,7 +4,12 @@
     {
       "label": "Build",
       "type": "shell",
-      "command": "make build"
+      "command": "make build",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     },
     {
       "label": "Test",
