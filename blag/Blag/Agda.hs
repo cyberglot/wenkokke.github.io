@@ -21,6 +21,7 @@ import Agda.Compiler.Backend qualified as Agda (Backend, parseBackendOptions, ba
 import Agda.Interaction.Options  qualified as Agda(defaultOptions)
 import Agda.Interaction.Highlighting.HTML qualified as Agda (htmlBackend)
 import Agda.Utils.FileName qualified as Agda (absolute)
+import Control.Exception
 import System.Exit
 #endif
 
@@ -40,29 +41,29 @@ import Data.Text.IO qualified as Text
 import System.Directory qualified as System (doesFileExist)
 
 #if installAgda
-runAgdaWith :: [Agda.Backend] -> [String] -> Action ()
-runAgdaWith backends args = liftIO $ do
+runAgdaWith :: [Agda.Backend] -> [String] -> FilePath -> Action ()
+runAgdaWith backends args src = liftIO $ do
   (configuredBackends, agdaOpts) <-
     Agda.parseBackendOptions backends args Agda.defaultOptions
-  absInputFile <- Agda.absolute inputFile
-  let interactor = Agda.backendInteraction absInputFile configuredBackends
+  absSrc <- Agda.absolute src
+  let interactor = Agda.backendInteraction absSrc configuredBackends
   swallowExitSuccess $
     Agda.runTCMPrettyErrors $
       Agda.runAgdaWithOptions interactor "agda" agdaOpts
 #else
-runAgdaWith :: [String] -> Action ()
-runAgdaWith args = command_ [] "agda" args
+runAgdaWith :: [String] -> FilePath -> Action ()
+runAgdaWith args src = command_ [] "agda" (args ++ [src])
 #endif
 
 
 compileToHtml :: [Library] -> FilePath -> FilePath -> Action ()
 compileToHtml libs outDir src = do
   need [src]
-  let args = concat [ ["--verbose=0"], htmlArgs outDir, libraryArgs libs, [ src ] ]
+  let args = concat [ ["--verbose=0"], htmlArgs outDir, libraryArgs libs ]
 #if installAgda
-  runAgdaWith [Agda.htmlBackend] args
+  runAgdaWith [Agda.htmlBackend] args src
 #else
-  runAgdaWith args
+  runAgdaWith args src
 #endif
 
 
