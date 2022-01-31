@@ -1,20 +1,27 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE CPP #-}
 
 module Blag.Agda
-  ( Library (..),
-    libraryArgs,
-    markdownArgs,
-    latexArgs,
+  ( compileToHtml,
+    Library (..),
     makeLocalLinkFixer,
     makeLibraryLinkFixer,
     makeBuiltinLinkFixer,
     getStandardLibrary,
-    markdownOutputPath,
+    htmlOutputPath,
     latexOutputPath,
     isAgdaFile,
   )
 where
+
+#if installAgda
+import Agda.Main qualified as Agda
+import Agda.Compiler.Backend qualified as Agda (Backend, parseBackendOptions, backendInteraction)
+import Agda.Interaction.Options  qualified as Agda(defaultOptions)
+import Agda.Interaction.Highlighting.HTML qualified as Agda (htmlBackend)
+import Agda.Utils.FileName qualified as Agda (absolute)
+#endif
 
 import Blag.Prelude
 import Blag.Routing
@@ -31,10 +38,37 @@ import Data.Text.ICU.Replace qualified as RE
 import Data.Text.IO qualified as Text
 import System.Directory qualified as System (doesFileExist)
 
+#if installAgda
+runAgdaWith :: [Agda.Backend] -> [String] -> Action ()
+runAgdaWith backends args = liftIO $ do
+  (configuredBackends, agdaOpts) <-
+    Agda.parseBackendOptions backends args Agda.defaultOptions
+  absInputFile <- Agda.absolute inputFile
+  let interactor = Agda.backendInteraction absInputFile configuredBackends
+  swallowExitSuccess $
+    Agda.runTCMPrettyErrors $
+      Agda.runAgdaWithOptions interactor "agda" agdaOpts
+#else
+runAgdaWith :: [String] -> Action ()
+runAgdaWith args = command_ [] "agda" args
+#endif
+
+
+compileToHtml :: [Library] -> FilePath -> FilePath -> Action ()
+compileToHtml libs outDir src = do
+  need [src]
+  let args = concat [ ["--verbose=0"], htmlArgs outDir, libraryArgs libs, [ src ] ]
+#if installAgda
+  runAgdaWith [Agda.htmlBackend] args
+#else
+  runAgdaWith args
+#endif
+
+
 type ModuleName = Text
 
 data Format
-  = Markdown
+  = Html
   | LaTeX
   deriving (Eq, Ord, Show)
 
@@ -62,11 +96,11 @@ libraryArgs libs =
     ]
 
 formatArgs :: Format -> FilePath -> [String]
-formatArgs Markdown = markdownArgs
+formatArgs Html = htmlArgs
 formatArgs LaTeX = latexArgs
 
-markdownArgs :: FilePath -> [String]
-markdownArgs outDir = ["--html", "--html-dir=" <> outDir, "--html-highlight=code"]
+htmlArgs :: FilePath -> [String]
+htmlArgs outDir = ["--html", "--html-dir=" <> outDir, "--html-highlight=code"]
 
 latexArgs :: FilePath -> [String]
 latexArgs outDir = ["--latex", "--latex-dir=" <> outDir]
@@ -164,8 +198,8 @@ getStandardLibraryVersion dir = liftIO $ do
 -- Guess to which file Agda writes HTML and LaTeX output
 --------------------------------------------------------------------------------
 
-markdownOutputPath :: MonadFail m => FilePath -> [Library] -> FilePath -> m FilePath
-markdownOutputPath = resolveOutputPath Markdown
+htmlOutputPath :: MonadFail m => FilePath -> [Library] -> FilePath -> m FilePath
+htmlOutputPath = resolveOutputPath Html
 
 latexOutputPath :: MonadFail m => FilePath -> [Library] -> FilePath -> m FilePath
 latexOutputPath = resolveOutputPath LaTeX
@@ -176,7 +210,7 @@ resolveOutputPath format outDir libs inputFile = do
   (lib, modulePath, moduleName) <- resolveModulePath libs inputFile
   return $
     case format of
-      Markdown -> outDir </> Text.unpack moduleName <.> "md"
+      Html -> outDir </> Text.unpack moduleName <.> "md"
       LaTeX -> outDir </> replaceExtensions modulePath "tex"
 
 -- | Convert a filepath to a module name.
@@ -243,3 +277,13 @@ getAgdaFilesInDirectory dir =
 -- | Check if the path points to an Agda or literate Agda file.
 isAgdaFile :: FilePath -> Bool
 isAgdaFile src = any (?== src) ["//*.agda", "//*.lagda", "//*.lagda.md", "//*.lagda.org", "//*.lagda.rst", "//*.lagda.tex"]
+
+#if installAgda
+-- | If the passed action throws an 'ExitSuccess', catch it and swallow it.
+swallowExitSuccess :: IO () -> IO ()
+swallowExitSuccess act = handle handler act
+  where
+    handler :: ExitCode -> IO ()
+    handler ExitSuccess = return ()
+    handler exitCode    = throwIO exitCode
+#endif

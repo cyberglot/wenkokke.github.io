@@ -1,14 +1,26 @@
 cabal-version: 2.4
 name:          wenkokke
 version:       0.1.0.0
-description:   Personal website of Wen Kokke
-homepage:      https://wenkokke.github.io
+synopsis:      Personal website of Wen Kokke
+homepage:      https://wen.works
+bug-reports:   https://github.com/wenkokke/wenkokke.github.io/issues
+license:
 author:        Wen Kokke
 maintainer:    wenkokke@users.noreply.github.com
 copyright:     © 2016—2022 Wen Kokke
 category:      Web
 build-type:    Simple
 tested-with:   GHC ==8.10.7
+
+flag install-agda
+  description: Install Agda using Cabal
+  manual:      true
+  default:     false
+
+common install-agda
+  if flag(install-agda)
+    build-depends: agda ==2.6.2.1
+    cpp-options:   -DinstallAgda
 
 common language-haskell
   default-language:   Haskell2010

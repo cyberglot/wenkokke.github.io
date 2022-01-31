@@ -35,6 +35,9 @@ init:
 ########################################
 
 CABAL_ARGS += --verbose=0
+ifneq (,$(CI)
+CABAL_ARGS += -finstall-agda
+endif
 
 HTML_MINIFIER ?= $(wildcard $(shell which html-minifier))
 
@@ -125,9 +128,6 @@ HTML_PROOFER ?= $(wildcard $(shell which htmlproofer))
 HTML_PROOFER_ARGS += --check-html
 HTML_PROOFER_ARGS += --check-img-http
 HTML_PROOFER_ARGS += --check-opengraph
-ifeq (,$(CHECK_EXTERNAL_LINKS))
-HTML_PROOFER_ARGS += --disable-external
-endif
 HTML_PROOFER_ARGS += --file-ignore="/\.\/assets\/.*\.html/"
 HTML_PROOFER_ARGS += --report-eof-tags
 HTML_PROOFER_ARGS += --report-invalid-tags

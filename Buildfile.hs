@@ -164,7 +164,7 @@ postRouter src = do
   let out = postOutDir </> year </> month </> day </> fileName </> "index.html"
   if Agda.isAgdaFile src
     then do
-      highlightAgda <- Agda.markdownOutputPath postTmp1Dir ?agdaLibraries src
+      highlightAgda <- Agda.htmlOutputPath postTmp1Dir ?agdaLibraries src
       return [(Nothing, highlightAgda), (Just "html-body", htmlBody), (Nothing, out)]
     else do return [(Just "html-body", htmlBody), (Nothing, out)]
 
@@ -188,7 +188,7 @@ postRules = do
   -- Compile literate Agda to Markdown & HTML
   isPostTmp1 ?> \next -> do
     prev <- routePrev next
-    agdaToHtml prev
+    Agda.compileToHtml ?agdaLibraries postTmp1Dir prev
 
   -- Compile Markdown to HTML
   isPostTmp2 ?> \next -> do
@@ -254,17 +254,6 @@ postLibrary =
       includePaths = [postSrcDir],
       canonicalBaseUrl = "https://wen.works/"
     }
-
-agdaToHtml :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Action ()
-agdaToHtml src = do
-  need [src]
-  command_ [] "agda" $
-    concat
-      [ ["--verbose=0"],
-        Agda.markdownArgs postTmp1Dir,
-        Agda.libraryArgs ?agdaLibraries,
-        [src]
-      ]
 
 getAgdaLinkFixer ::
   ( MonadIO m,
