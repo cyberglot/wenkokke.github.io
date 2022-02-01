@@ -43,6 +43,7 @@ common language-haskell
 executable builder
   import:        language-haskell
   main-is:       Buildfile.hs
+  other-modules: Buildfile.Pubs
   build-depends:
     , citeproc
     , containers
