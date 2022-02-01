@@ -1,4 +1,4 @@
-module Blag.Template.TagSoup
+module Shoggoth.Template.TagSoup
   ( stripTags,
     withUrls,
     addDefaultTableHeaderScope,
@@ -7,7 +7,7 @@ module Blag.Template.TagSoup
   )
 where
 
-import Blag.Prelude ( Url )
+import Shoggoth.Prelude ( Url )
 import Data.Maybe (mapMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text

@@ -1,12 +1,12 @@
-module Blag.Template
+module Shoggoth.Template
   ( module Metadata,
     module Pandoc,
     module Template,
   )
 where
 
-import Blag.Template.Metadata as Metadata
-import Blag.Template.Pandoc as Pandoc
+import Shoggoth.Template.Metadata as Metadata
+import Shoggoth.Template.Pandoc as Pandoc
   ( Abbreviations,
     Alignment (..),
     Attr,
@@ -141,4 +141,4 @@ import Blag.Template.Pandoc as Pandoc
     WriterOptions (..),
     runPandoc,
   )
-import Blag.Template.Template as Template
+import Shoggoth.Template.Template as Template

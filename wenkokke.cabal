@@ -44,41 +44,55 @@ executable builder
   import:        language-haskell
   main-is:       Buildfile.hs
   build-depends:
-    , blag
     , citeproc
     , containers
     , data-default-class
     , multimap
     , process
     , shake
+    , shoggoth
+    , shoggoth-agda
     , temporary
     , text
     , text-icu            ^>=0.7.1.0
 
-library blag
+library shoggoth-agda
   import:          language-haskell, install-agda
-  hs-source-dirs:  blag
+  hs-source-dirs:  shoggoth/agda
   exposed-modules:
-    Blag.Agda
-    Blag.PostInfo
-    Blag.Prelude
-    Blag.Prelude.ByteString
-    Blag.Routing
-    Blag.Style.CSS
-    Blag.Style.Sass
-    Blag.Template
-    Blag.Template.Pandoc
-    Blag.Template.Pandoc.Builder
-    Blag.Template.Pandoc.Citeproc
-    Blag.Template.TagSoup
+    Shoggoth.Agda
+
+  build-depends:
+    , shoggoth
+    , containers
+    , directory
+    , text
+    , text-icu              ^>=0.7.1.0
+    , text-regex-replace
+
+library shoggoth
+  import:          language-haskell
+  hs-source-dirs:  shoggoth/core shoggoth/agda
+  exposed-modules:
+    Shoggoth.PostInfo
+    Shoggoth.Prelude
+    Shoggoth.Prelude.ByteString
+    Shoggoth.Routing
+    Shoggoth.Style.CSS
+    Shoggoth.Style.Sass
+    Shoggoth.Template
+    Shoggoth.Template.Pandoc
+    Shoggoth.Template.Pandoc.Builder
+    Shoggoth.Template.Pandoc.Citeproc
+    Shoggoth.Template.TagSoup
 
   other-modules:
-    Blag.Prelude.FilePath
-    Blag.Prelude.Url
-    Blag.Template.Metadata
-    Blag.Template.Pandoc.Postprocess
-    Blag.Template.Pandoc.Url
-    Blag.Template.Template
+    Shoggoth.Prelude.FilePath
+    Shoggoth.Prelude.Url
+    Shoggoth.Template.Metadata
+    Shoggoth.Template.Pandoc.Postprocess
+    Shoggoth.Template.Pandoc.Url
+    Shoggoth.Template.Template
 
   build-depends:
     , aeson

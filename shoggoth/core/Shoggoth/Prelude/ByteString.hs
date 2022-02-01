@@ -1,4 +1,4 @@
-module Blag.Prelude.ByteString
+module Shoggoth.Prelude.ByteString
   ( toText
   , toTextLazy
   ) where

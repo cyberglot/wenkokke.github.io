@@ -1,4 +1,4 @@
-module Blag.PostInfo (PostInfo (..), parsePostInfo) where
+module Shoggoth.PostInfo (PostInfo (..), parsePostInfo) where
 
 import Data.Char (isAlphaNum, isDigit)
 import Data.Functor (($>))

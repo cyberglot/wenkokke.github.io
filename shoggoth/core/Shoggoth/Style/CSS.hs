@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Blag.Style.CSS
+module Shoggoth.Style.CSS
   ( minifyCSS,
     minifyCSSWith,
     minifyCssDefaultConfig,
@@ -15,7 +15,7 @@ module Blag.Style.CSS
   )
 where
 
-import Blag.Prelude (Action, liftEither)
+import Shoggoth.Prelude (Action, liftEither)
 import Data.Text (Text)
 import Hasmin qualified
 

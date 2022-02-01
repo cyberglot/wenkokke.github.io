@@ -1,4 +1,4 @@
-module Blag.Prelude.FilePath
+module Shoggoth.Prelude.FilePath
   ( regularFile,
     (~~*?),
     (==*?),

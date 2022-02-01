@@ -1,6 +1,6 @@
-module Blag.Routing (Anchor, RoutingTable, Router (..), route, routeSrc, routeNext, routePrev, routeAnchor, sources, outputs) where
+module Shoggoth.Routing (Anchor, RoutingTable, Router (..), route, routeSrc, routeNext, routePrev, routeAnchor, sources, outputs) where
 
-import Blag.Prelude
+import Shoggoth.Prelude
 import Control.Monad (forM, join, (>=>))
 import Data.Bimap qualified as Bimap
 import Data.Function (fix)

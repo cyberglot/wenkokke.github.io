@@ -1,7 +1,7 @@
-module Blag.Template.Template where
+module Shoggoth.Template.Template where
 
-import Blag.Template.Metadata (Metadata (Metadata), constField)
-import Blag.Prelude (Action, liftIO, readFile', liftEither)
+import Shoggoth.Template.Metadata (Metadata (Metadata), constField)
+import Shoggoth.Prelude (Action, liftIO, readFile', liftEither)
 import Text.DocLayout as Doc (render)
 import Text.Pandoc.Templates qualified as Template
 import Control.Monad (foldM)

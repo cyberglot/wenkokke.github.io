@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Blag.Prelude.Url where
+module Shoggoth.Prelude.Url where
 
-import Blag.Prelude.FilePath
+import Shoggoth.Prelude.FilePath
   ( joinPath,
     splitDirectories,
     takeDirectory, makeRelative

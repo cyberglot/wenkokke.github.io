@@ -1,4 +1,4 @@
-module Blag.Template.Pandoc
+module Shoggoth.Template.Pandoc
   ( runPandoc,
     module Pandoc,
     module PandocBuilderTypes,
@@ -10,8 +10,8 @@ module Blag.Template.Pandoc
   )
 where
 
-import Blag.Prelude (Action, liftEither, liftIO)
-import Blag.Template.Pandoc.Builder as PandocBuilderTypes
+import Shoggoth.Prelude (Action, liftEither, liftIO)
+import Shoggoth.Template.Pandoc.Builder as PandocBuilderTypes
   ( Alignment (..),
     Attr,
     Block (..),
@@ -46,7 +46,7 @@ import Blag.Template.Pandoc.Builder as PandocBuilderTypes
     Target,
     ToMetaValue (..),
   )
-import Blag.Template.Pandoc.Citeproc as PandocCiteprocTypes
+import Shoggoth.Template.Pandoc.Citeproc as PandocCiteprocTypes
   ( Abbreviations,
     Citation (..),
     CitationItem (..),
@@ -120,15 +120,15 @@ import Blag.Template.Pandoc.Citeproc as PandocCiteprocTypes
     VariableType (..),
     VerticalAlign (..),
   )
-import Blag.Template.Pandoc.Postprocess as PandocPostprocess
-import Blag.Template.Pandoc.Url as PandocUrl
+import Shoggoth.Template.Pandoc.Postprocess as PandocPostprocess
+import Shoggoth.Template.Pandoc.Url as PandocUrl
 import Control.Exception (Exception (displayException))
 import Data.Text (Text)
 import Text.Pandoc as Pandoc hiding
-  ( -- Redefined in Blag.Template.Pandoc.Citeproc
+  ( -- Redefined in Shoggoth.Template.Pandoc.Citeproc
     Citation (..),
     CitationMode (..),
-    -- Redefined in Blag.Template.Template
+    -- Redefined in Shoggoth.Template.Template
     Template,
     compileTemplate,
     getTemplateFile,

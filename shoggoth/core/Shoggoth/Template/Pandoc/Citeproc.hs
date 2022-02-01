@@ -1,4 +1,4 @@
-module Blag.Template.Pandoc.Citeproc
+module Shoggoth.Template.Pandoc.Citeproc
   ( module Citeproc,
     PandocCitationMode,
     pattern PandocAuthorInText,

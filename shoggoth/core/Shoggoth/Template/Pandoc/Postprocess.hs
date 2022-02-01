@@ -1,4 +1,4 @@
-module Blag.Template.Pandoc.Postprocess where
+module Shoggoth.Template.Pandoc.Postprocess where
 
 import Data.String (IsString (fromString))
 import Data.Text (Text)

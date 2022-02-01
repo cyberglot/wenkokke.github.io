@@ -1,4 +1,4 @@
-module Blag.Style.Sass
+module Shoggoth.Style.Sass
   ( -- * Compile Sass with hsass
     compileSass,
     compileSassWith,
@@ -7,8 +7,8 @@ module Blag.Style.Sass
   )
 where
 
-import Blag.Prelude
-import Blag.Prelude.ByteString qualified as BS (toText)
+import Shoggoth.Prelude
+import Shoggoth.Prelude.ByteString qualified as BS (toText)
 import Data.Bitraversable (Bitraversable (..))
 import Data.Maybe (fromMaybe)
 import System.Directory as System (doesFileExist, makeAbsolute)

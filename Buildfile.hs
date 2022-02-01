@@ -1,16 +1,16 @@
 module Main where
 
-import Blag.Agda qualified as Agda
-import Blag.PostInfo
-import Blag.Prelude
-import Blag.Routing
-import Blag.Style.CSS
-import Blag.Style.Sass
-import Blag.Template
-import Blag.Template.Pandoc qualified as Pandoc
-import Blag.Template.Pandoc.Builder qualified as Builder
-import Blag.Template.Pandoc.Citeproc qualified as Citeproc
-import Blag.Template.TagSoup qualified as TagSoup
+import Shoggoth.Agda qualified as Agda
+import Shoggoth.PostInfo
+import Shoggoth.Prelude
+import Shoggoth.Routing
+import Shoggoth.Style.CSS
+import Shoggoth.Style.Sass
+import Shoggoth.Template
+import Shoggoth.Template.Pandoc qualified as Pandoc
+import Shoggoth.Template.Pandoc.Builder qualified as Builder
+import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
+import Shoggoth.Template.TagSoup qualified as TagSoup
 import Control.Concurrent (threadDelay)
 import Control.Monad (forM, forM_, forever, join)
 import Control.Monad.IO.Class (MonadIO)

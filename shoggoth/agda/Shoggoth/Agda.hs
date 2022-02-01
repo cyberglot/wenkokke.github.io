@@ -2,7 +2,7 @@
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE CPP #-}
 
-module Blag.Agda
+module Shoggoth.Agda
   ( compileTo,
     Format (..),
     Library (..),
@@ -23,8 +23,8 @@ import System.Environment (withArgs, withProgName)
 import System.Exit (ExitCode (..))
 #endif
 
-import Blag.Prelude
-import Blag.Routing
+import Shoggoth.Prelude
+import Shoggoth.Routing
 import Control.Monad (MonadPlus (mzero), forM, join, msum)
 import Control.Monad.IO.Class (MonadIO)
 import Data.List qualified as List
@@ -41,11 +41,11 @@ import System.Directory qualified as System (doesFileExist)
 compileTo :: Format -> [Library] -> FilePath -> FilePath -> Action ()
 compileTo fmt libs outDir src = do
   need [src]
-  runAgdaWith $ concat 
-    [ ["--verbose=0"], 
-      formatArgs fmt outDir, 
-      libraryArgs libs, 
-      [ src ] 
+  runAgdaWith $ concat
+    [ ["--verbose=0"],
+      formatArgs fmt outDir,
+      libraryArgs libs,
+      [ src ]
     ]
 
 

@@ -1,4 +1,4 @@
-module Blag.Prelude
+module Shoggoth.Prelude
   ( readFile',
     writeFile',
     hasExecutable,
@@ -11,8 +11,8 @@ import Development.Shake as Export hiding (readFile', writeFile')
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
-import Blag.Prelude.FilePath as Export
-import Blag.Prelude.Url as Export
+import Shoggoth.Prelude.FilePath as Export
+import Shoggoth.Prelude.Url as Export
 import System.Directory
 import Control.Monad (join)
 import Data.Maybe (isJust)

@@ -1,7 +1,7 @@
-module Blag.Template.Pandoc.Url where
+module Shoggoth.Template.Pandoc.Url where
 
-import Blag.Prelude
-import Blag.Template.TagSoup qualified as TagSoup
+import Shoggoth.Prelude
+import Shoggoth.Template.TagSoup qualified as TagSoup
 import Text.Pandoc.Walk (walk)
 import Text.Pandoc.Definition (Pandoc, Format (..), Block (..), Inline (..))
 import Data.Function ((&))

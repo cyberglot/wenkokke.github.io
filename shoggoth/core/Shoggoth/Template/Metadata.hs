@@ -1,4 +1,4 @@
-module Blag.Template.Metadata
+module Shoggoth.Template.Metadata
   ( Metadata (..),
     readYaml',
     readYaml,
@@ -24,11 +24,11 @@ module Blag.Template.Metadata
   )
 where
 
-import Blag.PostInfo qualified as PostInfo
-import Blag.Prelude
-import Blag.Prelude.ByteString qualified as ByteString
-import Blag.Template.Pandoc.Builder qualified as Builder
-import Blag.Template.TagSoup qualified as TagSoup
+import Shoggoth.PostInfo qualified as PostInfo
+import Shoggoth.Prelude
+import Shoggoth.Prelude.ByteString qualified as ByteString
+import Shoggoth.Template.Pandoc.Builder qualified as Builder
+import Shoggoth.Template.TagSoup qualified as TagSoup
 import Control.Monad.IO.Class (MonadIO)
 import Data.Aeson (encode, encodeFile)
 import Data.Aeson.Key qualified as Key
