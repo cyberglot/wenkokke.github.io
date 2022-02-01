@@ -115,7 +115,9 @@ serve: check-browser-sync
 
 .PHONY: test
 test: test-html-validate test-feed-validator
+	@echo "Running tests for side-effects-in-english..."
 	@$(CABAL) $(CABAL_ARGS) v2-test side-effects-in-english
+	@echo "Running tests for normalization-by-evaluation..."
 	@$(CABAL) $(CABAL_ARGS) v2-test normalization-by-evaluation
 
 

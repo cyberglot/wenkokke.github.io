@@ -33,6 +33,7 @@ test-suite normalization-by-evaluation
     ScopedTypeVariables
     StandaloneDeriving
     TypeApplications
+    TemplateHaskell
 
   default-language:   Haskell2010
   ghc-options:        -pgmL markdown-unlit
