@@ -1,4 +1,17 @@
-module Shoggoth.Routing (Anchor, RoutingTable, Router (..), route, routeSrc, routeNext, routePrev, routeAnchor, sources, outputs) where
+module Shoggoth.Routing
+  ( Anchor,
+    RoutingTable,
+    Router (..),
+    cacheRoutingTable,
+    route,
+    routeSrc,
+    routeNext,
+    routePrev,
+    routeAnchor,
+    sources,
+    outputs,
+  )
+where
 
 import Control.Monad (forM, join, (>=>))
 import Control.Monad.IO.Class (MonadIO)
@@ -55,15 +68,24 @@ instance Router (FilePath -> Action FilePath) where
       singleStageRouter :: FilePath -> Action [FilePath]
       singleStageRouter = fmap (: []) . router
 
+instance Router (FilePath -> FilePath) where
+  filePatterns |-> router = filePatterns |-> router
+    where
+      pureRouter :: FilePath -> Action FilePath
+      pureRouter = return . router
 instance Router FilePath where
   filePatterns |-> out = filePatterns |-> constRouter
     where
-      constRouter :: FilePath -> Action FilePath
-      constRouter _ = return out
+      constRouter :: FilePath -> FilePath
+      constRouter = const out
 
 makeRoutingTable :: [FilePath] -> [FilePath] -> [(FilePath, FilePath)] -> [((Anchor, FilePath), FilePath)] -> RoutingTable
 makeRoutingTable srcs outs lnks anks =
   RoutingTable (Set.fromList srcs) (Set.fromList outs) (Bimap.fromList lnks) (Map.fromList anks)
+
+cacheRoutingTable :: [Action RoutingTable] -> Rules (() -> Action RoutingTable)
+cacheRoutingTable routingTables =
+  newCache $ \() -> fmap mconcat (sequence routingTables)
 
 -- | Route any path to its next stage, failing if there is no next stage.
 routeNext :: (?getRoutingTable :: () -> Action RoutingTable) => FilePath -> Action FilePath

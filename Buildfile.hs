@@ -50,19 +50,18 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   --------------------------------------------------------------------------------
   -- Routing table
 
-  getRoutingTable <- newCache $ \() ->
-    fmap mconcat . sequence $
+  cachedRoutingTable <- cacheRoutingTable
       [ ["index.html"] |-> outDir </> "index.html",
+        ["rss.xml"] |-> outDir </> "rss.xml",
         [postSrcDir </> "*.md"] |-> postRouter,
         ["pages/recipes.html"] |-> outDir </> "recipes" </> "index.html",
         [recipeSrcDir </> "*.md"] |-> recipeRouter,
-        ["404.html"] |-> outDir </> "404.html",
         ["pages/pubs.html"] |-> outDir </> "pubs" </> "index.html",
         [assetSrcDir <//> "*"] |-> assetRouter,
         [styleSrcDir </> "*.scss"] |-> styleRouter,
-        ["rss.xml"] |-> outDir </> "rss.xml"
+        ["404.html"] |-> outDir </> "404.html"
       ]
-  let ?getRoutingTable = getRoutingTable
+  let ?getRoutingTable = cachedRoutingTable
 
   --------------------------------------------------------------------------------
   -- Cached file, template, and metadata getters
@@ -80,13 +79,6 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   cachedGetRecipesMetadata <- newCache getRecipesMetadata
   let ?getRecipesMetadata = cachedGetRecipesMetadata
   let ?postprocessHtml5 = postprocessHtml5
-  let ?readerOpts = def {readerExtensions = markdownDialect}
-  let ?writerOpts =
-        def
-          { writerHTMLMathMethod = KaTeX "",
-            writerEmailObfuscation = JavascriptObfuscation,
-            writerHighlightStyle = Just highlightStyle
-          }
 
   --------------------------------------------------------------------------------
   -- Agda link fixers
@@ -122,9 +114,8 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     (fileMetadata, pubsHtmlTemplate) <- ?getFileWithMetadata src
     myName <- fileMetadata ^. "site.author.name"
     body <- makePublicationsPandoc pubSections (Just myName) outDir out fileMetadata
-    body <- Pandoc.runPandoc (Pandoc.writeHtml5String ?writerOpts body)
+    body <- pandocToHtml5 body
     let bodyFld = constField "body" body
-
     applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
       >>= applyTemplates ["page.html", "default.html"] fileMetadata
       <&> ?postprocessHtml5 outDir out
@@ -205,14 +196,10 @@ postRouter src = do
       return [(Nothing, highlightAgda), (Just "html-body", htmlBody), (Nothing, out)]
     else do return [(Just "html-body", htmlBody), (Nothing, out)]
 
-isPostSrc, isPostTmp1, isPostTmp2 :: FilePath -> Bool
+isPostSrc, isPostTmp1, isPostTmp2, isPostOut :: FilePath -> Bool
 isPostSrc src = postSrcDir `isPrefixOf` src
 isPostTmp1 tmp = postTmp1Dir `isPrefixOf` tmp
 isPostTmp2 tmp = postTmp2Dir `isPrefixOf` tmp
-
-isPostOut ::
-  ( ?getRoutingTable :: () -> Action RoutingTable
-  ) => FilePath -> Bool
 isPostOut out = isJust (parsePostOutput out)
 
 postRules ::
@@ -220,9 +207,7 @@ postRules ::
     ?getTemplateFile :: FilePath -> Action Template,
     ?getPostWithMetadata :: FilePath -> Action (Metadata, Text),
     ?agdaLibraries :: [Agda.Library],
-    ?getAgdaLinkFixer :: () -> Action (Url -> Url),
-    ?readerOpts :: Pandoc.ReaderOptions,
-    ?writerOpts :: Pandoc.WriterOptions
+    ?getAgdaLinkFixer :: () -> Action (Url -> Url)
   ) =>
   Rules ()
 postRules = do
@@ -270,9 +255,7 @@ recipeRouter src =
 recipeRules ::
   ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getTemplateFile :: FilePath -> Action Template,
-    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text),
-    ?readerOpts :: Pandoc.ReaderOptions,
-    ?writerOpts :: Pandoc.WriterOptions
+    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
   ) =>
   Rules ()
 recipeRules = do
@@ -325,10 +308,8 @@ styleSrcDir, styleOutDir :: FilePath
 styleSrcDir = "sass"
 styleOutDir = outDir </> "assets" </> "css"
 
-styleRouter :: FilePath -> Action FilePath
-styleRouter src =
-  return $
-    styleOutDir </> makeRelative styleSrcDir src -<.> "css"
+styleRouter :: FilePath -> FilePath
+styleRouter src = styleOutDir </> makeRelative styleSrcDir src -<.> "css"
 
 sassOptions :: SassOptions
 sassOptions =
@@ -362,10 +343,8 @@ assetSrcDir, assetOutDir :: FilePath
 assetSrcDir = "assets"
 assetOutDir = outDir </> "assets"
 
-assetRouter :: FilePath -> Action FilePath
-assetRouter src =
-  return $
-    assetOutDir </> makeRelative assetSrcDir src
+assetRouter :: FilePath -> FilePath
+assetRouter src = assetOutDir </> makeRelative assetSrcDir src
 
 assetRules :: (?getRoutingTable :: () -> Action RoutingTable) => Rules ()
 assetRules =
@@ -383,21 +362,27 @@ shiftHeadersBy n x = x
 highlightStyle :: Pandoc.HighlightStyle
 highlightStyle = Pandoc.pygments
 
-markdownToPandoc ::
-  ( ?readerOpts :: Pandoc.ReaderOptions
-  ) =>
-  Text ->
-  Action Pandoc
-markdownToPandoc =
-  Pandoc.runPandoc . Pandoc.readMarkdown ?readerOpts
+readerOpts :: ReaderOptions
+readerOpts =
+  def
+    { readerExtensions = markdownDialect
+    }
 
-pandocToHtml5 ::
-  ( ?writerOpts :: Pandoc.WriterOptions
-  ) =>
-  Pandoc ->
-  Action Text
+writerOpts :: WriterOptions
+writerOpts =
+  def
+    { writerHTMLMathMethod = KaTeX "",
+      writerEmailObfuscation = JavascriptObfuscation,
+      writerHighlightStyle = Just highlightStyle
+    }
+
+markdownToPandoc :: Text -> Action Pandoc
+markdownToPandoc =
+  Pandoc.runPandoc . Pandoc.readMarkdown readerOpts
+
+pandocToHtml5 :: Pandoc -> Action Text
 pandocToHtml5 =
-  Pandoc.runPandoc . Pandoc.writeHtml5String ?writerOpts
+  Pandoc.runPandoc . Pandoc.writeHtml5String writerOpts
 
 processCitations :: Pandoc -> Action Pandoc
 processCitations =
