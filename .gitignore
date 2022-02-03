@@ -6,3 +6,4 @@ cabal.project.local
 cabal.project.freeze
 package-lock.json
 Gemfile.lock
+*.agdai
