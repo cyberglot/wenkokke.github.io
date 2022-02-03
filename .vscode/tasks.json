@@ -18,6 +18,18 @@
       "problemMatcher": []
     },
     {
+      "label": "Clean",
+      "type": "shell",
+      "command": "make clean",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clobber",
+      "type": "shell",
+      "command": "make clobber",
+      "problemMatcher": []
+    },
+    {
       "label": "Start Server",
       "type": "shell",
       "command": "make serve",
