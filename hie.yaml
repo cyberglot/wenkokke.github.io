@@ -2,7 +2,9 @@ cradle:
   cabal:
     - path: "./Buildfile.hs"
       component: "exe:builder"
-    - path: "./blag/"
-      component: "lib:blag"
+    - path: "./shoggoth/core/"
+      component: "lib:shoggoth"
+    - path: "./shoggoth/agda/"
+      component: "lib:shoggoth-agda"
     - path: "./posts/2016-03-09-side-effects-in-english/"
       component: "lib:2016-03-09-side-effects-in-english"
