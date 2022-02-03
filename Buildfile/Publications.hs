@@ -1,7 +1,6 @@
-module Buildfile.Pubs (pubsRules) where
+module Buildfile.Publications (Section(..), makePublicationsPandoc) where
 
 import Shoggoth.Prelude
-import Shoggoth.Routing
 import Shoggoth.Template
 import Shoggoth.Template.Pandoc qualified as Pandoc
 import Shoggoth.Template.Pandoc.Builder qualified as Builder
@@ -23,29 +22,22 @@ import Data.Text qualified as Text
 --------------------------------------------------------------------------------
 -- Pubs
 
-pubsRules ::
-  ( ?routingTable :: RoutingTable,
-    ?getTemplateFile :: FilePath -> Action Template,
-    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text),
-    ?postprocessHtml5 :: FilePath -> FilePath -> Text -> Text,
-    ?writerOpts :: Pandoc.WriterOptions
+makePublicationsPandoc ::
+  ( ?getTemplateFile :: FilePath -> Action Template,
+    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
   ) =>
-  FilePath -> Rules ()
-pubsRules outDir = do
-  outDir </> "pubs" </> "index.html" %> \out -> do
-    src <- routeSrc out
-    (fileMetadata, pubsHtmlTemplate) <- ?getFileWithMetadata src
+  [Section] -> Maybe Name -> FilePath -> FilePath -> Metadata -> Action Pandoc
+makePublicationsPandoc sections myName outDir out metadata = do
 
     -- Get language and locale from 'site.lang'
-    (lang, locale) <- getLangAndLocale fileMetadata
+    (lang, locale) <- getLangAndLocale metadata
 
     -- Get citation style from 'citation-style'
-    csl <- getStyle fileMetadata
+    csl <- getStyle metadata
 
-    -- Get references from 'bibliography' and remove me from authors based on
-    -- 'site.author.name', then construct a map from reference ids to types
-    myName <- fileMetadata ^. "site.author.name"
-    refs <- map (removeAuthor myName) <$> getReferences locale fileMetadata
+    -- Get references from 'bibliography' and remove me from authors:
+    let maybeRemoveAuthor = maybe id removeAuthor myName
+    refs <- map maybeRemoveAuthor <$> getReferences locale metadata
     let refTypeByRefId = Map.fromList [(referenceId, referenceType) | Reference {..} <- refs]
 
     -- Gather the citations used in the fields of the bibliography
@@ -65,7 +57,7 @@ pubsRules outDir = do
           return (refType, ref)
 
     -- Render each section
-    sections <- forM pubSections $ \sec@Section {..} -> do
+    sectionBlocks <- forM sections $ \sec@Section {..} -> do
       let refsForSection = concatMap (`MultiMap.lookup` refsByRefType) sectionReferenceTypes
       let blocksForSection =
             mconcat
@@ -75,14 +67,7 @@ pubsRules outDir = do
       let withResolvedCitations = fmap (Citeproc.insertCitations citsByItemIds) blocksForSection
       return $ if null refsForSection then mempty else withResolvedCitations
 
-    let body = Builder.doc (fold sections)
-    body <- Pandoc.runPandoc (Pandoc.writeHtml5String ?writerOpts body)
-    let bodyFld = constField "body" body
-
-    applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
-      >>= applyTemplates ["page.html", "default.html"] fileMetadata
-      <&> ?postprocessHtml5 outDir out
-      >>= writeFile' out
+    return $ Builder.doc (fold sectionBlocks)
 
 data Section = Section
   { sectionReferenceTypes :: [Text],
@@ -92,16 +77,6 @@ data Section = Section
 sectionAnchor :: Section -> Text
 sectionAnchor Section {..} = Text.toLower (Text.replace " " "-" sectionTitle)
 
-pubSections :: [Section]
-pubSections =
-  [ Section ["manuscript"] "Drafts",
-    Section ["article-journal"] "Journal Articles",
-    Section ["book"] "Books",
-    Section ["chapter", "paper-conference"] "Conference and Workshop Papers",
-    Section ["thesis"] "Theses",
-    Section ["speech"] "Talks",
-    Section ["notype"] "Public Houses"
-  ]
 
 -- Get citation style from 'citation-style'.
 getStyle :: Metadata -> Action (Style Inlines)

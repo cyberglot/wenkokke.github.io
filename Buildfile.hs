@@ -1,20 +1,13 @@
 module Main where
 
-import Shoggoth.Agda qualified as Agda
-import Shoggoth.PostInfo
-import Shoggoth.Prelude
-import Shoggoth.Routing
-import Shoggoth.Style.CSS
-import Shoggoth.Style.Sass
-import Shoggoth.Template
-import Shoggoth.Template.Pandoc qualified as Pandoc
-import Shoggoth.Template.Pandoc.Builder qualified as Builder
-import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
-import Shoggoth.Template.TagSoup qualified as TagSoup
+import Buildfile.Publications
+  ( Section (Section),
+    makePublicationsPandoc,
+  )
 import Control.Concurrent (threadDelay)
 import Control.Monad (forM, forM_, forever, join)
 import Control.Monad.IO.Class (MonadIO)
-import Data.Default.Class
+import Data.Default.Class (Default (def))
 import Data.Foldable (Foldable (fold))
 import Data.Function ((&))
 import Data.Functor ((<&>))
@@ -26,9 +19,19 @@ import Data.MultiMap qualified as MultiMap
 import Data.Sequence qualified as Seq
 import Data.Text (Text)
 import Data.Text qualified as Text
+import Shoggoth.Agda qualified as Agda
+import Shoggoth.PostInfo
+import Shoggoth.Prelude
+import Shoggoth.Routing
+import Shoggoth.Style.CSS
+import Shoggoth.Style.Sass
+import Shoggoth.Template
+import Shoggoth.Template.Pandoc qualified as Pandoc
+import Shoggoth.Template.Pandoc.Builder qualified as Builder
+import Shoggoth.Template.Pandoc.Citeproc qualified as Citeproc
+import Shoggoth.Template.TagSoup qualified as TagSoup
 import System.IO.Temp (getCanonicalTemporaryDirectory, withTempDirectory)
 import System.Process (ProcessHandle, cleanupProcess)
-import Buildfile.Pubs
 
 outDir, tmpDir :: FilePath
 outDir = "_site"
@@ -78,11 +81,12 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   let ?getRecipesMetadata = cachedGetRecipesMetadata
   let ?postprocessHtml5 = postprocessHtml5
   let ?readerOpts = def {readerExtensions = markdownDialect}
-  let ?writerOpts = def
-        { writerHTMLMathMethod = KaTeX "",
-          writerEmailObfuscation = JavascriptObfuscation,
-          writerHighlightStyle = Just highlightStyle
-        }
+  let ?writerOpts =
+        def
+          { writerHTMLMathMethod = KaTeX "",
+            writerEmailObfuscation = JavascriptObfuscation,
+            writerHighlightStyle = Just highlightStyle
+          }
 
   --------------------------------------------------------------------------------
   -- Agda link fixers
@@ -112,7 +116,18 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     assetRules -- Static assets
 
   -- Publications page
-  pubsRules outDir
+  outDir </> "pubs" </> "index.html" %> \out -> do
+    src <- routeSrc out
+    (fileMetadata, pubsHtmlTemplate) <- ?getFileWithMetadata src
+    myName <- fileMetadata ^. "site.author.name"
+    body <- makePublicationsPandoc pubSections (Just myName) outDir out fileMetadata
+    body <- Pandoc.runPandoc (Pandoc.writeHtml5String ?writerOpts body)
+    let bodyFld = constField "body" body
+
+    applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
+      >>= applyTemplates ["page.html", "default.html"] fileMetadata
+      <&> ?postprocessHtml5 outDir out
+      >>= writeFile' out
 
   -- Posts
   outDir </> "index.html" %> \out -> do
@@ -153,6 +168,20 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
       >>= applyTemplate "default.html" metadata
       <&> postprocessHtml5 outDir out
       >>= writeFile' out
+
+--------------------------------------------------------------------------------
+-- Publications
+
+pubSections :: [Section]
+pubSections =
+  [ Section ["manuscript"] "Drafts",
+    Section ["article-journal"] "Journal Articles",
+    Section ["book"] "Books",
+    Section ["chapter", "paper-conference"] "Conference and Workshop Papers",
+    Section ["thesis"] "Theses",
+    Section ["speech"] "Talks",
+    Section ["notype"] "Public Houses"
+  ]
 
 --------------------------------------------------------------------------------
 -- Posts
@@ -353,15 +382,19 @@ shiftHeadersBy n x = x
 highlightStyle :: Pandoc.HighlightStyle
 highlightStyle = Pandoc.pygments
 
-markdownToPandoc :: (
-    ?readerOpts :: Pandoc.ReaderOptions
-    ) => Text -> Action Pandoc
+markdownToPandoc ::
+  ( ?readerOpts :: Pandoc.ReaderOptions
+  ) =>
+  Text ->
+  Action Pandoc
 markdownToPandoc =
   Pandoc.runPandoc . Pandoc.readMarkdown ?readerOpts
 
-pandocToHtml5 :: (
-    ?writerOpts :: Pandoc.WriterOptions
-    ) => Pandoc -> Action Text
+pandocToHtml5 ::
+  ( ?writerOpts :: Pandoc.WriterOptions
+  ) =>
+  Pandoc ->
+  Action Text
 pandocToHtml5 =
   Pandoc.runPandoc . Pandoc.writeHtml5String ?writerOpts
 
@@ -378,7 +411,6 @@ postprocessHtml5 outDir out html5 =
 
 markdownDialect :: Extensions
 markdownDialect = Pandoc.pandocExtensions
-
 
 --------------------------------------------------------------------------------
 -- Metadata
@@ -494,4 +526,3 @@ getTemplateFile inputFile = do
   let inputPath = "templates" </> inputFile
   need [inputPath]
   compileTemplateFile inputPath
-

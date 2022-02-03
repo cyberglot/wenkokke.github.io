@@ -2,6 +2,8 @@ cradle:
   cabal:
     - path: "./Buildfile.hs"
       component: "exe:builder"
+    - path: "./Buildfile/"
+      component: "exe:builder"
     - path: "./shoggoth/core/"
       component: "lib:shoggoth"
     - path: "./shoggoth/agda/"
