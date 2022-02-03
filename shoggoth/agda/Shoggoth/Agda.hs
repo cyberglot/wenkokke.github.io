@@ -108,9 +108,9 @@ latexArgs outDir = ["--latex", "--latex-dir=" <> outDir]
 
 -- | Create a function to fix URL references to local modules
 makeLocalLinkFixer ::
-  (?routingTable :: RoutingTable, MonadIO m, MonadFail m) =>
+  (?getRoutingTable :: () -> Action RoutingTable) =>
   Library ->
-  m (Url -> Url)
+  Action (Url -> Url)
 makeLocalLinkFixer lib@Library {..} = do
   files <- getAgdaFilesInLibrary lib
 

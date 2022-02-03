@@ -1,4 +1,4 @@
-module Shoggoth.PostInfo (PostInfo (..), parsePostInfo) where
+module Shoggoth.PostInfo (PostInfo (..), parsePostSource, parsePostOutput) where
 
 import Data.Char (isAlphaNum, isDigit)
 import Data.Functor (($>))
@@ -10,7 +10,7 @@ import Text.ParserCombinators.ReadP
     many1,
     munch1,
     readP_to_S,
-    satisfy,
+    satisfy, string
   )
 
 data PostInfo = PostInfo
@@ -28,11 +28,11 @@ runReadP p str = case readP_to_S p str of
   [(a, "")] -> return a
   (_ : _) -> fail $ "Ambiguous parse: " <> str
 
-parsePostInfo :: MonadFail m => String -> m PostInfo
-parsePostInfo = runReadP pPostInfo
+parsePostSource :: MonadFail m => String -> m PostInfo
+parsePostSource = runReadP pPostSource
 
-pPostInfo :: ReadP PostInfo
-pPostInfo =
+pPostSource :: ReadP PostInfo
+pPostSource =
   PostInfo
     <$> pYear
     <* char '-'
@@ -49,3 +49,27 @@ pPostInfo =
     pDay = count 2 (satisfy isDigit)
     pFileName = munch1 (\c -> isAlphaNum c || c == '-')
     pFileExts = many1 (char '.' *> munch1 isAlphaNum)
+
+
+parsePostOutput :: MonadFail m => String -> m PostInfo
+parsePostOutput = runReadP pPostOutput
+
+pPostOutput :: ReadP PostInfo
+pPostOutput =
+  PostInfo
+    <$> pYear
+    <* char '/'
+    <*> pMonth
+    <* char '/'
+    <*> pDay
+    <* char '/'
+    <*> pPostSlug
+    <* char '/'
+    <*> pIndexHtml
+    <* eof
+  where
+    pYear = count 4 (satisfy isDigit)
+    pMonth = count 2 (satisfy isDigit)
+    pDay = count 2 (satisfy isDigit)
+    pPostSlug = munch1 (\c -> isAlphaNum c || c == '-')
+    pIndexHtml = string "index.html" $> []

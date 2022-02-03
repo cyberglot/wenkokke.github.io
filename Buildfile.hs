@@ -50,7 +50,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   --------------------------------------------------------------------------------
   -- Routing table
 
-  routingTable <-
+  getRoutingTable <- newCache $ \() ->
     fmap mconcat . sequence $
       [ ["index.html"] |-> outDir </> "index.html",
         [postSrcDir </> "*.md"] |-> postRouter,
@@ -62,7 +62,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
         [styleSrcDir </> "*.scss"] |-> styleRouter,
         ["rss.xml"] |-> outDir </> "rss.xml"
       ]
-  let ?routingTable = routingTable
+  let ?getRoutingTable = getRoutingTable
 
   --------------------------------------------------------------------------------
   -- Cached file, template, and metadata getters
@@ -91,15 +91,16 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   --------------------------------------------------------------------------------
   -- Agda link fixers
 
-  agdaLinkFixer <- getAgdaLinkFixer (Just standardLibrary) localLibraries otherLibraries
-  let ?agdaLinkFixer = agdaLinkFixer
+  cachedGetAgdaLinkFixer <- newCache $ \() ->
+    getAgdaLinkFixer (Just standardLibrary) localLibraries otherLibraries
+  let ?getAgdaLinkFixer = cachedGetAgdaLinkFixer
 
   --------------------------------------------------------------------------------
   -- Phony targets
 
   "build" ~> do
     need [styleOutDir </> "highlight.css"]
-    need (outputs ?routingTable)
+    need . outputs =<< ?getRoutingTable ()
 
   "clean" ~> do
     removeFilesAfter tmpDir ["//*"]
@@ -192,10 +193,10 @@ postTmp1Dir = tmpDir </> "stage1" </> "posts" -- Render .lagda.md to .md
 postTmp2Dir = tmpDir </> "stage2" </> "posts" -- Render .md to .html
 postOutDir = outDir -- NOTE: cannot rely on 'postOutDir' to test if a FilePath is an output
 
-postRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Rules [(Maybe Anchor, FilePath)]
+postRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Action [(Maybe Anchor, FilePath)]
 postRouter src = do
   let postSrc = makeRelative postSrcDir src
-  PostInfo {..} <- parsePostInfo postSrc
+  PostInfo {..} <- parsePostSource postSrc
   let htmlBody = postTmp2Dir </> postSrc
   let out = postOutDir </> year </> month </> day </> fileName </> "index.html"
   if Agda.isAgdaFile src
@@ -209,15 +210,17 @@ isPostSrc src = postSrcDir `isPrefixOf` src
 isPostTmp1 tmp = postTmp1Dir `isPrefixOf` tmp
 isPostTmp2 tmp = postTmp2Dir `isPrefixOf` tmp
 
-isPostOut :: (?routingTable :: RoutingTable) => FilePath -> Bool
-isPostOut out = isNothing (routeNext out) && maybe False isPostSrc (routeSrc out)
+isPostOut ::
+  ( ?getRoutingTable :: () -> Action RoutingTable
+  ) => FilePath -> Bool
+isPostOut out = isJust (parsePostOutput out)
 
 postRules ::
-  ( ?routingTable :: RoutingTable,
+  ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getTemplateFile :: FilePath -> Action Template,
     ?getPostWithMetadata :: FilePath -> Action (Metadata, Text),
     ?agdaLibraries :: [Agda.Library],
-    ?agdaLinkFixer :: Url -> Url,
+    ?getAgdaLinkFixer :: () -> Action (Url -> Url),
     ?readerOpts :: Pandoc.ReaderOptions,
     ?writerOpts :: Pandoc.WriterOptions
   ) =>
@@ -231,7 +234,8 @@ postRules = do
   -- Compile Markdown to HTML
   isPostTmp2 ?> \next -> do
     (out, prev, src) <- (,,) <$> route next <*> routePrev next <*> routeSrc next
-    let maybeAgdaLinkFixer = if Agda.isAgdaFile src then Just (Pandoc.withUrls ?agdaLinkFixer) else Nothing
+    agdaLinkFixer <- ?getAgdaLinkFixer ()
+    let maybeAgdaLinkFixer = if Agda.isAgdaFile src then Just (Pandoc.withUrls agdaLinkFixer) else Nothing
     readFile' prev
       >>= markdownToPandoc
       >>= processCitations
@@ -259,12 +263,12 @@ recipeOutDir = outDir </> "recipes"
 isRecipeSrc :: FilePath -> Bool
 isRecipeSrc src = recipeSrcDir `isPrefixOf` src
 
-recipeRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Rules FilePath
+recipeRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Action FilePath
 recipeRouter src =
   return $ recipeOutDir </> dropExtension (makeRelative recipeSrcDir src) </> "index.html"
 
 recipeRules ::
-  ( ?routingTable :: RoutingTable,
+  ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getTemplateFile :: FilePath -> Action Template,
     ?getFileWithMetadata :: FilePath -> Action (Metadata, Text),
     ?readerOpts :: Pandoc.ReaderOptions,
@@ -296,14 +300,11 @@ postLibrary =
     }
 
 getAgdaLinkFixer ::
-  ( MonadIO m,
-    MonadFail m,
-    ?routingTable :: RoutingTable
-  ) =>
+  (?getRoutingTable :: () -> Action RoutingTable) =>
   Maybe Agda.Library ->
   [Agda.Library] ->
   [Agda.Library] ->
-  m (Url -> Url)
+  Action (Url -> Url)
 getAgdaLinkFixer standardLibrary localLibraries otherLibraries = do
   let maybeBuiltinLinkFixer = Agda.makeBuiltinLinkFixer <$> standardLibrary
   maybeStandardLibraryLinkFixer <- traverse Agda.makeLibraryLinkFixer standardLibrary
@@ -324,7 +325,7 @@ styleSrcDir, styleOutDir :: FilePath
 styleSrcDir = "sass"
 styleOutDir = outDir </> "assets" </> "css"
 
-styleRouter :: FilePath -> Rules FilePath
+styleRouter :: FilePath -> Action FilePath
 styleRouter src =
   return $
     styleOutDir </> makeRelative styleSrcDir src -<.> "css"
@@ -336,7 +337,7 @@ sassOptions =
       sassImporters = Just [minCssImporter styleSrcDir 1]
     }
 
-styleRules :: (?routingTable :: RoutingTable) => Rules ()
+styleRules :: (?getRoutingTable :: () -> Action RoutingTable) => Rules ()
 styleRules = alternatives $ do
   styleOutDir </> "style.css" %> \out -> do
     src <- routeSrc out
@@ -361,12 +362,12 @@ assetSrcDir, assetOutDir :: FilePath
 assetSrcDir = "assets"
 assetOutDir = outDir </> "assets"
 
-assetRouter :: FilePath -> Rules FilePath
+assetRouter :: FilePath -> Action FilePath
 assetRouter src =
   return $
     assetOutDir </> makeRelative assetSrcDir src
 
-assetRules :: (?routingTable :: RoutingTable) => Rules ()
+assetRules :: (?getRoutingTable :: () -> Action RoutingTable) => Rules ()
 assetRules =
   assetOutDir <//> "*" %> \out -> do
     src <- routeSrc out
@@ -435,7 +436,7 @@ getSiteMetadata () = do
 --     - @build_date@: The date at which the is website was last built, in the RFC822 format.
 --     - @highlight-css@: The CSS for syntax highlighting, if the original file specifies 'highlight'.
 getFileWithMetadata ::
-  ( ?routingTable :: RoutingTable,
+  ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getSiteMetadata :: () -> Action Metadata
   ) =>
   FilePath ->
@@ -460,7 +461,7 @@ getFileWithMetadata src = do
 --   - @date@: The date of the post, in a human readable format.
 --   - @date_rfc822@: The date of the post, in the RFC822 date format.
 getPostWithMetadata ::
-  ( ?routingTable :: RoutingTable,
+  ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
   ) =>
   FilePath ->
@@ -481,14 +482,15 @@ getPostWithMetadata src = do
 --   - @teaser_html@: The rendered HTML teaser for the post.
 --   - @teaser_plain@: The plain text teaser for the post.
 getPostsMetadata ::
-  ( ?routingTable :: RoutingTable,
+  ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getPostWithMetadata :: FilePath -> Action (Metadata, Text)
   ) =>
   () ->
   Action Metadata
 getPostsMetadata () = do
   -- Get posts from routing table
-  let postSrcs = filter isPostSrc (sources ?routingTable)
+  routingTable <- ?getRoutingTable ()
+  let postSrcs = filter isPostSrc (sources routingTable)
   -- Gather metadata for each post
   postsMetadata <- forM postSrcs $ \src -> do
     -- Get output file for URL and html-body anchor for teaser
@@ -504,14 +506,15 @@ getPostsMetadata () = do
 
 -- | Get a metadata object representing all recipes.
 getRecipesMetadata ::
-  ( ?routingTable :: RoutingTable,
+  ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
   ) =>
   () ->
   Action Metadata
 getRecipesMetadata () = do
   -- Get recipes from routing table
-  let recipeSrcs = filter isRecipeSrc (sources ?routingTable)
+  routingTable <- ?getRoutingTable ()
+  let recipeSrcs = filter isRecipeSrc (sources routingTable)
   -- Gather metadata for each recipe
   recipesMetadata <- forM recipeSrcs $ \src -> do
     -- Get output file for URL and html-body anchor for teaser

@@ -1,13 +1,14 @@
 module Shoggoth.Routing (Anchor, RoutingTable, Router (..), route, routeSrc, routeNext, routePrev, routeAnchor, sources, outputs) where
 
-import Shoggoth.Prelude
 import Control.Monad (forM, join, (>=>))
+import Control.Monad.IO.Class (MonadIO)
 import Data.Bimap qualified as Bimap
 import Data.Function (fix)
 import Data.Map qualified as Map
 import Data.Maybe (catMaybes, fromMaybe, mapMaybe)
 import Data.Set qualified as Set
 import Data.Text (Text)
+import Shoggoth.Prelude
 
 type Anchor = Text
 
@@ -28,11 +29,11 @@ instance Monoid RoutingTable where
 infix 3 |->
 
 class Router router where
-  (|->) :: [FilePattern] -> router -> Rules RoutingTable
+  (|->) :: [FilePattern] -> router -> Action RoutingTable
 
-instance Router (FilePath -> Rules [(Maybe Anchor, FilePath)]) where
+instance Router (FilePath -> Action [(Maybe Anchor, FilePath)]) where
   filePatterns |-> router = do
-    srcs <- liftIO $ getDirectoryFilesIO "" filePatterns
+    srcs <- getDirectoryFiles "" filePatterns
     routingTables <- forM srcs $ \src -> do
       anksAndStgs <- router src
       let stgs = snd <$> anksAndStgs
@@ -42,52 +43,69 @@ instance Router (FilePath -> Rules [(Maybe Anchor, FilePath)]) where
       return $ makeRoutingTable [src] [out] lnks anks
     return (mconcat routingTables)
 
-instance Router (FilePath -> Rules [FilePath]) where
+instance Router (FilePath -> Action [FilePath]) where
   filePatterns |-> router = filePatterns |-> anchorlessRouter
     where
-      anchorlessRouter :: FilePath -> Rules [(Maybe Anchor, FilePath)]
+      anchorlessRouter :: FilePath -> Action [(Maybe Anchor, FilePath)]
       anchorlessRouter = fmap (fmap (Nothing,)) . router
 
-instance Router (FilePath -> Rules FilePath) where
+instance Router (FilePath -> Action FilePath) where
   filePatterns |-> router = filePatterns |-> singleStageRouter
     where
-      singleStageRouter :: FilePath -> Rules [FilePath]
+      singleStageRouter :: FilePath -> Action [FilePath]
       singleStageRouter = fmap (: []) . router
 
 instance Router FilePath where
   filePatterns |-> out = filePatterns |-> constRouter
     where
-      constRouter :: FilePath -> Rules FilePath
+      constRouter :: FilePath -> Action FilePath
       constRouter _ = return out
 
 makeRoutingTable :: [FilePath] -> [FilePath] -> [(FilePath, FilePath)] -> [((Anchor, FilePath), FilePath)] -> RoutingTable
 makeRoutingTable srcs outs lnks anks =
   RoutingTable (Set.fromList srcs) (Set.fromList outs) (Bimap.fromList lnks) (Map.fromList anks)
 
-route :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
-route src = case routeNext src of
-  Nothing -> fail $ "No route from " <> src
-  Just out -> return $ fix (\rec out -> maybe out rec $ routeNext out) out
+-- | Route any path to its next stage, failing if there is no next stage.
+routeNext :: (?getRoutingTable :: () -> Action RoutingTable) => FilePath -> Action FilePath
+routeNext prev = do
+  routingTable <- ?getRoutingTable ()
+  maybe (fail $ "No route from " <> prev) return (maybeRouteNext routingTable prev)
 
-routeSrc :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
-routeSrc out = case routePrev out of
-  Nothing -> fail $ "No route to " <> out
-  Just src -> return $ fix (\rec src -> maybe src rec $ routePrev src) src
+-- | Route any path to its next stage. Return nothing if there is no next stage.
+maybeRouteNext :: RoutingTable -> FilePath -> Maybe FilePath
+maybeRouteNext RoutingTable {..} src = Bimap.lookup src routingTableLnks
 
-routeNext :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
-routeNext src = case Bimap.lookup src (routingTableLnks ?routingTable) of
-  Nothing -> fail $ "No route from " <> src
-  Just out -> return out
+-- | Route any path to its previous stage, failing if there is no previous stage.
+routePrev :: (?getRoutingTable :: () -> Action RoutingTable) => FilePath -> Action FilePath
+routePrev next = do
+  routingTable <- ?getRoutingTable ()
+  maybe (fail $ "No route to " <> next) return (maybeRoutePrev routingTable next)
 
-routePrev :: (MonadFail m, ?routingTable :: RoutingTable) => FilePath -> m FilePath
-routePrev out = case Bimap.lookupR out (routingTableLnks ?routingTable) of
-  Nothing -> fail $ "No route to " <> out
-  Just src -> return src
+-- | Route any path to its previous stage. Return nothing if there is no previous stage.
+maybeRoutePrev :: RoutingTable -> FilePath -> Maybe FilePath
+maybeRoutePrev RoutingTable {..} out = Bimap.lookupR out routingTableLnks
 
-routeAnchor :: (MonadFail m, ?routingTable :: RoutingTable) => Anchor -> FilePath -> m FilePath
-routeAnchor ank src = case Map.lookup (ank, src) (routingTableAnks ?routingTable) of
-  Nothing -> fail $ "No anchor " <> show ank <> " for " <> src
-  Just tmp -> return tmp
+-- | Route any path to its final output.
+route :: (?getRoutingTable :: () -> Action RoutingTable) => FilePath -> Action FilePath
+route src = do
+  routingTable <- ?getRoutingTable ()
+  let iterRouteNext :: FilePath -> FilePath
+      iterRouteNext = fix (\iter next -> maybe next iter $ maybeRouteNext routingTable next)
+  iterRouteNext <$> routeNext src
+
+-- | Route any path to its initial source.
+routeSrc :: (?getRoutingTable :: () -> Action RoutingTable) => FilePath -> Action FilePath
+routeSrc out = do
+  routingTable <- ?getRoutingTable ()
+  let iterRoutePrev :: FilePath -> FilePath
+      iterRoutePrev = fix (\iter prev -> maybe prev iter $ maybeRoutePrev routingTable prev)
+  iterRoutePrev <$> routePrev out
+
+-- | Route any source path to a specific anchored stage.
+routeAnchor :: (?getRoutingTable :: () -> Action RoutingTable) => Anchor -> FilePath -> Action FilePath
+routeAnchor ank src = do
+  RoutingTable {..} <- ?getRoutingTable ()
+  maybe (fail $ "No anchor " <> show ank <> " for " <> src) return (Map.lookup (ank, src) routingTableAnks)
 
 outputs :: RoutingTable -> [FilePath]
 outputs routingTable = Set.toAscList $ routingTableOuts routingTable
