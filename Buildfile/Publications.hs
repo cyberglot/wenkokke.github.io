@@ -23,9 +23,6 @@ import Data.Text qualified as Text
 -- Pubs
 
 makePublicationsPandoc ::
-  ( ?getTemplateFile :: FilePath -> Action Template,
-    ?getFileWithMetadata :: FilePath -> Action (Metadata, Text)
-  ) =>
   [Section] -> Maybe Name -> FilePath -> FilePath -> Metadata -> Action Pandoc
 makePublicationsPandoc sections myName outDir out metadata = do
 
