@@ -42,15 +42,22 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   --------------------------------------------------------------------------------
   -- Agda libraries
 
-  standardLibrary <- Agda.getStandardLibrary "agda-stdlib"
-  let localLibraries = [postLibrary]
-  let otherLibraries = []
-  let ?agdaLibraries = [standardLibrary] <> localLibraries <> otherLibraries
+  cachedGetStandardLibrary <- newCache $ \() -> do
+    Agda.getStandardLibrary "agda-stdlib"
+  let ?getStandardLibrary = cachedGetStandardLibrary
+
+  cachedGetAgdaLibraries <- newCache $ \() -> do
+    standardLibrary <- ?getStandardLibrary ()
+    let localLibraries = [postLibrary]
+    let otherLibraries = []
+    return (standardLibrary, localLibraries, otherLibraries)
+  let ?getAgdaLibraries = cachedGetAgdaLibraries
 
   --------------------------------------------------------------------------------
   -- Routing table
 
-  cachedRoutingTable <- cacheRoutingTable
+  cachedRoutingTable <-
+    cacheRoutingTable
       [ ["index.html"] |-> outDir </> "index.html",
         ["rss.xml"] |-> outDir </> "rss.xml",
         [postSrcDir </> "*.md"] |-> postRouter,
@@ -78,13 +85,11 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   let ?getTemplateFile = getTemplateFile
   cachedGetRecipesMetadata <- newCache getRecipesMetadata
   let ?getRecipesMetadata = cachedGetRecipesMetadata
-  let ?postprocessHtml5 = postprocessHtml5
 
   --------------------------------------------------------------------------------
   -- Agda link fixers
 
-  cachedGetAgdaLinkFixer <- newCache $ \() ->
-    getAgdaLinkFixer (Just standardLibrary) localLibraries otherLibraries
+  cachedGetAgdaLinkFixer <- newCache $ \() -> getAgdaLinkFixer
   let ?getAgdaLinkFixer = cachedGetAgdaLinkFixer
 
   --------------------------------------------------------------------------------
@@ -118,7 +123,7 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
     let bodyFld = constField "body" body
     applyAsTemplate (bodyFld <> fileMetadata) pubsHtmlTemplate
       >>= applyTemplates ["page.html", "default.html"] fileMetadata
-      <&> ?postprocessHtml5 outDir out
+      <&> postprocessHtml5 outDir out
       >>= writeFile' out
 
   -- Posts
@@ -184,7 +189,11 @@ postTmp1Dir = tmpDir </> "stage1" </> "posts" -- Render .lagda.md to .md
 postTmp2Dir = tmpDir </> "stage2" </> "posts" -- Render .md to .html
 postOutDir = outDir -- NOTE: cannot rely on 'postOutDir' to test if a FilePath is an output
 
-postRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Action [(Maybe Anchor, FilePath)]
+postRouter ::
+  ( ?getAgdaLibraries :: () -> Action (Agda.Library, [Agda.Library], [Agda.Library])
+  ) =>
+  FilePath ->
+  Action [(Maybe Anchor, FilePath)]
 postRouter src = do
   let postSrc = makeRelative postSrcDir src
   PostInfo {..} <- parsePostSource postSrc
@@ -192,7 +201,9 @@ postRouter src = do
   let out = postOutDir </> year </> month </> day </> fileName </> "index.html"
   if Agda.isAgdaFile src
     then do
-      highlightAgda <- Agda.htmlOutputPath postTmp1Dir ?agdaLibraries src
+      (standardLibrary, localLibraries, otherLibraries) <- ?getAgdaLibraries ()
+      let agdaLibraries = standardLibrary : localLibraries <> otherLibraries
+      highlightAgda <- Agda.htmlOutputPath postTmp1Dir agdaLibraries src
       return [(Nothing, highlightAgda), (Just "html-body", htmlBody), (Nothing, out)]
     else do return [(Just "html-body", htmlBody), (Nothing, out)]
 
@@ -206,7 +217,7 @@ postRules ::
   ( ?getRoutingTable :: () -> Action RoutingTable,
     ?getTemplateFile :: FilePath -> Action Template,
     ?getPostWithMetadata :: FilePath -> Action (Metadata, Text),
-    ?agdaLibraries :: [Agda.Library],
+    ?getAgdaLibraries :: () -> Action (Agda.Library, [Agda.Library], [Agda.Library]),
     ?getAgdaLinkFixer :: () -> Action (Url -> Url)
   ) =>
   Rules ()
@@ -214,7 +225,9 @@ postRules = do
   -- Compile literate Agda to Markdown & HTML
   isPostTmp1 ?> \next -> do
     prev <- routePrev next
-    Agda.compileTo Agda.Html ?agdaLibraries postTmp1Dir prev
+    (standardLibrary, localLibraries, otherLibraries) <- ?getAgdaLibraries ()
+    let agdaLibraries = standardLibrary : localLibraries <> otherLibraries
+    Agda.compileTo Agda.Html agdaLibraries postTmp1Dir prev
 
   -- Compile Markdown to HTML
   isPostTmp2 ?> \next -> do
@@ -248,9 +261,9 @@ recipeOutDir = outDir </> "recipes"
 isRecipeSrc :: FilePath -> Bool
 isRecipeSrc src = recipeSrcDir `isPrefixOf` src
 
-recipeRouter :: (?agdaLibraries :: [Agda.Library]) => FilePath -> Action FilePath
+recipeRouter :: FilePath -> FilePath
 recipeRouter src =
-  return $ recipeOutDir </> dropExtension (makeRelative recipeSrcDir src) </> "index.html"
+  recipeOutDir </> dropExtension (makeRelative recipeSrcDir src) </> "index.html"
 
 recipeRules ::
   ( ?getRoutingTable :: () -> Action RoutingTable,
@@ -283,19 +296,18 @@ postLibrary =
     }
 
 getAgdaLinkFixer ::
-  (?getRoutingTable :: () -> Action RoutingTable) =>
-  Maybe Agda.Library ->
-  [Agda.Library] ->
-  [Agda.Library] ->
+  ( ?getRoutingTable :: () -> Action RoutingTable,
+    ?getAgdaLibraries :: () -> Action (Agda.Library, [Agda.Library], [Agda.Library])
+  ) =>
   Action (Url -> Url)
-getAgdaLinkFixer standardLibrary localLibraries otherLibraries = do
-  let maybeBuiltinLinkFixer = Agda.makeBuiltinLinkFixer <$> standardLibrary
-  maybeStandardLibraryLinkFixer <- traverse Agda.makeLibraryLinkFixer standardLibrary
+getAgdaLinkFixer = do
+  (standardLibrary, localLibraries, otherLibraries) <- ?getAgdaLibraries ()
+  let builtinLinkFixer = Agda.makeBuiltinLinkFixer standardLibrary
+  standardLibraryLinkFixers <- Agda.makeLibraryLinkFixer standardLibrary
   localLinkFixers <- traverse Agda.makeLocalLinkFixer localLibraries
   otherLinkFixers <- traverse Agda.makeLibraryLinkFixer otherLibraries
   let linkFixers =
-        [ maybeToList maybeBuiltinLinkFixer,
-          maybeToList maybeStandardLibraryLinkFixer,
+        [ [builtinLinkFixer, standardLibraryLinkFixers],
           otherLinkFixers,
           localLinkFixers
         ]
