@@ -131,12 +131,12 @@ makeLocalLinkFixer lib@Library {..} = do
 -- Fix references to an external library with a canonical URL
 --------------------------------------------------------------------------------
 
-makeLibraryLinkFixer :: (MonadIO m, MonadFail m) => Library -> m (Url -> Url)
+makeLibraryLinkFixer :: Library -> Action (Url -> Url)
 makeLibraryLinkFixer lib@Library {..} = do
   regex <- reLibraryLink lib
   return $ RE.replaceAll regex (RE.rtext canonicalBaseUrl <> "/$1.html$2")
 
-reLibraryLink :: (MonadIO m, MonadFail m) => Library -> m RE.Regex
+reLibraryLink :: Library -> Action RE.Regex
 reLibraryLink lib = do
   modNames <- getAgdaModulesInLibrary lib
   let modPatns = Text.replace "." "\\." <$> modNames
@@ -160,31 +160,31 @@ reAgdaBuiltinLink = RE.regex [] "(Agda\\.[A-Za-z\\.]+)\\.html(#[^\"^']+)?"
 -- Blag a library instance for the standard library
 --------------------------------------------------------------------------------
 
-getStandardLibrary :: MonadIO m => FilePath -> m Library
+getStandardLibrary :: FilePath -> Action Library
 getStandardLibrary libraryRoot = do
   let includePaths = ["src"]
   canonicalBaseUrl <- getStandardLibraryCanonicalBaseUrl libraryRoot
   return Library {..}
 
 -- | Get a URL to the standard library documentation.
-getStandardLibraryCanonicalBaseUrl :: MonadIO m => FilePath -> m Text
+getStandardLibraryCanonicalBaseUrl :: FilePath -> Action Text
 getStandardLibraryCanonicalBaseUrl dir = do
   ver <- getStandardLibraryVersion dir
   return $ "https://agda.github.io/agda-stdlib/" <> ver
 
 -- | Get the standard library version.
-getStandardLibraryVersion :: MonadIO m => FilePath -> m Text
-getStandardLibraryVersion dir = liftIO $ do
+getStandardLibraryVersion :: FilePath -> Action Text
+getStandardLibraryVersion dir = do
   --
   -- NOTE: Version detection depends on the fact that the standard library
   --       maintains a CHANGELOG.md file which always opens with its version.
   --
   let changelog = dir </> "CHANGELOG.md"
-  correct <- System.doesFileExist changelog
+  correct <- doesFileExist changelog
   if not correct
     then error $ "Could not find " <> changelog
     else do
-      changelogContents <- Text.readFile changelog
+      changelogContents <- readFile' changelog
       let verLine = head (Text.lines changelogContents)
       ver <-
         maybe (fail $ "Cannot read version from " <> changelog) return $
@@ -252,13 +252,13 @@ inDirectory file dir =
 --------------------------------------------------------------------------------
 
 -- | Get module names for all Agda modules in a library.
-getAgdaModulesInLibrary :: (MonadIO m, MonadFail m) => Library -> m [ModuleName]
+getAgdaModulesInLibrary :: Library -> Action [ModuleName]
 getAgdaModulesInLibrary lib = do
   files <- getAgdaFilesInLibrary lib
   return [modulePathToName file | (includePath, file) <- files]
 
 -- | Get file paths for each Agda file in the library, together with its include directory.
-getAgdaFilesInLibrary :: MonadIO m => Library -> m [(FilePath, FilePath)]
+getAgdaFilesInLibrary :: Library -> Action [(FilePath, FilePath)]
 getAgdaFilesInLibrary lib@Library {..} = do
   filesByIncludePath <- forM includePaths $ \includePath -> do
     files <- getAgdaFilesInDirectory (libraryRoot </> includePath)
@@ -266,10 +266,9 @@ getAgdaFilesInLibrary lib@Library {..} = do
   return $ concat filesByIncludePath
 
 -- | Get file paths for each Agda file in the directory.
-getAgdaFilesInDirectory :: MonadIO m => FilePath -> m [FilePath]
+getAgdaFilesInDirectory :: FilePath -> Action [FilePath]
 getAgdaFilesInDirectory dir =
-  liftIO $
-    getDirectoryFilesIO dir ["//*.agda", "//*.lagda", "//*.lagda.md", "//*.lagda.org", "//*.lagda.rst", "//*.lagda.tex"]
+    getDirectoryFiles dir ["//*.agda", "//*.lagda", "//*.lagda.md", "//*.lagda.org", "//*.lagda.rst", "//*.lagda.tex"]
 
 -- | Check if the path points to an Agda or literate Agda file.
 isAgdaFile :: FilePath -> Bool
