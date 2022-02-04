@@ -89,7 +89,14 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
   --------------------------------------------------------------------------------
   -- Agda link fixers
 
-  cachedGetAgdaLinkFixer <- newCache $ \() -> getAgdaLinkFixer
+  cachedGetAgdaLinkFixer <- newCache $ \() -> do
+    (standardLibrary, localLibraries, otherLibraries) <- ?getAgdaLibraries ()
+    let builtinLinkFixer = Agda.makeBuiltinLinkFixer standardLibrary
+    standardLibraryLinkFixer <- Agda.makeLibraryLinkFixer standardLibrary
+    localLinkFixers <- traverse Agda.makeLocalLinkFixer localLibraries
+    otherLinkFixers <- traverse Agda.makeLibraryLinkFixer otherLibraries
+    let linkFixers = builtinLinkFixer : standardLibraryLinkFixer : otherLinkFixers <> localLinkFixers
+    return . appEndo . mconcat . fmap Endo $ linkFixers
   let ?getAgdaLinkFixer = cachedGetAgdaLinkFixer
 
   --------------------------------------------------------------------------------
@@ -127,6 +134,8 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
       >>= writeFile' out
 
   -- Posts
+  postRules
+
   outDir </> "index.html" %> \out -> do
     src <- routeSrc out
     postMetadata <- ?getPostsMetadata ()
@@ -144,9 +153,9 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
       >>= applyAsTemplate (fileMetadata <> postMetadata)
       >>= writeFile' out
 
-  postRules
-
   -- Recipes
+  recipeRules
+
   outDir </> "recipes" </> "index.html" %> \out -> do
     src <- routeSrc out
     recipeMetadata <- ?getRecipesMetadata ()
@@ -155,8 +164,6 @@ main = shakeArgs shakeOptions {shakeFiles = tmpDir, shakeProgress = progressSimp
       >>= applyTemplate "default.html" fileMetadata
       <&> postprocessHtml5 outDir out
       >>= writeFile' out
-
-  recipeRules
 
   -- 404.html
   outDir </> "404.html" %> \out -> do
@@ -239,7 +246,7 @@ postRules = do
       >>= processCitations
       <&> walk (shiftHeadersBy 2)
       <&> fromMaybe id maybeAgdaLinkFixer
-      >>= pandocToHtml5 -- postprocessHtml5 in next rule
+      >>= pandocToHtml5 -- NOTE: 'postprocessHtml5' in next rule
       >>= writeFile' next
 
   -- Apply templates
@@ -294,24 +301,6 @@ postLibrary =
       includePaths = [postSrcDir],
       canonicalBaseUrl = "https://wen.works/"
     }
-
-getAgdaLinkFixer ::
-  ( ?getRoutingTable :: () -> Action RoutingTable,
-    ?getAgdaLibraries :: () -> Action (Agda.Library, [Agda.Library], [Agda.Library])
-  ) =>
-  Action (Url -> Url)
-getAgdaLinkFixer = do
-  (standardLibrary, localLibraries, otherLibraries) <- ?getAgdaLibraries ()
-  let builtinLinkFixer = Agda.makeBuiltinLinkFixer standardLibrary
-  standardLibraryLinkFixers <- Agda.makeLibraryLinkFixer standardLibrary
-  localLinkFixers <- traverse Agda.makeLocalLinkFixer localLibraries
-  otherLinkFixers <- traverse Agda.makeLibraryLinkFixer otherLibraries
-  let linkFixers =
-        [ [builtinLinkFixer, standardLibraryLinkFixers],
-          otherLinkFixers,
-          localLinkFixers
-        ]
-  return . appEndo . mconcat . fmap Endo . concat $ linkFixers
 
 --------------------------------------------------------------------------------
 -- Style Sheets
@@ -377,13 +366,13 @@ highlightStyle = Pandoc.pygments
 readerOpts :: ReaderOptions
 readerOpts =
   def
-    { readerExtensions = markdownDialect
+    { readerExtensions = Pandoc.pandocExtensions
     }
 
 writerOpts :: WriterOptions
 writerOpts =
   def
-    { writerHTMLMathMethod = KaTeX "",
+    { writerHTMLMathMethod = KaTeX Pandoc.defaultKaTeXURL,
       writerEmailObfuscation = JavascriptObfuscation,
       writerHighlightStyle = Just highlightStyle
     }
@@ -406,9 +395,6 @@ postprocessHtml5 outDir out html5 =
     & TagSoup.withUrls (implicitIndexFile . relativizeUrl outDir out)
     & TagSoup.addDefaultTableHeaderScope "col"
     & Pandoc.postprocessHtml5
-
-markdownDialect :: Extensions
-markdownDialect = Pandoc.pandocExtensions
 
 --------------------------------------------------------------------------------
 -- Metadata
