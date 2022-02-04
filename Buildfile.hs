@@ -244,7 +244,7 @@ postRules = do
     readFile' prev
       >>= markdownToPandoc
       >>= processCitations
-      <&> walk (shiftHeadersBy 2)
+      <&> Pandoc.shiftHeadersBy 2
       <&> fromMaybe id maybeAgdaLinkFixer
       >>= pandocToHtml5 -- NOTE: 'postprocessHtml5' in next rule
       >>= writeFile' next
@@ -285,7 +285,7 @@ recipeRules = do
     readFile' src
       >>= markdownToPandoc
       >>= processCitations
-      <&> walk (shiftHeadersBy 2)
+      <&> Pandoc.shiftHeadersBy 2
       >>= pandocToHtml5
       >>= applyTemplates ["recipe.html", "default.html"] metadata
       <&> postprocessHtml5 outDir out
@@ -355,10 +355,6 @@ assetRules =
 
 --------------------------------------------------------------------------------
 -- Markdown to HTML compilation
-
-shiftHeadersBy :: Int -> Block -> Block
-shiftHeadersBy n (Header l attr body) = Header (l + n) attr body
-shiftHeadersBy n x = x
 
 highlightStyle :: Pandoc.HighlightStyle
 highlightStyle = Pandoc.pygments

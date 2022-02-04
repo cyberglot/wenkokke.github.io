@@ -7,6 +7,7 @@ module Shoggoth.Template.Pandoc
     module PandocHighlighting,
     module PandocPostprocess,
     module PandocUrl,
+    shiftHeadersBy,
   )
 where
 
@@ -156,3 +157,9 @@ runPandoc :: PandocIO a -> Action a
 runPandoc act = do
   resultOrError <- liftIO (runIO act)
   liftEither displayException resultOrError
+
+shiftHeadersBy :: Walkable Block doc => Int -> doc -> doc
+shiftHeadersBy n = walk go
+  where
+    go (Header l attr body) = Header (l + n) attr body
+    go x = x
