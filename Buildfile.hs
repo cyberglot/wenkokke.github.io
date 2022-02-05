@@ -23,7 +23,7 @@ import Shoggoth.Agda qualified as Agda
 import Shoggoth.PostInfo
 import Shoggoth.Prelude
 import Shoggoth.Routing
-import Shoggoth.Style.CSS
+import Shoggoth.Style.Css.Hasmin
 import Shoggoth.Style.Sass
 import Shoggoth.Template
 import Shoggoth.Template.Pandoc qualified as Pandoc
@@ -324,17 +324,17 @@ styleRules = alternatives $ do
   styleOutDir </> "style.css" %> \out -> do
     src <- routeSrc out
     compileSassWith sassOptions src
-      >>= minifyCSS
+      >>= minifyCss
       >>= writeFile' out
 
   styleOutDir </> "highlight.css" %> \out -> do
     let css = Text.pack $ Pandoc.styleToCss highlightStyle
-    writeFile' out =<< minifyCSS css
+    writeFile' out =<< minifyCss css
 
   styleOutDir </> "*.css" %> \out -> do
     src <- routeSrc out
     readFile' src
-      >>= minifyCSS
+      >>= minifyCss
       >>= writeFile' out
 
 --------------------------------------------------------------------------------

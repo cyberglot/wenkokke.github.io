@@ -1,8 +1,6 @@
-{-# OPTIONS_GHC -fno-warn-orphans #-}
-
-module Shoggoth.Style.CSS
-  ( minifyCSS,
-    minifyCSSWith,
+module Shoggoth.Style.Css.Hasmin
+  ( minifyCss,
+    minifyCssWith,
     minifyCssDefaultConfig,
     Hasmin.Config (..),
     Hasmin.ColorSettings (..),
@@ -15,17 +13,17 @@ module Shoggoth.Style.CSS
   )
 where
 
-import Shoggoth.Prelude (Action, liftEither)
 import Data.Text (Text)
 import Hasmin qualified
+import Shoggoth.Prelude (Action, liftEither)
 
 minifyCssDefaultConfig :: Hasmin.Config
 minifyCssDefaultConfig = Hasmin.defaultConfig
 
--- | Minify CSS using 'Hasmin'.
-minifyCSS :: Text -> Action Text
-minifyCSS = minifyCSSWith Hasmin.defaultConfig
+-- | Minify Css using 'Hasmin'.
+minifyCss :: Text -> Action Text
+minifyCss = minifyCssWith Hasmin.defaultConfig
 
--- | Minify CSS with options.
-minifyCSSWith :: Hasmin.Config -> Text -> Action Text
-minifyCSSWith opts css = liftEither id (Hasmin.minifyCSSWith opts css)
+-- | Minify Css with options.
+minifyCssWith :: Hasmin.Config -> Text -> Action Text
+minifyCssWith opts css = liftEither id (Hasmin.minifyCSSWith opts css)

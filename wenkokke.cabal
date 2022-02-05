@@ -51,8 +51,10 @@ executable builder
     , multimap
     , process
     , shake
-    , shoggoth
     , shoggoth-agda
+    , shoggoth-core
+    , shoggoth-hasmin
+    , shoggoth-sass
     , temporary
     , text
     , text-icu            ^>=0.7.1.0
@@ -60,18 +62,16 @@ executable builder
 library shoggoth-agda
   import:          language-haskell, install-agda
   hs-source-dirs:  shoggoth/agda
-  exposed-modules:
-    Shoggoth.Agda
-
+  exposed-modules: Shoggoth.Agda
   build-depends:
-    , shoggoth
     , containers
     , directory
+    , shoggoth-core
     , text
-    , text-icu              ^>=0.7.1.0
+    , text-icu            ^>=0.7.1.0
     , text-regex-replace
 
-library shoggoth
+library shoggoth-core
   import:          language-haskell
   hs-source-dirs:  shoggoth/core shoggoth/agda
   exposed-modules:
@@ -79,8 +79,6 @@ library shoggoth
     Shoggoth.Prelude
     Shoggoth.Prelude.ByteString
     Shoggoth.Routing
-    Shoggoth.Style.CSS
-    Shoggoth.Style.Sass
     Shoggoth.Template
     Shoggoth.Template.Pandoc
     Shoggoth.Template.Pandoc.Builder
@@ -107,8 +105,6 @@ library shoggoth
     , filemanip             ^>=0.3
     , filepath
     , frontmatter
-    , hasmin
-    , hsass                 >=0.3.0
     , mtl
     , pandoc
     , pandoc-types
@@ -121,3 +117,22 @@ library shoggoth
     , unordered-containers
     , vector
     , yaml
+
+library shoggoth-hasmin
+  import:          language-haskell
+  hs-source-dirs:  shoggoth/hasmin
+  exposed-modules: Shoggoth.Style.Css.Hasmin
+  build-depends:
+    , hasmin
+    , shoggoth-core
+    , text
+
+library shoggoth-sass
+  import:          language-haskell
+  hs-source-dirs:  shoggoth/sass
+  exposed-modules: Shoggoth.Style.Sass
+  build-depends:
+    , directory
+    , hsass          >=0.3.0
+    , shoggoth-core
+    , text
